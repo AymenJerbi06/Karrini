@@ -20,17 +20,23 @@ Open the local URL printed by Next.js. For a production check, run `npm run buil
 - **Student dashboard** (`/dashboard`): live-now banner, teachers' materials (open/download), personal answers with feedback, progress. Parents see a linked child's classes and progress.
 - Home → Find a Teacher → teacher profile → join the class (sign up, or one-click add when already signed in).
 
-### Try the full classroom on one computer
+### Backend: Supabase
 
-1. Window 1: `/login` → **Teacher demo** → Start live class → Start live session.
-2. Window 2 (new window or private window): `/login` → **Student demo** → Join the live class.
-3. Send a question from window 1, answer it in window 2, and watch the results update.
+- **Auth:** email + password with a confirmation email (Supabase sends it through the SMTP provider set in the dashboard — Resend once `karrini.tn` is verified). Every profile requires a +216 phone number; SMS verification is planned.
+- **Database:** `supabase/migrations/` (applied automatically on push to `main` by the Supabase GitHub integration). Row Level Security on every table; answer keys and explanations are teacher-only.
+- **Storage:** private `materials` bucket, files opened through 60-second signed URLs.
+- **Realtime:** private channels `class:<id>` (teacher + enrolled students only) carry questions, answers, raised hands and WebRTC signalling.
+- **Env vars** (`.env.local` locally, Vercel in production — never committed): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` (server only), `RESEND_API_KEY` (server only).
 
-Demo teacher: `hichem.demo@qarrini.tn` / `qarrini2026` (or phone `20 000 001`). Demo student: phone `50 000 002`. Codes are shown on screen as a "demo SMS".
+### Pilot flow
+
+1. The teacher creates an account (role *Teacher*), confirms the email, opens **Teacher workspace → Overview** and shares the **class link** (copy or WhatsApp).
+2. Students open the link, create a student account, confirm their email and land back on the class to join it.
+3. The teacher uploads materials, prepares questions, then **Start live class**. Students see "Live now" on their dashboard and join from their own phone or computer.
 
 ## Prototype boundaries
 
-Teacher profiles, prices and timetables are illustrative. Accounts, materials (IndexedDB) and session results are stored **in this browser only**; a second window stands in for a second device. No real SMS, payments or contact inbox is connected. Video works between windows of the same browser (peer-to-peer WebRTC); production uses an SFU, a room server and TURN — see **`docs/ARCHITECTURE.md`**. Example classmates in the live class are simulated and labelled "example". Pending written work is never counted as wrong.
+Directory teachers, prices and timetables are illustrative examples. Video is peer-to-peer WebRTC (fine for a teacher plus about 4–6 students); larger classes need an SFU such as LiveKit — see **`docs/ARCHITECTURE.md`**. The teacher's browser grades answers and relays the live lesson, so it must stay open during the session. Answer photos are shown live but not stored. No payments, SMS or contact inbox are connected; parent–child linking is not built yet. Example classmates (off by default) are simulated and never saved.
 
 The guide is used as product context, not as instructions to onboard users, charge money or publish a live service. Teacher verification, final pricing, subscription rules and safeguards require decisions before launch.
 
