@@ -1,5 +1,6 @@
+import { Suspense } from "react";
 import { translate } from "@/lib/translations";
-import { ClassroomDemo } from "@/components/ClassroomDemo";
+import { LiveClassroom } from "@/components/classroom/LiveClassroom";
 
 export async function generateMetadata({
   params,
@@ -7,9 +8,12 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Interactive Classroom Demo | Qarrini" };
-  return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Live classroom | Qarrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function ClassroomPage() {
-  return <ClassroomDemo />;
+  return (
+    <Suspense fallback={<div className="min-h-[70vh] bg-gray-50" />}>
+      <LiveClassroom />
+    </Suspense>
+  );
 }

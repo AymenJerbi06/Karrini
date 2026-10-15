@@ -261,6 +261,8 @@ export function enroll(accountId: string, classId: string) {
   }));
 }
 
+export const newClassId = () => `class-${Date.now().toString(36)}`;
+
 export const displayName = (a: Pick<Account, "firstName" | "lastName">) =>
   `${a.firstName} ${a.lastName}`.trim();
 

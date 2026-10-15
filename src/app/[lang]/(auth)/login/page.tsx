@@ -1,5 +1,6 @@
+import { Suspense } from "react";
 import { translate } from "@/lib/translations";
-import { DemoLogin } from "@/components/DemoLogin";
+import { SignIn } from "@/components/auth/SignIn";
 
 export async function generateMetadata({
   params,
@@ -7,9 +8,12 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Your Workspace | Qarrini" };
-  return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Sign in | Qarrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function LoginPage() {
-  return <DemoLogin />;
+  return (
+    <Suspense fallback={<div className="min-h-96" />}>
+      <SignIn />
+    </Suspense>
+  );
 }

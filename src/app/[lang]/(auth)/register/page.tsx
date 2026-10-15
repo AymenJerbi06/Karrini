@@ -1,9 +1,6 @@
-import { translate } from "@/lib/translations";
-
-import { T } from "@/components/I18n";
-
 import { Suspense } from "react";
-import { DemoEnrollment } from "@/components/DemoEnrollment";
+import { translate } from "@/lib/translations";
+import { SignUp } from "@/components/auth/SignUp";
 
 export async function generateMetadata({
   params,
@@ -11,19 +8,12 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Try Enrollment | Qarrini" };
-  return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Create your account | Qarrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function RegisterPage() {
   return (
-    <Suspense
-      fallback={
-        <p className="text-gray-500">
-          <T>Loading class offers…</T>
-        </p>
-      }
-    >
-      <DemoEnrollment />
+    <Suspense fallback={<div className="min-h-96" />}>
+      <SignUp />
     </Suspense>
   );
 }

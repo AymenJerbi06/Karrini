@@ -81,13 +81,11 @@ function demoCameraStream(label: string): MediaStream {
 
 export function useClassroomCall({
   transport,
-  selfId,
   hostId,
   role,
   demoLabel,
 }: {
   transport: RealtimeTransport | null;
-  selfId: string;
   hostId: string;
   role: "teacher" | "student";
   demoLabel: string;
@@ -101,6 +99,8 @@ export function useClassroomCall({
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const [sharing, setSharing] = useState(false);
+  const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
+  const [connectedPeers, setConnectedPeers] = useState<string[]>([]);
   const [usingDemoCamera, setUsingDemoCamera] = useState(false);
   const [error, setError] = useState("");
   const isHost = role === "teacher";
@@ -114,6 +114,7 @@ export function useClassroomCall({
     peers.current.get(id)?.pc.close();
     peers.current.delete(id);
     setRemotes((r) => r.filter((x) => x.id !== id));
+    setConnectedPeers((c) => c.filter((x) => x !== id));
   }, []);
 
   const createPeer = useCallback(
@@ -143,6 +144,8 @@ export function useClassroomCall({
         setRemotes((r) => [...r.filter((x) => x.id !== remoteId), { id: remoteId, stream }]);
       };
       pc.onconnectionstatechange = () => {
+        if (pc.connectionState === "connected")
+          setConnectedPeers((c) => (c.includes(remoteId) ? c : [...c, remoteId]));
         if (["failed", "closed"].includes(pc.connectionState)) dropPeer(remoteId);
       };
       return peer;
@@ -218,9 +221,17 @@ export function useClassroomCall({
   const getCamera = useCallback(
     async (video: boolean, audio: boolean) => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
+        const request = navigator.mediaDevices.getUserMedia({
           video: video ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
           audio: audio ? { echoCancellation: true, noiseSuppression: true } : false,
+        });
+        // A permission prompt that is never answered would otherwise wait forever.
+        const timeout = new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000));
+        const stream = await Promise.race([request, timeout]).catch((err) => {
+          // Release a camera that answers after we gave up.
+          request.then((late) => late.getTracks().forEach((t) => t.stop())).catch(() => undefined);
+          throw err;
         });
         setUsingDemoCamera(false);
         return stream;
@@ -260,6 +271,7 @@ export function useClassroomCall({
     local.current = null;
     screen.current = null;
     setLocalStream(null);
+    setScreenStream(null);
     setSharing(false);
     setLive(false);
     if (isHost) {
@@ -303,6 +315,7 @@ export function useClassroomCall({
     if (sharing) {
       screen.current?.getTracks().forEach((t) => t.stop());
       screen.current = null;
+      setScreenStream(null);
       swap(cameraTrack);
       setSharing(false);
       return;
@@ -310,9 +323,11 @@ export function useClassroomCall({
     try {
       const display = await navigator.mediaDevices.getDisplayMedia({ video: true });
       screen.current = display;
+      setScreenStream(display);
       const track = display.getVideoTracks()[0];
       track.addEventListener("ended", () => {
         swap(local.current?.getVideoTracks()[0]);
+        setScreenStream(null);
         setSharing(false);
       });
       swap(track);
@@ -334,7 +349,7 @@ export function useClassroomCall({
 
   return {
     localStream,
-    screenStream: sharing ? screen.current : null,
+    screenStream: sharing ? screenStream : null,
     remotes,
     live,
     micOn,
@@ -342,8 +357,8 @@ export function useClassroomCall({
     sharing,
     usingDemoCamera,
     error,
-    viewers: remotes.length,
-    peerCount: peers.current.size,
+    /** Number of live video connections (students watching, for the teacher). */
+    viewers: connectedPeers.length,
     start,
     stop,
     toggleMic,

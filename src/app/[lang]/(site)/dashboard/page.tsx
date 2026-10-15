@@ -1,5 +1,5 @@
 import { translate } from "@/lib/translations";
-import { DemoDashboard } from "@/components/DemoDashboard";
+import { StudentDashboard } from "@/components/workspace/StudentDashboard";
 
 export async function generateMetadata({
   params,
@@ -7,9 +7,8 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Your Dashboard | Qarrini" };
-  return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Your Dashboard | Qarrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function DashboardPage() {
-  return <DemoDashboard />;
+  return <StudentDashboard />;
 }

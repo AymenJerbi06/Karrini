@@ -7,6 +7,7 @@ import { Logo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ChevronDownIcon, CloseIcon, MenuIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
+import { homeFor, signOut, useAuth } from "@/lib/auth";
 
 const nav = [{ label: "Find a Teacher", href: "/find-a-teacher" }];
 
@@ -36,6 +37,7 @@ const explore = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { account } = useAuth();
   const [res, setRes] = useState(false);
 
   return (
@@ -114,18 +116,46 @@ export function Header() {
           <LanguageSwitcher />
         </div>
         <div className="hidden items-center border-s border-gray-200 px-6 xl:flex">
-          <Link
-            href="/register"
-            className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
-          >
-            <T>Register</T>
-          </Link>
-          <Link
-            href="/login"
-            className="ms-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-brand px-4 py-2 text-base font-medium text-white shadow-sm transition-colors duration-150 hover:bg-brand-dark"
-          >
-            <T>Sign In</T>
-          </Link>
+          {account ? (
+            <>
+              <span className="flex flex-col items-end leading-tight">
+                <bdi dir="auto" className="text-sm font-semibold text-gray-800">
+                  {account.firstName}
+                </bdi>
+                <span className="text-xs text-gray-500">
+                  <T>{account.role === "teacher" ? "Teacher" : account.role === "parent" ? "Parent" : "Student"}</T>
+                </span>
+              </span>
+              <Link
+                href={homeFor(account.role)}
+                className="ms-5 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-brand px-4 py-2 text-base font-medium text-white shadow-sm transition-colors duration-150 hover:bg-brand-dark"
+              >
+                <T>My workspace</T>
+              </Link>
+              <button
+                type="button"
+                onClick={signOut}
+                className="ms-4 whitespace-nowrap text-sm font-medium text-gray-500 hover:text-gray-900"
+              >
+                <T>Sign out</T>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/register"
+                className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
+              >
+                <T>Register</T>
+              </Link>
+              <Link
+                href="/login"
+                className="ms-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-brand px-4 py-2 text-base font-medium text-white shadow-sm transition-colors duration-150 hover:bg-brand-dark"
+              >
+                <T>Sign In</T>
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="flex items-center pe-4 xl:hidden">
@@ -184,23 +214,47 @@ export function Header() {
                 <T>{l.label}</T>
               </Link>
             ))}
-            <Link
-              href="/login"
-              onClick={() => setOpen(false)}
-              className="mt-2 flex w-full items-center justify-center rounded-md bg-brand px-4 py-2 text-base font-medium text-white shadow-sm"
-            >
-              <T>Sign In</T>
-            </Link>
-            <p className="text-center text-base font-medium text-gray-500">
-              <T>New here?</T>{" "}
-              <Link
-                href="/register"
-                onClick={() => setOpen(false)}
-                className="text-brand"
-              >
-                <T>Register</T>
-              </Link>
-            </p>
+            {account ? (
+              <>
+                <Link
+                  href={homeFor(account.role)}
+                  onClick={() => setOpen(false)}
+                  className="mt-2 flex w-full items-center justify-center rounded-md bg-brand px-4 py-2 text-base font-medium text-white shadow-sm"
+                >
+                  <T>My workspace</T>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    signOut();
+                    setOpen(false);
+                  }}
+                  className="text-center text-base font-medium text-gray-500"
+                >
+                  <T>Sign out</T>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 flex w-full items-center justify-center rounded-md bg-brand px-4 py-2 text-base font-medium text-white shadow-sm"
+                >
+                  <T>Sign In</T>
+                </Link>
+                <p className="text-center text-base font-medium text-gray-500">
+                  <T>New here?</T>{" "}
+                  <Link
+                    href="/register"
+                    onClick={() => setOpen(false)}
+                    className="text-brand"
+                  >
+                    <T>Register</T>
+                  </Link>
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>

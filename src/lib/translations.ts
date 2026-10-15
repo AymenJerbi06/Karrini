@@ -6,6 +6,7 @@ import { classroom } from "@/data/i18n/classroom";
 import { notices } from "@/data/i18n/notices";
 import { home } from "@/data/i18n/home";
 import { experience } from "@/data/i18n/experience";
+import { platform } from "@/data/i18n/platform";
 import type { Locale } from "@/lib/i18n";
 
 export const messages: Record<string, [string, string]> = {
@@ -17,6 +18,7 @@ export const messages: Record<string, [string, string]> = {
   ...notices,
   ...home,
   ...experience,
+  ...platform,
 };
 const lowerKeys = new Map(
   Object.keys(messages).map((key) => [key.toLowerCase(), key]),
