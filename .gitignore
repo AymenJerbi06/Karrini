@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local-only reference material (not for the public repo)
+/docs/design-references/
+/Qarrini_Guide_Download/
+/Qarrini_Guide_Download.zip

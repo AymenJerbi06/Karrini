@@ -1,0 +1,23 @@
+import { Cta } from "@/components/sections/Cta";
+import { Faq } from "@/components/sections/Faq";
+import { Features } from "@/components/sections/Features";
+import { Hero } from "@/components/sections/Hero";
+import { HowItWorks } from "@/components/sections/HowItWorks";
+import { QuestionTypes } from "@/components/sections/QuestionTypes";
+import { StatsBar } from "@/components/sections/StatsBar";
+import { Subjects } from "@/components/sections/Subjects";
+
+export default function Home() {
+  return (
+    <>
+      <Hero />
+      <StatsBar />
+      <Features />
+      <HowItWorks />
+      <QuestionTypes />
+      <Subjects />
+      <Faq />
+      <Cta />
+    </>
+  );
+}

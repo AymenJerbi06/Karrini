@@ -1,26 +1,144 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Qarrini: deep teal, warm paper, and a gold spark of understanding. */
+@theme {
+  --color-brand: #176b58;
+  --color-brand-dark: #0e4b40;
+  --color-chat: #176b58;
+  --color-gray-50: #faf8f2;
+  --color-gray-100: #f0f1e9;
+  --color-gray-200: #e0e5db;
+  --color-gray-300: #c8d3c8;
+  --color-gray-400: #91a69b;
+  --color-gray-500: #607b70;
+  --color-gray-600: #4b685d;
+  --color-gray-700: #285747;
+  --color-gray-800: #133e34;
+  --color-gray-900: #102f29;
+  --color-blue-50: #eff7f1;
+  --color-blue-100: #d9ede2;
+  --color-blue-200: #b7d9c8;
+  --color-blue-500: #26846c;
+  --color-blue-600: #176b58;
+  --color-blue-700: #0e4b40;
+  --color-blue-800: #153f34;
+  --color-blue-900: #102f29;
+  --color-amber-400: #e9b665;
+  --color-amber-500: #d6a04d;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --animate-scroll-left: scroll-left 60s linear infinite;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  @keyframes scroll-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+button,
+summary,
+select {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid #26846c;
+  outline-offset: 4px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: #176b58;
+}
+
+html[lang="ar"] {
+  --font-sans: var(--font-arabic), sans-serif;
+  --font-display: var(--font-arabic), sans-serif;
+}
+html[lang="ar"] .font-display {
+  letter-spacing: 0;
+  line-height: 1.55;
+}
+html[lang="ar"] .tracking-wide,
+html[lang="ar"] .tracking-wider,
+html[lang="ar"] .tracking-widest {
+  letter-spacing: 0;
+}
+html[lang="ar"] body {
+  line-height: 1.8;
+}
+html[lang="ar"] .text-left {
+  text-align: right;
+}
+html[lang="ar"] .text-right {
+  text-align: left;
+}
+html[lang="ar"] .font-mono {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+html[lang="ar"] .sm\:flex-row .text-right {
+  text-align: left;
+}
+.qarrini-logo {
+  white-space: nowrap;
+}
+.qarrini-logo [lang="fr"] {
+  font-family: var(--font-jakarta), sans-serif;
+}
+.qarrini-logo [lang="ar"] {
+  font-family: var(--font-arabic), sans-serif;
+  letter-spacing: 0;
+}
+.bg-gray-800 .text-brand {
+  color: #a9d3ad;
+}
+.bg-gray-800 .qarrini-logo {
+  color: #fbf8f0;
+}
+.language-switcher {
+  font-family: var(--font-open-sans), var(--font-arabic), sans-serif;
+}
+html[lang="ar"] .home-heading {
+  line-height: 1.45;
+}
+
+.marquee:hover .animate-scroll-left {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .animate-scroll-left {
+    animation: none;
+  }
 }
