@@ -13,15 +13,24 @@ Open the local URL printed by Next.js. For a production check, run `npm run buil
 
 ## Main journeys
 
-- Home -> Find a Teacher -> filter by subject, school year, format, schedule and availability -> view a teacher's offer.
-- Teacher profile -> Try demo enrollment -> choose a nickname and student/parent role -> review offer -> dashboard.
-- Sign In -> choose a student, parent or teacher demo workspace.
-- Classroom -> publish a multiple-choice or written question -> switch to Student view -> submit -> return to Teacher view to mark, comment, share anonymously or release the solution.
-- Contact -> prepare a feedback note -> copy or download it for sharing.
+- **Sign up** (`/register`): choose student, parent or teacher → sign up with a **phone number** (+216, verified with a 6-digit code) or with **email + password** (a verified phone number is still required) → profile (school year, or subject/levels/experience for teachers, who start as *pending verification*).
+- **Sign in** (`/login`): separate Student / Parent / Teacher tabs; phone + code or email + password. A teacher number used on the student tab (or vice versa) is detected and the user is offered the right sign-in.
+- **Teacher workspace** (`/teach`): overview, **materials** upload (PDF, Word, PowerPoint, images; drag and drop), **question bank** prepared before class, and **results** of every live session with CSV export.
+- **Live classroom** (`/classroom`): the teacher goes live with camera/mic/screen share (WebRTC), sends prepared questions or writes new ones on the spot, and sees right/wrong counts, percentages, the breakdown per option and **the names and answers of students who got it wrong**. Private feedback, anonymous sharing, answer release, raised hands, optional time limits.
+- **Student dashboard** (`/dashboard`): live-now banner, teachers' materials (open/download), personal answers with feedback, progress. Parents see a linked child's classes and progress.
+- Home → Find a Teacher → teacher profile → join the class (sign up, or one-click add when already signed in).
+
+### Try the full classroom on one computer
+
+1. Window 1: `/login` → **Teacher demo** → Start live class → Start live session.
+2. Window 2 (new window or private window): `/login` → **Student demo** → Join the live class.
+3. Send a question from window 1, answer it in window 2, and watch the results update.
+
+Demo teacher: `hichem.demo@qarrini.tn` / `qarrini2026` (or phone `20 000 001`). Demo student: phone `50 000 002`. Codes are shown on screen as a "demo SMS".
 
 ## Prototype boundaries
 
-Teacher profiles, prices, timetables and progress figures are illustrative. No real authentication, payments, contact inbox, video or multi-device classroom service is connected. Demo account details are stored in local storage and can be cleared using the dashboard's reset control. Classroom work and photos stay in page memory. Pending written work is excluded from graded-answer percentages.
+Teacher profiles, prices and timetables are illustrative. Accounts, materials (IndexedDB) and session results are stored **in this browser only**; a second window stands in for a second device. No real SMS, payments or contact inbox is connected. Video works between windows of the same browser (peer-to-peer WebRTC); production uses an SFU, a room server and TURN — see **`docs/ARCHITECTURE.md`**. Example classmates in the live class are simulated and labelled "example". Pending written work is never counted as wrong.
 
 The guide is used as product context, not as instructions to onboard users, charge money or publish a live service. Teacher verification, final pricing, subscription rules and safeguards require decisions before launch.
 

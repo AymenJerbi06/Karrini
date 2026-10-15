@@ -625,4 +625,151 @@ export const platform: Record<string, [string, string]> = {
     "مشاركة الشاشة تبطّلت ولا موش متوفّرة في المتصفّح هذا.",
     "Le partage d’écran a été annulé ou n’est pas pris en charge par ce navigateur.",
   ],
+
+  /* ---------- For Teachers & How it works: interactive sections ---------- */
+  "How it Works | Qarrini": ["كيفاش تخدم | قرّيني", "Comment ça marche | Qarrini"],
+  "Teach on Qarrini | Qarrini": ["قرّي على قرّيني | قرّيني", "Enseigner sur Qarrini | Qarrini"],
+  "A lesson with Qarrini, step by step.": ["درس مع قرّيني، خطوة بخطوة.", "Un cours avec Qarrini, étape par étape."],
+  "Before class": ["قبل الدرس", "Avant le cours"],
+  "During class": ["في الدرس", "Pendant le cours"],
+  "After class": ["بعد الدرس", "Après le cours"],
+  "Prepare once, teach with confidence.": ["حضّر مرّة وقرّي بثقة.", "Préparez une fois, enseignez sereinement."],
+  "Upload your materials": ["حمّل محتواك", "Partagez vos supports"],
+  "Notes, exercise sheets, homework and corrections, in PDF, Word or images.": [
+    "ملخّصات، تمارين، فروض وإصلاحات، بـPDF ولا Word ولا تصاور.",
+    "Notes, fiches d’exercices, devoirs et corrections, en PDF, Word ou images.",
+  ],
+  "Write your questions": ["اكتب أسئلتك", "Rédigez vos questions"],
+  "Multiple choice, numbers and equations, short answers or handwritten working.": [
+    "اختيار من متعدّد، أعداد ومعادلات، إجابات قصيرة ولا خدمة بخطّ اليد.",
+    "Choix multiple, nombres et équations, réponses courtes ou travail manuscrit.",
+  ],
+  "Know your class": ["اعرف قسمك", "Connaissez votre classe"],
+  "See who is enrolled and who struggled in the last session.": [
+    "شوف شكون مسجّل وشكون لقى صعوبة في الحصّة اللي فاتت.",
+    "Voyez qui est inscrit et qui a eu du mal lors de la dernière séance.",
+  ],
+  "Teach live and hear from every student.": ["قرّي مباشرة واسمع من كل تلميذ.", "Enseignez en direct et entendez chaque élève."],
+  "Video built in": ["الفيديو مدمج", "Vidéo intégrée"],
+  "Camera, microphone and screen sharing, without leaving Qarrini.": [
+    "كاميرا، مايك ومشاركة شاشة، من غير ما تخرج من قرّيني.",
+    "Caméra, micro et partage d’écran, sans quitter Qarrini.",
+  ],
+  "Ask at the right moment": ["اسأل في الوقت المناسب", "Questionnez au bon moment"],
+  "Send a prepared question in one click, or write a new one on the spot.": [
+    "ابعث سؤال محضّر بنقرة، ولا اكتب واحد جديد في بلاصتو.",
+    "Envoyez une question préparée en un clic, ou écrivez-en une sur le moment.",
+  ],
+  "See results instantly": ["شوف النتائج فوراً", "Résultats instantanés"],
+  "Right, wrong, percentages, and who made which mistake.": [
+    "صحيح، غالط، نسب، وشكون غلط وفاش.",
+    "Juste, faux, pourcentages, et qui a fait quelle erreur.",
+  ],
+  "Follow up with the students who need it.": ["تبّع التلامذة اللي يستحقّو.", "Suivez les élèves qui en ont besoin."],
+  "Mark written answers and send a personal explanation.": [
+    "صلّح الإجابات المكتوبة وابعث شرح شخصي.",
+    "Corrigez les réponses écrites et envoyez une explication personnelle.",
+  ],
+  "Everything is saved": ["الكل يتسجّل", "Tout est enregistré"],
+  "Each session's results stay available, with a CSV export.": [
+    "نتائج كل حصّة تبقى موجودة، مع تصدير CSV.",
+    "Les résultats de chaque séance restent disponibles, avec export CSV.",
+  ],
+  "Nobody is left behind": ["حتى حد ما يبقى لتالي", "Personne n’est laissé de côté"],
+  "A list of students to follow up, based on their answers.": [
+    "قائمة التلامذة اللي لازمهم متابعة، حسب إجاباتهم.",
+    "Une liste d’élèves à suivre, selon leurs réponses.",
+  ],
+  "Live results": ["النتائج المباشرة", "Résultats en direct"],
+  "Live results · example": ["نتائج مباشرة · مثال", "Résultats en direct · exemple"],
+  "Example of live results": ["مثال على النتائج المباشرة", "Exemple de résultats en direct"],
+  Wrong: ["غالط", "Faux"],
+  "{n} of 40 students answered": ["{n} من 40 تلميذ جاوبو", "{n} élèves sur 40 ont répondu"],
+  "Know who understood, before the lesson ends.": ["اعرف شكون فهم، قبل ما يكمل الدرس.", "Sachez qui a compris, avant la fin du cours."],
+  "As answers arrive, you see how many students are right or wrong, the percentage, and the name and answer of each student who made a mistake. Correct them privately or share an example anonymously.": [
+    "كيف ما توصل الإجابات، تشوف قدّاش من تلميذ صحيح ولا غالط، النسبة، واسم وإجابة كل تلميذ غلط. صلّحلهم بالخاص ولا شارك مثال من غير اسم.",
+    "Au fil des réponses, vous voyez combien d’élèves ont juste ou faux, le pourcentage, ainsi que le nom et la réponse de chaque élève qui s’est trompé. Corrigez en privé ou partagez un exemple anonyme.",
+  ],
+  "Create a teacher account": ["اعمل حساب أستاذ", "Créer un compte professeur"],
+  "Questions from teachers": ["أسئلة الأساتذة", "Questions des professeurs"],
+  "Do I need special equipment?": ["يلزمني معدّات خاصّة؟", "Ai-je besoin d’un équipement particulier ?"],
+  "A computer or tablet with a camera and microphone, and a stable connection. A phone works for students; teachers are more comfortable on a larger screen.": [
+    "حاسوب ولا تابلات فيها كاميرا ومايك، وكونيكسيون مستقرّة. التليفون يكفي للتلامذة، أما الأستاذ يرتاح أكثر بشاشة كبيرة.",
+    "Un ordinateur ou une tablette avec caméra et micro, et une connexion stable. Un téléphone suffit aux élèves ; les professeurs sont plus à l’aise sur un grand écran.",
+  ],
+  "Can I prepare questions before the lesson?": ["نجم نحضّر الأسئلة قبل الدرس؟", "Puis-je préparer les questions avant le cours ?"],
+  "Yes. Write them in your question bank and send each one with a single click during class. You can also write new questions live.": [
+    "إيه. اكتبهم في بنك الأسئلة متاعك وابعث كل واحد بنقرة في الحصّة. وتنجم زادة تكتب أسئلة جديدة مباشرة.",
+    "Oui. Rédigez-les dans votre banque de questions et envoyez-les en un clic pendant le cours. Vous pouvez aussi en écrire en direct.",
+  ],
+  "Which answer formats can students use?": ["شنوّة أنواع الإجابات اللي ينجمو يستعملوها التلامذة؟", "Quels formats de réponse les élèves peuvent-ils utiliser ?"],
+  "Multiple choice, numbers and equations, short answers, and written working or a photo of their paper. Written work waits for your review and is never counted as wrong automatically.": [
+    "اختيار من متعدّد، أعداد ومعادلات، إجابات قصيرة، وخدمة مكتوبة ولا تصويرة للورقة. الخدمة المكتوبة تستنّى مراجعتك وعمرها ما تتحسب غالطة وحدها.",
+    "Choix multiple, nombres et équations, réponses courtes, et travail rédigé ou photo de la copie. Le travail écrit attend votre correction et n’est jamais compté faux automatiquement.",
+  ],
+  "Who can see my materials?": ["شكون ينجم يشوف محتواي؟", "Qui peut voir mes supports ?"],
+  "Only students enrolled in your class. You can remove a file at any time.": [
+    "التلامذة المسجّلين في قسمك برك. وتنجم تنحّي أي ملف وقتلي تحب.",
+    "Seulement les élèves inscrits à votre cours. Vous pouvez retirer un fichier à tout moment.",
+  ],
+  "Do other students see who made a mistake?": ["التلامذة الآخرين يشوفو شكون غلط؟", "Les autres élèves voient-ils qui s’est trompé ?"],
+  "No. Only you see names next to answers. When you share an example with the class, it is anonymous.": [
+    "لا. إنت برك تشوف الأسماء بحذا الإجابات. وكي تشارك مثال مع القسم، يكون من غير اسم.",
+    "Non. Vous seul voyez les noms à côté des réponses. Un exemple partagé avec la classe est anonyme.",
+  ],
+  "Your journey on Qarrini": ["رحلتك على قرّيني", "Votre parcours sur Qarrini"],
+  "Choose your side to see each step.": ["اختار جهتك باش تشوف كل مرحلة.", "Choisissez votre profil pour voir chaque étape."],
+  "Choose your school year and subject, then compare teachers, timetables and class offers.": [
+    "اختار مستواك ومادتك، وبعد قارن بين الأساتذة، المواعيد وعروض الأقسام.",
+    "Choisissez votre niveau et votre matière, puis comparez professeurs, horaires et offres.",
+  ],
+  "See what the monthly subscription includes: live lessons, length, materials and practice.": [
+    "شوف شنوّة فيه الاشتراك الشهري: حصص مباشرة، مدّتها، محتوى وتمارين.",
+    "Voyez ce que comprend l’abonnement mensuel : séances en direct, durée, supports et exercices.",
+  ],
+  "Sign up with your phone": ["سجّل برقم هاتفك", "Inscrivez-vous avec votre téléphone"],
+  "Create your account with your phone number or email. A parent can follow along.": [
+    "اعمل حسابك برقم هاتفك ولا بريدك. والوليّ ينجم يتبّع.",
+    "Créez votre compte avec votre téléphone ou votre e-mail. Un parent peut suivre.",
+  ],
+  "Open your dashboard": ["حلّ فضاءك", "Ouvrez votre tableau de bord"],
+  "Your classes, next live lesson, materials and homework, all in one place.": [
+    "دروسك، الحصّة المباشرة الجاية، المحتوى والفروض، الكل في بلاصة وحدة.",
+    "Vos cours, la prochaine séance, les supports et les devoirs, au même endroit.",
+  ],
+  "Join and take part": ["ادخل وشارك", "Rejoindre et participer"],
+  "Watch your teacher, answer questions privately and get feedback during the lesson.": [
+    "تفرّج على أستاذك، جاوب على الأسئلة بالخاص وخوذ ملاحظات في وسط الدرس.",
+    "Suivez votre professeur, répondez en privé et recevez un retour pendant le cours.",
+  ],
+  "Review and progress": ["راجع وتقدّم", "Réviser et progresser"],
+  "Revisit notes, corrections and your answers after every lesson.": [
+    "ارجع للملخّصات، الإصلاحات وإجاباتك بعد كل درس.",
+    "Revoyez notes, corrections et réponses après chaque cours.",
+  ],
+  "Join as a verified teacher": ["انضمّ كأستاذ مؤكَّد", "Rejoindre comme professeur vérifié"],
+  "Share your experience and subjects. Qarrini reviews your profile before promoting it.": [
+    "شارك خبرتك وموادك. قرّيني تراجع ملفّك قبل ما تعرضو.",
+    "Présentez votre expérience et vos matières. Qarrini vérifie votre profil avant de le mettre en avant.",
+  ],
+  "Create your class offer": ["اعمل عرض القسم متاعك", "Créer votre offre de cours"],
+  "Set the level, subject, timetable and monthly price, and describe your approach.": [
+    "حدّد المستوى، المادة، المواعيد والسوم الشهري، واشرح طريقتك.",
+    "Fixez niveau, matière, horaires et prix mensuel, et décrivez votre approche.",
+  ],
+  "Prepare your lesson": ["حضّر درسك", "Préparer votre cours"],
+  "Upload materials and write the questions you want to ask during class.": [
+    "حمّل المحتوى واكتب الأسئلة اللي تحب تسألها في الحصّة.",
+    "Ajoutez vos supports et écrivez les questions à poser pendant le cours.",
+  ],
+  "Teach from inside Qarrini": ["قرّي من داخل قرّيني", "Enseigner depuis Qarrini"],
+  "Start the video lesson, share your screen and publish questions when you need them.": [
+    "ابدا الدرس بالفيديو، شارك شاشتك وابعث الأسئلة وقتلي يلزم.",
+    "Lancez le cours vidéo, partagez votre écran et publiez vos questions au bon moment.",
+  ],
+  "Review results and follow up": ["راجع النتائج وتبّع", "Analyser les résultats et assurer le suivi"],
+  "See who answered, who got it wrong and why, then send feedback and homework.": [
+    "شوف شكون جاوب، شكون غلط وعلاش، وبعد ابعث ملاحظات وفروض.",
+    "Voyez qui a répondu, qui s’est trompé et pourquoi, puis envoyez retours et devoirs.",
+  ],
 };

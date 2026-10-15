@@ -3,6 +3,8 @@ import { T } from "@/components/I18n";
 import Link from "@/components/LocalizedLink";
 import { PageIntro, primaryButton } from "@/components/SiteUi";
 import { LessonPreview } from "@/components/mockups/HomeVisuals";
+import { DisclosureList, LiveResultsPreview, TeacherJourney } from "@/components/marketing/Interactive";
+import { Reveal } from "@/components/ui/Motion";
 
 export async function generateMetadata({
   params,
@@ -45,6 +47,35 @@ export default function TeachersInfoPage() {
           <LessonPreview />
         </div>
       </section>
+      <TeacherJourney />
+      <section className="bg-gray-800 px-6 py-16 md:py-20">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2 md:gap-20">
+          <Reveal>
+            <p className="text-sm font-semibold tracking-wide text-brand uppercase">
+              <T>Live results</T>
+            </p>
+            <h2 className="home-heading font-display mt-3 text-3xl font-bold text-white">
+              <T>Know who understood, before the lesson ends.</T>
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-gray-300">
+              <T>
+                As answers arrive, you see how many students are right or wrong, the percentage, and
+                the name and answer of each student who made a mistake. Correct them privately or share
+                an example anonymously.
+              </T>
+            </p>
+            <Link
+              href="/register?role=teacher"
+              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-6 py-3 font-semibold text-gray-900 shadow-sm transition-colors hover:bg-gray-100"
+            >
+              <T>Create a teacher account</T>
+            </Link>
+          </Reveal>
+          <Reveal delay={150}>
+            <LiveResultsPreview />
+          </Reveal>
+        </div>
+      </section>
       <section className="bg-gray-50 px-6 py-16 md:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-3">
           {[
@@ -72,6 +103,31 @@ export default function TeachersInfoPage() {
           ))}
         </div>
       </section>
+      <DisclosureList
+        title="Questions from teachers"
+        items={[
+          [
+            "Do I need special equipment?",
+            "A computer or tablet with a camera and microphone, and a stable connection. A phone works for students; teachers are more comfortable on a larger screen.",
+          ],
+          [
+            "Can I prepare questions before the lesson?",
+            "Yes. Write them in your question bank and send each one with a single click during class. You can also write new questions live.",
+          ],
+          [
+            "Which answer formats can students use?",
+            "Multiple choice, numbers and equations, short answers, and written working or a photo of their paper. Written work waits for your review and is never counted as wrong automatically.",
+          ],
+          [
+            "Who can see my materials?",
+            "Only students enrolled in your class. You can remove a file at any time.",
+          ],
+          [
+            "Do other students see who made a mistake?",
+            "No. Only you see names next to answers. When you share an example with the class, it is anonymous.",
+          ],
+        ]}
+      />
       <section className="mx-auto max-w-3xl px-6 py-20 text-center">
         <h2 className="home-heading font-display text-3xl font-bold text-gray-900">
           <T>Help shape your next classroom.</T>

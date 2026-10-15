@@ -3,6 +3,7 @@ import { T } from "@/components/I18n";
 import Link from "@/components/LocalizedLink";
 import { PageIntro, primaryButton } from "@/components/SiteUi";
 import { HowItWorks } from "@/components/sections/HowItWorks";
+import { JourneyToggle } from "@/components/marketing/Interactive";
 
 export async function generateMetadata({
   params,
@@ -23,6 +24,7 @@ export default function HowPage() {
         </T>
       </PageIntro>
       <HowItWorks showIntro={false} />
+      <JourneyToggle />
       <section className="mx-auto max-w-6xl px-6 py-16 md:py-20">
         <div className="flex flex-col justify-between gap-8 rounded-xl bg-gray-50 p-8 md:flex-row md:items-center md:p-10">
           <div>

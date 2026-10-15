@@ -162,6 +162,14 @@ html[lang="ar"] .home-heading {
 .animate-rise {
   animation: rise-in 0.4s ease-out both;
 }
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
 
 .marquee:hover .animate-scroll-left {
   animation-play-state: paused;
