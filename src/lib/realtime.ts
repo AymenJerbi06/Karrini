@@ -1,5 +1,8 @@
 "use client";
 
+import type { RealtimeChannel } from "@supabase/supabase-js";
+import { supabase, supabaseConfigured } from "@/lib/supabase/client";
+
 // Realtime transport used by the live classroom for questions, answers and WebRTC signalling.
 //
 // The classroom only depends on the `RealtimeTransport` interface:
@@ -19,7 +22,7 @@ export type Envelope<T = unknown> = {
 };
 
 export interface RealtimeTransport {
-  readonly kind: "local" | "websocket";
+  readonly kind: "local" | "websocket" | "supabase";
   send(type: string, payload: unknown, to?: string): void;
   subscribe(handler: (message: Envelope) => void): () => void;
   close(): void;
@@ -95,33 +98,66 @@ class WebSocketTransport implements RealtimeTransport {
   }
 }
 
-export function createTransport(room: string, peerId: string, token?: string): RealtimeTransport {
-  const url = process.env.NEXT_PUBLIC_REALTIME_URL;
-  if (url) return new WebSocketTransport(url, room, peerId, token);
-  return new BroadcastChannelTransport(room, peerId);
-}
+/**
+ * Supabase Realtime broadcast on the private channel "class:<classId>".
+ * Database policies on realtime.messages allow only the class teacher and enrolled students
+ * to listen or send, so lesson traffic (questions, answers, WebRTC signalling) stays in the class.
+ */
+class SupabaseTransport implements RealtimeTransport {
+  readonly kind = "supabase" as const;
+  private channel: RealtimeChannel | null = null;
+  private ready = false;
+  private closed = false;
+  private queue: Envelope[] = [];
+  private handlers = new Set<(m: Envelope) => void>();
 
-/* ------------- Cross-tab "who is live" index (prototype only) ------------- */
+  constructor(private room: string, private peerId: string) {
+    void this.connect();
+  }
 
-const LIVE = "qarrini-live-index";
-export type LiveEntry = { classId: string; teacher: string; startedAt: number; heartbeat: number };
+  private async connect() {
+    const sb = supabase();
+    await sb.realtime.setAuth(); // use the signed-in user's token for the private channel
+    if (this.closed) return;
+    const channel = sb.channel(`class:${this.room}`, { config: { private: true, broadcast: { self: false } } });
+    channel.on("broadcast", { event: "msg" }, ({ payload }) => {
+      const message = payload as Envelope;
+      if (!message || message.from === this.peerId) return;
+      if (message.to && message.to !== this.peerId) return;
+      this.handlers.forEach((h) => h(message));
+    });
+    channel.subscribe((status) => {
+      if (status === "SUBSCRIBED") {
+        this.ready = true;
+        const pending = this.queue;
+        this.queue = [];
+        pending.forEach((m) => void channel.send({ type: "broadcast", event: "msg", payload: m }));
+      } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        this.ready = false;
+      }
+    });
+    this.channel = channel;
+  }
 
-export function readLive(): Record<string, LiveEntry> {
-  try {
-    const value = JSON.parse(window.localStorage.getItem(LIVE) ?? "{}");
-    const now = Date.now();
-    return Object.fromEntries(
-      Object.entries(value as Record<string, LiveEntry>).filter(([, e]) => now - e.heartbeat < 15_000),
-    );
-  } catch {
-    return {};
+  send(type: string, payload: unknown, to?: string) {
+    const message: Envelope = { room: this.room, from: this.peerId, to, type, payload, at: Date.now() };
+    if (this.ready && this.channel) void this.channel.send({ type: "broadcast", event: "msg", payload: message });
+    else this.queue.push(message);
+  }
+  subscribe(handler: (m: Envelope) => void) {
+    this.handlers.add(handler);
+    return () => this.handlers.delete(handler);
+  }
+  close() {
+    this.closed = true;
+    this.handlers.clear();
+    if (this.channel) void supabase().removeChannel(this.channel);
   }
 }
 
-export function markLive(entry: LiveEntry | null, classId: string) {
-  const all = readLive();
-  if (entry) all[classId] = entry;
-  else delete all[classId];
-  window.localStorage.setItem(LIVE, JSON.stringify(all));
-  window.dispatchEvent(new Event("qarrini-live-changed"));
+export function createTransport(room: string, peerId: string, token?: string): RealtimeTransport {
+  const url = process.env.NEXT_PUBLIC_REALTIME_URL;
+  if (url) return new WebSocketTransport(url, room, peerId, token);
+  if (supabaseConfigured) return new SupabaseTransport(room, peerId);
+  return new BroadcastChannelTransport(room, peerId);
 }

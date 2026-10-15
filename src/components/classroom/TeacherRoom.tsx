@@ -28,14 +28,19 @@ import {
   type StudentAnswerMsg,
   type StudentHello,
 } from "@/components/classroom/protocol";
-import { createTransport, markLive, type RealtimeTransport } from "@/lib/realtime";
+import { createTransport, type RealtimeTransport } from "@/lib/realtime";
 import { useClassroomCall } from "@/lib/useClassroomCall";
 import {
   correctAnswerText,
   exampleClassmates,
   grade,
   saveBank,
-  saveSession,
+  closeSessionQuestion,
+  endSession as endSessionRecord,
+  markAnswer,
+  openSession,
+  publishToSession,
+  recordAnswer,
   simulateAnswer,
   summarize,
   useQuestionBank,
@@ -89,7 +94,10 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
   // This room only renders in the browser (after sign-in is known), so storage is available here.
   const [session, setSession] = useState<SessionRecord | null>(() => restoreSession(classId));
   const [peers, setPeers] = useState<Record<string, Peer>>({});
-  const [examples, setExamples] = useState(true);
+  // Real classes default to real students only; example classmates are an opt-in demo.
+  const [examples, setExamples] = useState(false);
+  const [publishedBankIds, setPublishedBankIds] = useState<string[]>([]);
+  const peak = useRef(0);
   const [panel, setPanel] = useState<"prepared" | "new" | "students">("prepared");
   const [selected, setSelected] = useState<StudentAnswer | null>(null);
   const [comment, setComment] = useState("");
@@ -121,6 +129,9 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
 
   const current: AskedQuestion | undefined = session?.asked[session.asked.length - 1];
   const realPeers = Object.values(peers).filter((p) => now - p.lastSeen < 15_000);
+  useEffect(() => {
+    peak.current = Math.max(peak.current, realPeers.length);
+  }, [realPeers.length]);
   const connected = realPeers.length + (examples ? exampleClassmates.length : 0);
 
   const publicState = useCallback((): SessionState => {
@@ -155,13 +166,9 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
   useEffect(() => {
     if (!session || session.endedAt) return;
     broadcast();
-    markLive({ classId, teacher: teacherName, startedAt: session.startedAt, heartbeat: Date.now() }, classId);
-    const beat = setInterval(() => {
-      broadcast();
-      markLive({ classId, teacher: teacherName, startedAt: session.startedAt, heartbeat: Date.now() }, classId);
-    }, 5000);
+    const beat = setInterval(broadcast, 5000);
     return () => clearInterval(beat);
-  }, [session, broadcast, classId, teacherName]);
+  }, [session, broadcast]);
 
   const updateCurrent = useCallback((fn: (a: AskedQuestion) => AskedQuestion) => {
     setSession((s) => (s && s.asked.length ? { ...s, asked: [...s.asked.slice(0, -1), fn(s.asked[s.asked.length - 1])] } : s));
@@ -198,28 +205,26 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
       if (m.type === "answer") {
         const a = m.payload as StudentAnswerMsg;
         const q = sessionRef.current?.asked[sessionRef.current.asked.length - 1]?.question;
-        if (!q || q.id !== a.questionId) return;
-        addAnswer(
-          { studentId: m.from, name: a.name, text: a.text, choice: a.choice, photo: a.photo, status: grade(q, a), at: Date.now() },
-          a.questionId,
-        );
+        const current = sessionRef.current?.asked[sessionRef.current.asked.length - 1];
+        if (!q || !current || q.id !== a.questionId || current.closedAt) return;
+        if (current.answers.some((x) => x.studentId === m.from)) return;
+        const answer: StudentAnswer = { studentId: m.from, name: a.name, text: a.text, choice: a.choice, photo: a.photo, status: grade(q, a), at: Date.now() };
+        addAnswer(answer, a.questionId);
+        if (current.sessionQuestionId) void recordAnswer(current.sessionQuestionId, answer).catch(() => undefined);
         transport.send("answer-received", { questionId: a.questionId }, m.from);
       }
     });
   }, [transport, publicState, addAnswer, t]);
 
-  function startSession() {
-    const s: SessionRecord = {
-      id: `ses-${Date.now().toString(36)}`,
-      classId,
-      teacherId: account.id,
-      startedAt: Date.now(),
-      connected,
-      asked: [],
-    };
-    setSession(s);
-    setEnded(null);
-    void call.start();
+  async function startSession() {
+    try {
+      const { id, startedAt } = await openSession(classId, account.id);
+      setSession({ id, classId, teacherId: account.id, startedAt, connected, asked: [] });
+      setEnded(null);
+      void call.start();
+    } catch {
+      setToast(t("The session could not be started. Check your connection and try again."));
+    }
   }
 
   function scheduleExamples(q: Question) {
@@ -242,19 +247,29 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
     });
   }
 
-  function publish(q: Question) {
+  async function publish(q: Question) {
     if (!session) return;
     if (current && !current.closedAt) closeQuestion(true);
-    const asked: AskedQuestion = { question: q, publishedAt: Date.now(), answers: [] };
+    let published;
+    try {
+      published = await publishToSession(session.id, q, session.asked.length);
+    } catch {
+      setToast(t("The question could not be sent. Check your connection and try again."));
+      return;
+    }
+    const asked: AskedQuestion = { question: published.question, sessionQuestionId: published.sessionQuestionId, publishedAt: published.publishedAt, answers: [] };
     setSession((s) => (s ? { ...s, connected, asked: [...s.asked, asked] } : s));
+    setPublishedBankIds((ids) => (ids.includes(q.id) ? ids : [...ids, q.id]));
     setShared(undefined);
     setSelected(null);
-    scheduleExamples(q);
+    scheduleExamples(published.question);
     if (q.timeLimit) timers.current.push(window.setTimeout(() => closeQuestion(), q.timeLimit * 1000));
     setToast(t("Question sent to {n} students.", { n: connected }));
   }
 
   function closeQuestion(silent = false) {
+    const sq = sessionRef.current?.asked[sessionRef.current.asked.length - 1];
+    if (sq?.sessionQuestionId && !sq.closedAt) void closeSessionQuestion(sq.sessionQuestionId).catch(() => undefined);
     updateCurrent((a) => (a.closedAt ? a : { ...a, closedAt: Date.now() }));
     if (!silent) setToast(t("Answers are closed."));
   }
@@ -264,6 +279,7 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
     const q = s?.asked[s.asked.length - 1];
     if (!q || !transport) return;
     updateCurrent((a) => ({ ...a, released: true, closedAt: a.closedAt ?? Date.now() }));
+    if (q.sessionQuestionId) void closeSessionQuestion(q.sessionQuestionId, true).catch(() => undefined);
     q.answers
       .filter((a) => !a.simulated)
       .forEach((a) => transport.send("result", { questionId: q.question.id, status: a.status, feedback: a.feedback } satisfies ResultMsg, a.studentId));
@@ -277,8 +293,10 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
       ...a,
       answers: a.answers.map((x) => (x.studentId === selected.studentId ? { ...x, status, feedback } : x)),
     }));
-    if (!selected.simulated)
+    if (!selected.simulated) {
       transport?.send("result", { questionId: current.question.id, status, feedback } satisfies ResultMsg, selected.studentId);
+      if (current.sessionQuestionId) void markAnswer(current.sessionQuestionId, selected.studentId, status, feedback).catch(() => undefined);
+    }
     setToast(t("Feedback sent privately to {name}.", { name: selected.name }));
     setSelected(null);
     setComment("");
@@ -299,9 +317,8 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
     if (!session) return;
     timers.current.forEach(clearTimeout);
     const record = { ...session, connected, endedAt: Date.now() };
-    saveSession(record);
+    void endSessionRecord(session.id, Math.max(peak.current, realPeers.length)).catch(() => undefined);
     transport?.send("session-state", { live: false, teacherName } satisfies SessionState);
-    markLive(null, classId);
     window.localStorage.removeItem(LIVE_KEY(classId));
     call.stop();
     setSession(null);
@@ -313,7 +330,7 @@ export function TeacherRoom({ account, classId, subjectLabel }: { account: Accou
     if (session && !session.endedAt) broadcast();
   }, [current?.question.id, current?.closedAt, current?.released, shared, broadcast, session]);
 
-  const askedIds = new Set(session?.asked.map((a) => a.question.id));
+  const askedIds = new Set([...publishedBankIds, ...(session?.asked.map((a) => a.question.id) ?? [])]);
   const timeLeft = current?.question.timeLimit && !current.closedAt ? current.publishedAt + current.question.timeLimit * 1000 - now : null;
   const studentStreams = call.remotes;
 
@@ -734,13 +751,13 @@ export function TwoWindowTip({ compact }: { compact?: boolean }) {
       </p>
       <ol className={cn("mt-3 list-decimal space-y-1.5 ps-5 text-gray-300", compact ? "text-xs" : "text-sm")}>
         <li>
-          <T>Open a new window of this site (or a private window).</T>
+          <T>Share your class link (Overview → Invite your students).</T>
         </li>
         <li>
-          <T>Sign in as a student (the Student demo works) and open the live class.</T>
+          <T>Students sign in on their own phone or computer and open the live class.</T>
         </li>
         <li>
-          <T>Answers, raised hands and video then flow between the two windows.</T>
+          <T>Testing alone? Use a private window with a second account (a different email).</T>
         </li>
       </ol>
     </div>

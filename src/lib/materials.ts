@@ -1,9 +1,11 @@
 "use client";
 
-// Teacher materials stored in IndexedDB so real files (PDF, images, documents) survive reloads
-// and can be opened by enrolled students in another tab. Production: object storage + signed URLs.
+// Teacher materials: files in the private Supabase Storage bucket "materials" (path <classId>/<uuid>-<name>)
+// plus a row in public.materials. Row Level Security limits upload/delete to the class teacher and
+// reading to the teacher and enrolled students. Files are opened through short-lived signed URLs.
 
-import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { announceChange, useRemote } from "@/lib/remote";
 
 export type Material = {
   id: string;
@@ -12,110 +14,120 @@ export type Material = {
   note: string;
   kind: "notes" | "exercises" | "homework" | "correction" | "other";
   fileName: string;
+  filePath: string;
   mime: string;
   size: number;
   uploadedAt: number;
-  blob: Blob;
 };
 
-const DB = "qarrini";
-const STORE = "materials";
-const CHANNEL = "qarrini-materials";
 export const MAX_FILE_MB = 20;
 export const ACCEPTED =
   ".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.png,.jpg,.jpeg,.webp,application/pdf,image/*";
 
-function open(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB, 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        const store = db.createObjectStore(STORE, { keyPath: "id" });
-        store.createIndex("classId", "classId");
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
+type Row = {
+  id: string;
+  class_id: string;
+  title: string;
+  note: string;
+  kind: Material["kind"];
+  file_name: string;
+  file_path: string;
+  mime: string;
+  size_bytes: number;
+  created_at: string;
+};
 
-async function run<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest<T>) {
-  const db = await open();
-  return new Promise<T>((resolve, reject) => {
-    const tx = db.transaction(STORE, mode);
-    const req = fn(tx.objectStore(STORE));
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  }).finally(() => db.close());
-}
+const toMaterial = (r: Row): Material => ({
+  id: r.id,
+  classId: r.class_id,
+  title: r.title,
+  note: r.note,
+  kind: r.kind,
+  fileName: r.file_name,
+  filePath: r.file_path,
+  mime: r.mime,
+  size: r.size_bytes,
+  uploadedAt: new Date(r.created_at).getTime(),
+});
 
-function announce() {
-  try {
-    const c = new BroadcastChannel(CHANNEL);
-    c.postMessage("changed");
-    c.close();
-  } catch {
-    /* Older browsers: the current tab still refreshes below. */
-  }
-  window.dispatchEvent(new Event(CHANNEL));
-}
-
-export async function addMaterial(m: Omit<Material, "id" | "uploadedAt">) {
-  const record: Material = {
-    ...m,
-    id: `mat-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-    uploadedAt: Date.now(),
-  };
-  await run("readwrite", (s) => s.put(record));
-  announce();
-  return record;
-}
-
-export async function deleteMaterial(id: string) {
-  await run("readwrite", (s) => s.delete(id));
-  announce();
-}
-
-export async function listMaterials(classIds: string[]): Promise<Material[]> {
-  const all = await run<Material[]>("readonly", (s) => s.getAll());
-  return all
-    .filter((m) => classIds.includes(m.classId))
-    .sort((a, b) => b.uploadedAt - a.uploadedAt);
-}
-
-/** Live list of materials for the given classes; refreshes when any tab uploads or deletes. */
 export function useMaterials(classIds: string[]) {
   const key = classIds.join(",");
-  const [state, setState] = useState<{ key: string; items: Material[]; loading: boolean; error: boolean }>({
-    key,
-    items: [],
-    loading: true,
-    error: false,
+  const { data, loading, error, reload } = useRemote(
+    key ? `materials:${key}` : null,
+    async () => {
+      const { data, error } = await supabase()
+        .from("materials")
+        .select("*")
+        .in("class_id", classIds)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data as Row[]).map(toMaterial);
+    },
+    [] as Material[],
+    "materials",
+  );
+  return { items: key ? data : [], loading: key ? loading : false, error, reload };
+}
+
+const safeName = (name: string) =>
+  name
+    .normalize("NFKD")
+    .replace(/[^\w.\-]+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(-80) || "file";
+
+export async function addMaterial(input: {
+  classId: string;
+  title: string;
+  note: string;
+  kind: Material["kind"];
+  file: File;
+  uploadedBy: string;
+}) {
+  const sb = supabase();
+  const path = `${input.classId}/${crypto.randomUUID()}-${safeName(input.file.name)}`;
+  const upload = await sb.storage.from("materials").upload(path, input.file, {
+    contentType: input.file.type || "application/octet-stream",
+    upsert: false,
   });
-  useEffect(() => {
-    let alive = true;
-    const ids = key ? key.split(",") : [];
-    const load = () =>
-      listMaterials(ids)
-        .then((items) => alive && setState({ key, items, loading: false, error: false }))
-        .catch(() => alive && setState({ key, items: [], loading: false, error: true }));
-    load();
-    let channel: BroadcastChannel | null = null;
-    try {
-      channel = new BroadcastChannel(CHANNEL);
-      channel.onmessage = load;
-    } catch {
-      channel = null;
-    }
-    window.addEventListener(CHANNEL, load);
-    return () => {
-      alive = false;
-      channel?.close();
-      window.removeEventListener(CHANNEL, load);
-    };
-  }, [key]);
-  return state.key === key ? state : { key, items: [], loading: true, error: false };
+  if (upload.error) throw upload.error;
+  const { error } = await sb.from("materials").insert({
+    class_id: input.classId,
+    title: input.title,
+    note: input.note,
+    kind: input.kind,
+    file_path: path,
+    file_name: input.file.name,
+    mime: input.file.type || "application/octet-stream",
+    size_bytes: input.file.size,
+    uploaded_by: input.uploadedBy,
+  });
+  if (error) {
+    await sb.storage.from("materials").remove([path]); // don't leave an orphan file
+    throw error;
+  }
+  announceChange("materials");
+}
+
+export async function deleteMaterial(m: Material) {
+  const sb = supabase();
+  const { error } = await sb.from("materials").delete().eq("id", m.id);
+  if (error) throw error;
+  await sb.storage.from("materials").remove([m.filePath]);
+  announceChange("materials");
+}
+
+/** Opens (or downloads) a material through a signed URL valid for 60 seconds. */
+export async function openMaterial(m: Material, download = false) {
+  const { data, error } = await supabase()
+    .storage.from("materials")
+    .createSignedUrl(m.filePath, 60, download ? { download: m.fileName } : undefined);
+  if (error || !data) throw error ?? new Error("no-url");
+  const a = document.createElement("a");
+  a.href = data.signedUrl;
+  if (!download) a.target = "_blank";
+  a.rel = "noopener";
+  a.click();
 }
 
 export function formatSize(bytes: number) {

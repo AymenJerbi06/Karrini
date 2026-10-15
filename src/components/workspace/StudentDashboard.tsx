@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
 import { panelClass, primaryButton, secondaryButton } from "@/components/SiteUi";
@@ -9,29 +9,12 @@ import { CountUp, Reveal } from "@/components/ui/Motion";
 import { RequireRole } from "@/components/workspace/Guard";
 import { statusLabel, statusTone } from "@/components/classroom/ResultsPanel";
 import { kindLabels } from "@/components/workspace/TeacherMaterials";
-import { displayName, formatPhone, signOut, useAccounts, type Account } from "@/lib/auth";
-import { fileBadge, formatSize, useMaterials, type Material } from "@/lib/materials";
-import { useHistory } from "@/lib/questions";
-import { readLive, type LiveEntry } from "@/lib/realtime";
-import { initials, labelFor, subjects, teachers, type Teacher } from "@/data/catalog";
+import { displayName, formatPhone, signOut, type Account } from "@/lib/auth";
+import { useClasses, useLiveSessions, type ClassInfo } from "@/lib/classes";
+import { fileBadge, formatSize, openMaterial, useMaterials, type Material } from "@/lib/materials";
+import { useMyAnswers } from "@/lib/questions";
+import { labelFor, subjects } from "@/data/catalog";
 import { cn } from "@/lib/cn";
-
-function useLiveClasses() {
-  const [live, setLive] = useState<Record<string, LiveEntry>>({});
-  useEffect(() => {
-    const read = () => setLive(readLive());
-    read();
-    const id = setInterval(read, 4000);
-    window.addEventListener("storage", read);
-    window.addEventListener("qarrini-live-changed", read);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener("storage", read);
-      window.removeEventListener("qarrini-live-changed", read);
-    };
-  }, []);
-  return live;
-}
 
 export function StudentDashboard() {
   return (
@@ -58,10 +41,17 @@ function Header({ account, title, intro }: { account: Account; title: string; in
         <p className="font-semibold text-gray-800">
           <bdi dir="auto">{displayName(account)}</bdi>
         </p>
-        <p className="mt-0.5 text-gray-500">
-          <bdi dir="ltr">{formatPhone(account.phone)}</bdi> {account.phoneVerified && <span className="text-emerald-600">✓</span>}
-        </p>
-        <button type="button" onClick={signOut} className="mt-1 min-h-9 text-xs text-gray-500 underline">
+        {account.email && (
+          <p className="mt-0.5 text-gray-500">
+            <bdi dir="ltr">{account.email}</bdi>
+          </p>
+        )}
+        {account.phone && (
+          <p className="mt-0.5 text-gray-500">
+            <bdi dir="ltr">{formatPhone(account.phone)}</bdi>
+          </p>
+        )}
+        <button type="button" onClick={() => void signOut()} className="mt-1 min-h-9 text-xs text-gray-500 underline">
           <T>Sign out</T>
         </button>
       </div>
@@ -69,24 +59,21 @@ function Header({ account, title, intro }: { account: Account; title: string; in
   );
 }
 
+const teacherLabel = (c: ClassInfo, t: (s: string) => string) => (c.profile ? t(c.teacherName) : c.teacherName);
+
 function StudentView({ account }: { account: Account }) {
   const { t, locale } = useI18n();
-  const classes = teachers.filter((x) => account.student?.enrollments.includes(x.id));
-  const live = useLiveClasses();
+  const ids = account.student?.enrollments ?? [];
+  const { data: classes, loading: classesLoading } = useClasses(ids);
+  const live = useLiveSessions(ids);
   const liveClass = classes.find((c) => live[c.id]);
-  const materials = useMaterials(classes.map((c) => c.id));
-  const history = useHistory();
-  const myAnswers = history
-    .flatMap((s) =>
-      s.asked.flatMap((a) =>
-        a.answers.filter((x) => x.studentId === account.id).map((x) => ({ ...x, prompt: a.question.prompt, classId: s.classId, at: x.at })),
-      ),
-    )
-    .sort((a, b) => b.at - a.at);
-  const right = myAnswers.filter((a) => a.status === "correct").length;
-  const wrong = myAnswers.filter((a) => a.status === "incorrect").length;
+  const materials = useMaterials(ids);
+  const { answers: myAnswers } = useMyAnswers(account.id);
+  const released = myAnswers.filter((a) => a.released);
+  const right = released.filter((a) => a.status === "correct").length;
+  const wrong = released.filter((a) => a.status === "incorrect").length;
   const [tab, setTab] = useState<"materials" | "results">("materials");
-  const next = classes[0];
+  const next = classes.find((c) => c.timetable.length) ?? classes[0];
 
   return (
     <div className="bg-gray-50">
@@ -108,11 +95,14 @@ function StudentView({ account }: { account: Account }) {
                     <T>{labelFor(subjects, liveClass.subject)}</T>
                   </h2>
                   <p className="mt-1 text-sm text-gray-300">
-                    <T>{liveClass.name}</T> <T>has started the lesson.</T>
+                    <bdi dir="auto">{teacherLabel(liveClass, t)}</bdi> <T>has started the lesson.</T>
                   </p>
                 </div>
               </div>
-              <Link href={`/classroom?class=${liveClass.id}`} className="inline-flex min-h-12 items-center justify-center rounded-md bg-white px-6 font-semibold text-gray-900 transition-transform hover:scale-[1.03]">
+              <Link
+                href={`/classroom?class=${liveClass.id}`}
+                className="inline-flex min-h-12 items-center justify-center rounded-md bg-white px-6 font-semibold text-gray-900 transition-transform hover:scale-[1.03]"
+              >
                 <T>Join the live class</T>
               </Link>
             </section>
@@ -121,26 +111,34 @@ function StudentView({ account }: { account: Account }) {
           <section className="mt-8 flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white p-6 md:flex-row md:items-center md:p-8">
             <div>
               <p className="text-sm font-medium text-brand">
-                <T>Next scheduled lesson</T>
+                <T>{next.timetable.length ? "Next scheduled lesson" : "Your class"}</T>
               </p>
               <h2 className="font-display mt-2 text-2xl font-bold text-gray-900">
                 <T>{labelFor(subjects, next.subject)}</T>
               </h2>
-              <p className="mt-2 text-sm text-gray-500">
-                <T>{next.timetable[0].day}</T> · <bdi dir="ltr">{next.timetable[0].time}</bdi> · <T>Sfax time</T>
-              </p>
+              {next.timetable[0] ? (
+                <p className="mt-2 text-sm text-gray-500">
+                  <T>{next.timetable[0].day}</T> · <bdi dir="ltr">{next.timetable[0].time}</bdi> · <T>Sfax time</T>
+                </p>
+              ) : (
+                <p className="mt-2 text-sm text-gray-500">
+                  <T>The classroom opens here as soon as your teacher goes live.</T>
+                </p>
+              )}
             </div>
             <Link href={`/classroom?class=${next.id}`} className={primaryButton}>
               <T>Open the classroom</T>
             </Link>
           </section>
+        ) : classesLoading && ids.length ? (
+          <div className="mt-8 h-32 animate-pulse rounded-2xl bg-gray-100" aria-busy="true" />
         ) : (
           <section className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center">
             <h2 className="font-display text-xl font-bold text-gray-800">
               <T>You haven&apos;t joined a class yet.</T>
             </h2>
             <p className="mt-2 text-gray-500">
-              <T>Find a teacher and add their class to start attending live lessons.</T>
+              <T>Open the class link your teacher sent you, or find a teacher to join their class.</T>
             </p>
             <Link href="/find-a-teacher" className={`${primaryButton} mt-6`}>
               <T>Find a Teacher</T>
@@ -193,14 +191,19 @@ function StudentView({ account }: { account: Account }) {
                   <MaterialList items={materials.items} loading={materials.loading} classes={classes} locale={locale} />
                 ) : myAnswers.length ? (
                   <ul className="divide-y divide-gray-100">
-                    {myAnswers.slice(0, 12).map((a, i) => (
+                    {myAnswers.slice(0, 15).map((a, i) => (
                       <li key={i} className="py-4">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <p dir="auto" className="min-w-0 font-semibold break-words text-gray-800">
                             {a.prompt}
                           </p>
-                          <span className={cn("shrink-0 rounded px-2 py-1 text-xs font-semibold", statusTone[a.status])}>
-                            <T>{statusLabel[a.status]}</T>
+                          <span
+                            className={cn(
+                              "shrink-0 rounded px-2 py-1 text-xs font-semibold",
+                              a.released ? statusTone[a.status] : "bg-gray-100 text-gray-600",
+                            )}
+                          >
+                            <T>{a.released ? statusLabel[a.status] : "Waiting for your teacher"}</T>
                           </span>
                         </div>
                         <p dir="auto" className="mt-1 text-sm text-gray-600">
@@ -277,18 +280,25 @@ function StudentView({ account }: { account: Account }) {
   );
 }
 
-function ClassRow({ c, live }: { c: Teacher; live: boolean }) {
+function ClassRow({ c, live }: { c: ClassInfo; live: boolean }) {
+  const { t } = useI18n();
   return (
     <li className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 p-4">
       <span className={`${c.color} flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white`}>
-        <T>{initials(c.name)}</T>
+        {c.teacherName.replace(/^(Mr\.|Ms\.)\s*/, "").split(" ").map((w) => w[0]).join("").slice(0, 2)}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-semibold text-gray-800">
           <T>{labelFor(subjects, c.subject)}</T>
         </span>
         <span className="mt-1 block text-sm text-gray-500">
-          <T>{c.name}</T> · <T>{c.timetable.map((s) => s.day).join(" · ")}</T>
+          <bdi dir="auto">{teacherLabel(c, t)}</bdi>
+          {c.timetable.length > 0 && (
+            <>
+              {" · "}
+              <T>{c.timetable.map((s) => s.day).join(" · ")}</T>
+            </>
+          )}
         </span>
       </span>
       {live ? (
@@ -296,9 +306,13 @@ function ClassRow({ c, live }: { c: Teacher; live: boolean }) {
           <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
           <T>Join live</T>
         </Link>
-      ) : (
+      ) : c.profile ? (
         <Link href={`/teachers/${c.id}`} className="text-sm font-semibold text-brand hover:underline">
           <T>View class offer</T>
+        </Link>
+      ) : (
+        <Link href={`/classroom?class=${c.id}`} className="text-sm font-semibold text-brand hover:underline">
+          <T>Open the classroom</T>
         </Link>
       )}
     </li>
@@ -313,9 +327,11 @@ function MaterialList({
 }: {
   items: Material[];
   loading: boolean;
-  classes: Teacher[];
+  classes: ClassInfo[];
   locale: string;
 }) {
+  const { t } = useI18n();
+  const [error, setError] = useState("");
   if (loading) return <div className="h-20 animate-pulse rounded-xl bg-gray-100" />;
   if (!items.length)
     return (
@@ -323,115 +339,76 @@ function MaterialList({
         <T>When your teachers upload notes, exercises or corrections, they appear here.</T>
       </p>
     );
-  const open = (m: Material, download: boolean) => {
-    const url = URL.createObjectURL(m.blob);
-    const a = document.createElement("a");
-    a.href = url;
-    if (download) a.download = m.fileName;
-    else a.target = "_blank";
-    a.rel = "noopener";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  const open = async (m: Material, download: boolean) => {
+    setError("");
+    try {
+      await openMaterial(m, download);
+    } catch {
+      setError(t("This file could not be opened. Try again in a moment."));
+    }
   };
   return (
-    <ul className="space-y-3">
-      {items.map((m) => {
-        const cls = classes.find((c) => c.id === m.classId);
-        return (
-          <li key={m.id} className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 p-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-800 text-xs font-bold text-white">{fileBadge(m.mime, m.fileName)}</span>
-            <div className="min-w-0 flex-1">
-              <p dir="auto" className="font-semibold break-words text-gray-800">
-                {m.title}
-              </p>
-              <p className="mt-0.5 text-xs text-gray-500">
-                {cls && (
-                  <>
-                    <T>{labelFor(subjects, cls.subject)}</T> ·{" "}
-                  </>
-                )}
-                <T>{kindLabels[m.kind]}</T> · <span dir="ltr">{formatSize(m.size)}</span> ·{" "}
-                {new Date(m.uploadedAt).toLocaleDateString(locale === "ar" ? "ar-TN" : "fr-TN", { day: "numeric", month: "short" })}
-              </p>
-              {m.note && (
-                <p dir="auto" className="mt-1 text-sm text-gray-600">
-                  {m.note}
+    <>
+      {error && (
+        <p role="alert" className="mb-3 text-sm text-red-700">
+          {error}
+        </p>
+      )}
+      <ul className="space-y-3">
+        {items.map((m) => {
+          const cls = classes.find((c) => c.id === m.classId);
+          return (
+            <li key={m.id} className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 p-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-800 text-xs font-bold text-white">
+                {fileBadge(m.mime, m.fileName)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p dir="auto" className="font-semibold break-words text-gray-800">
+                  {m.title}
                 </p>
-              )}
-            </div>
-            <button type="button" onClick={() => open(m, false)} className="min-h-11 rounded-md px-3 text-sm font-semibold text-brand hover:bg-emerald-50">
-              <T>Open</T>
-            </button>
-            <button type="button" onClick={() => open(m, true)} className={`${secondaryButton} min-h-11 px-3 py-0 text-sm`}>
-              <DownloadIcon className="h-4 w-4" />
-              <T>Download</T>
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+                <p className="mt-0.5 text-xs text-gray-500">
+                  {cls && (
+                    <>
+                      <T>{labelFor(subjects, cls.subject)}</T> ·{" "}
+                    </>
+                  )}
+                  <T>{kindLabels[m.kind]}</T> · <span dir="ltr">{formatSize(m.size)}</span> ·{" "}
+                  {new Date(m.uploadedAt).toLocaleDateString(locale === "ar" ? "ar-TN" : "fr-TN", { day: "numeric", month: "short" })}
+                </p>
+                {m.note && (
+                  <p dir="auto" className="mt-1 text-sm text-gray-600">
+                    {m.note}
+                  </p>
+                )}
+              </div>
+              <button type="button" onClick={() => void open(m, false)} className="min-h-11 rounded-md px-3 text-sm font-semibold text-brand hover:bg-emerald-50">
+                <T>Open</T>
+              </button>
+              <button type="button" onClick={() => void open(m, true)} className={`${secondaryButton} min-h-11 px-3 py-0 text-sm`}>
+                <DownloadIcon className="h-4 w-4" />
+                <T>Download</T>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
 
 function ParentView({ account }: { account: Account }) {
-  const { t } = useI18n();
-  const accounts = useAccounts();
-  const child = accounts.find((a) => a.role === "student" && a.phone === account.parent?.childPhone);
-  const classes = teachers.filter((x) => child?.student?.enrollments.includes(x.id));
-  const history = useHistory();
-  const answers = child ? history.flatMap((s) => s.asked.flatMap((a) => a.answers.filter((x) => x.studentId === child.id))) : [];
-  const right = answers.filter((a) => a.status === "correct").length;
-  const graded = answers.filter((a) => a.status !== "review").length;
-
   return (
     <div className="bg-gray-50">
       <div className="mx-auto max-w-6xl px-6 py-10 md:py-14">
         <Header account={account} title="A clear view of their learning." intro="Follow class schedules, subscriptions and shared progress." />
-        {!child ? (
-          <section className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center">
-            <h2 className="font-display text-xl font-bold text-gray-800">
-              <T>No student account linked yet.</T>
-            </h2>
-            <p className="mt-2 text-gray-500">
-              <T>When your child signs up with the phone number you gave, their classes and progress appear here.</T>
-            </p>
-          </section>
-        ) : (
-          <div className="mt-8 grid items-start gap-7 lg:grid-cols-[1fr_320px]">
-            <section className={panelClass}>
-              <h2 className="font-display text-xl font-bold text-gray-800">{t("{name}'s classes", { name: child.firstName })}</h2>
-              <ul className="mt-5 space-y-3">
-                {classes.map((c) => (
-                  <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 p-4">
-                    <span>
-                      <span className="block font-semibold text-gray-800">
-                        <T>{labelFor(subjects, c.subject)}</T>
-                      </span>
-                      <span className="mt-1 block text-sm text-gray-500">
-                        <T>{c.name}</T>
-                      </span>
-                    </span>
-                    <span className="text-sm font-semibold text-gray-800">
-                      <T>{c.price}</T> <T>DT / month</T>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5 rounded-lg bg-gray-50 p-4 text-sm text-gray-500">
-                <T>No real subscription or recurring payment was started. Payment methods and policies will be confirmed before launch.</T>
-              </p>
-            </section>
-            <aside className={panelClass}>
-              <h2 className="font-display text-lg font-bold text-gray-900">
-                <T>Progress summary</T>
-              </h2>
-              <p className="font-display mt-4 text-4xl font-extrabold text-brand">
-                <CountUp value={graded ? Math.round((right / graded) * 100) : 0} suffix="%" />
-              </p>
-              <p className="mt-1 text-sm text-gray-500">{t("correct across {n} graded answers", { n: graded })}</p>
-            </aside>
-          </div>
-        )}
+        <section className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center">
+          <h2 className="font-display text-xl font-bold text-gray-800">
+            <T>No student account linked yet.</T>
+          </h2>
+          <p className="mt-2 text-gray-500">
+            <T>Linking your account to your child&apos;s account will be available soon.</T>
+          </p>
+        </section>
       </div>
     </div>
   );

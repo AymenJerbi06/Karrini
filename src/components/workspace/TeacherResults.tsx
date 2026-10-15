@@ -9,7 +9,7 @@ import { QuestionSummary } from "@/components/classroom/QuestionEditor";
 import { primaryButton, secondaryButton } from "@/components/SiteUi";
 import { DownloadIcon } from "@/components/icons";
 import { Reveal } from "@/components/ui/Motion";
-import { summarize, useHistory, type SessionRecord } from "@/lib/questions";
+import { summarize, useClassHistory, type SessionRecord } from "@/lib/questions";
 import { cn } from "@/lib/cn";
 
 export function TeacherResults() {
@@ -25,9 +25,19 @@ export function TeacherResults() {
 
 function Results({ classId }: { classId: string }) {
   const { t, locale } = useI18n();
-  const sessions = useHistory().filter((s) => s.classId === classId);
-  const [open, setOpen] = useState<string | null>(sessions[0]?.id ?? null);
+  const { sessions, loading } = useClassHistory(classId);
+  // undefined = nothing chosen yet (show the latest session); null = all collapsed.
+  const [open, setOpen] = useState<string | null | undefined>(undefined);
   const [questionIndex, setQuestionIndex] = useState(0);
+
+  if (loading)
+    return (
+      <div className="space-y-4" aria-busy="true">
+        {[0, 1].map((i) => (
+          <div key={i} className="h-24 animate-pulse rounded-xl bg-gray-100" />
+        ))}
+      </div>
+    );
 
   if (!sessions.length)
     return (
@@ -64,7 +74,7 @@ function Results({ classId }: { classId: string }) {
     <div className="grid items-start gap-8 lg:grid-cols-[1fr_320px]">
       <div className="space-y-4">
         {sessions.map((s: SessionRecord) => {
-          const isOpen = open === s.id;
+          const isOpen = (open === undefined ? sessions[0]?.id : open) === s.id;
           const totals = s.asked.reduce(
             (acc, a) => {
               const x = summarize(a, s.connected);

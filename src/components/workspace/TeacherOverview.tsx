@@ -6,9 +6,11 @@ import { CountUp, Reveal } from "@/components/ui/Motion";
 import { ChatBubbleIcon, ClockIcon, TrendIcon, UploadIcon, UsersIcon } from "@/components/icons";
 import { TeacherShell } from "@/components/workspace/TeacherShell";
 import { primaryButton, secondaryButton } from "@/components/SiteUi";
-import { displayName, formatPhone, useAccounts } from "@/lib/auth";
+import { displayName, formatPhone } from "@/lib/auth";
+import { useRoster } from "@/lib/classes";
+import { InviteCard } from "@/components/workspace/InviteCard";
 import { useMaterials } from "@/lib/materials";
-import { summarize, useHistory, useQuestionBank } from "@/lib/questions";
+import { summarize, useClassHistory, useQuestionBank } from "@/lib/questions";
 
 export function TeacherOverview() {
   return (
@@ -33,11 +35,10 @@ function Overview({
   baseline: number;
 }) {
   const { t } = useI18n();
-  const accounts = useAccounts();
-  const roster = accounts.filter((a) => a.role === "student" && a.student?.enrollments.includes(classId));
+  const { data: roster } = useRoster(classId);
   const materials = useMaterials([classId]);
   const bank = useQuestionBank(classId);
-  const history = useHistory().filter((s) => s.classId === classId);
+  const { sessions: history } = useClassHistory(classId);
   const last = history[0];
   const lastStats = last?.asked.length
     ? last.asked.reduce(
@@ -176,12 +177,14 @@ function Overview({
         </Reveal>
       </div>
 
+      <InviteCard classId={classId} />
+
       <Reveal as="section" className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div id="roster" className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-xl font-bold text-gray-800">
             <T>Students with an account in your class</T>
           </h2>
-          <span className="text-sm text-gray-500">{t("{n} registered on this device", { n: roster.length })}</span>
+          <span className="text-sm text-gray-500">{t("{n} students joined", { n: roster.length })}</span>
         </div>
         {roster.length ? (
           <ul className="mt-5 divide-y divide-gray-100">
@@ -198,7 +201,7 @@ function Overview({
           </ul>
         ) : (
           <div className="mt-5 rounded-lg bg-gray-50 p-5 text-sm leading-6 text-gray-500">
-            <T>No student accounts yet. Sign up as a student in another window and enroll in your class to see them here.</T>
+            <T>No students yet. Share your class link below so your students can join.</T>
           </div>
         )}
         {baseline > 0 && (

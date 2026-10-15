@@ -10,14 +10,14 @@ import { teacherClass } from "@/components/workspace/Guard";
 import { TeacherRoom, TwoWindowTip } from "@/components/classroom/TeacherRoom";
 import { StudentRoom } from "@/components/classroom/StudentRoom";
 import { LiveClassMockup } from "@/components/mockups/LiveClassMockup";
-import { findAccount, startSession, useAuth } from "@/lib/auth";
-import { labelFor, subjects, teachers } from "@/data/catalog";
+import { useAuth, type Account } from "@/lib/auth";
+import { useClasses } from "@/lib/classes";
+import { labelFor, subjects } from "@/data/catalog";
 import { cn } from "@/lib/cn";
 
 export function LiveClassroom() {
   const { ready, account } = useAuth();
   const params = useSearchParams();
-  const { t } = useI18n();
 
   if (!ready)
     return (
@@ -30,6 +30,15 @@ export function LiveClassroom() {
 
   if (account.role === "teacher") {
     const cls = teacherClass(account);
+    if (!cls.id)
+      return (
+        <Message
+          title="Your class is being set up."
+          body="Refresh this page in a moment. If it keeps happening, sign out and sign in again."
+          href="/teach"
+          cta="Go to my teacher workspace"
+        />
+      );
     return (
       <div className="min-h-[70vh] bg-gray-50">
         <TeacherRoom account={account} classId={cls.id} subjectLabel={cls.subjectLabel} />
@@ -47,18 +56,30 @@ export function LiveClassroom() {
       />
     );
 
-  const enrolled = teachers.filter((x) => account.student?.enrollments.includes(x.id));
+  return <StudentEntry account={account} classParam={params.get("class")} />;
+}
+
+function StudentEntry({ account, classParam }: { account: Account; classParam: string | null }) {
+  const { t } = useI18n();
+  const ids = account.student?.enrollments ?? [];
+  const { data: enrolled, loading } = useClasses(ids);
+  if (loading && ids.length)
+    return (
+      <div className="mx-auto max-w-6xl px-6 py-16" aria-busy="true">
+        <div className="aspect-video animate-pulse rounded-2xl bg-gray-100" />
+      </div>
+    );
   if (!enrolled.length)
     return (
       <Message
         title="Join a class to attend live lessons."
-        body="Choose a teacher and add their class to your account. Their live lessons then open here."
+        body="Open the class link your teacher sent you, or choose a teacher and add their class. Their live lessons then open here."
         href="/find-a-teacher"
         cta="Find a Teacher"
       />
     );
 
-  const chosen = enrolled.find((x) => x.id === params.get("class")) ?? enrolled[0];
+  const chosen = enrolled.find((x) => x.id === classParam) ?? enrolled[0];
   return (
     <div className="min-h-[70vh] bg-gray-50">
       {enrolled.length > 1 && (
@@ -86,7 +107,7 @@ export function LiveClassroom() {
         account={account}
         classId={chosen.id}
         classTitle={t(labelFor(subjects, chosen.subject))}
-        teacherLabel={t(chosen.name)}
+        teacherLabel={chosen.profile ? t(chosen.teacherName) : chosen.teacherName}
       />
     </div>
   );
@@ -111,10 +132,6 @@ function Message({ title, body, href, cta }: { title: string; body: string; href
 }
 
 function Landing() {
-  const open = (phone: string) => {
-    const account = findAccount(phone);
-    if (account) startSession(account.id, false);
-  };
   return (
     <>
       <section className="bg-white px-6 pt-12 pb-14 md:pt-16">
@@ -130,18 +147,15 @@ function Landing() {
               <T>Live video, questions prepared before class or written on the spot, and results that show exactly who needs help.</T>
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={() => open("+21620000001")} className={primaryButton}>
-                <T>Enter as the teacher</T>
-              </button>
-              <button type="button" onClick={() => open("+21650000002")} className={secondaryButton}>
-                <T>Enter as a student</T>
-              </button>
+              <Link href="/login?next=/classroom" className={primaryButton}>
+                <T>Sign in</T>
+              </Link>
+              <Link href="/register" className={secondaryButton}>
+                <T>Create an account</T>
+              </Link>
             </div>
             <p className="mt-4 text-sm text-gray-500">
-              <T>Uses the demo accounts in this window only.</T>{" "}
-              <Link href="/login?next=/classroom" className="font-semibold text-brand underline">
-                <T>Sign in with your own account</T>
-              </Link>
+              <T>Teachers open the classroom from their workspace. Students join with the link their teacher shares.</T>
             </p>
           </div>
           <Reveal className="p-2">

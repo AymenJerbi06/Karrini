@@ -10,6 +10,7 @@ import {
   ACCEPTED,
   addMaterial,
   deleteMaterial,
+  openMaterial,
   fileBadge,
   formatSize,
   MAX_FILE_MB,
@@ -32,12 +33,12 @@ export function TeacherMaterials() {
       title="Class materials"
       intro="Upload notes, exercise sheets, homework and corrections. Only students enrolled in your class can open them."
     >
-      {({ cls }) => <Materials classId={cls.id} />}
+      {({ cls, account }) => <Materials classId={cls.id} accountId={account.id} />}
     </TeacherShell>
   );
 }
 
-function Materials({ classId }: { classId: string }) {
+function Materials({ classId, accountId }: { classId: string; accountId: string }) {
   const { t, locale } = useI18n();
   const { items, loading, error: loadError } = useMaterials([classId]);
   const input = useRef<HTMLInputElement>(null);
@@ -73,50 +74,32 @@ function Materials({ classId }: { classId: string }) {
     if (!file) return setError(t("Choose a file to upload."));
     if (!title.trim()) return setError(t("Give the material a title."));
     setError("");
-    // Visible progress while the file is read and stored.
-    setProgress(5);
-    const reader = new FileReader();
-    reader.onprogress = (ev) => ev.lengthComputable && setProgress(Math.min(90, Math.round((ev.loaded / ev.total) * 90)));
-    reader.onerror = () => {
+    // Supabase uploads report no byte progress, so the bar steps through upload → save.
+    setProgress(15);
+    const tick = setInterval(() => setProgress((p) => (p === null ? p : Math.min(85, p + 7))), 400);
+    try {
+      await addMaterial({ classId, title: title.trim(), note: note.trim(), kind, file, uploadedBy: accountId });
+      clearInterval(tick);
+      setProgress(100);
+      setTimeout(() => setProgress(null), 600);
+      setToast(t("Material shared with your class."));
+      setFile(null);
+      setTitle("");
+      setNote("");
+      if (input.current) input.current.value = "";
+    } catch {
+      clearInterval(tick);
       setProgress(null);
-      setError(t("The file could not be read. Try another file."));
-    };
-    reader.onload = async () => {
-      try {
-        await addMaterial({
-          classId,
-          title: title.trim(),
-          note: note.trim(),
-          kind,
-          fileName: file.name,
-          mime: file.type || "application/octet-stream",
-          size: file.size,
-          blob: new Blob([reader.result as ArrayBuffer], { type: file.type }),
-        });
-        setProgress(100);
-        setTimeout(() => setProgress(null), 600);
-        setToast(t("Material shared with your class."));
-        setFile(null);
-        setTitle("");
-        setNote("");
-        if (input.current) input.current.value = "";
-      } catch {
-        setProgress(null);
-        setError(t("Your browser storage is full or blocked. Free some space and try again."));
-      }
-    };
-    reader.readAsArrayBuffer(file);
+      setError(t("The upload failed. Check your connection and try again."));
+    }
   }
 
-  function openFile(m: Material, download = false) {
-    const url = URL.createObjectURL(m.blob);
-    const a = document.createElement("a");
-    a.href = url;
-    if (download) a.download = m.fileName;
-    else a.target = "_blank";
-    a.rel = "noopener";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  async function openFile(m: Material, download = false) {
+    try {
+      await openMaterial(m, download);
+    } catch {
+      setError(t("This file could not be opened. Try again in a moment."));
+    }
   }
 
   return (
@@ -206,7 +189,7 @@ function Materials({ classId }: { classId: string }) {
           <T>Share with my class</T>
         </button>
         <p className="mt-3 text-xs leading-5 text-gray-400">
-          <T>Prototype: files are stored in this browser only. Production uses secure cloud storage.</T>
+          <T>Files are stored securely and only your enrolled students can open them.</T>
         </p>
       </form>
 
@@ -272,7 +255,7 @@ function Materials({ classId }: { classId: string }) {
                       <button
                         type="button"
                         onClick={async () => {
-                          await deleteMaterial(m.id);
+                          await deleteMaterial(m);
                           setConfirmDelete(null);
                           setToast(t("Material removed."));
                         }}
