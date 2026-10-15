@@ -12,7 +12,7 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen bg-white">
       <header className="flex min-h-20 items-center justify-between gap-4 border-b border-gray-100 px-5 md:px-10">
-        <Link aria-label="Qarrini home" href="/">
+        <Link aria-label="Karrini home" href="/">
           <Logo className="text-[30px]" />
         </Link>
         <LanguageSwitcher />
@@ -25,7 +25,7 @@ export default function AuthLayout({
               href="/"
               className="mt-8 inline-flex min-h-11 items-center text-sm text-gray-500 underline underline-offset-4"
             >
-              <T>Back to Qarrini</T>
+              <T>Back to Karrini</T>
             </Link>
           </div>
         </div>

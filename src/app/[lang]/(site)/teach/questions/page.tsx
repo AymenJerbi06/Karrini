@@ -7,7 +7,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  return { title: translate("Prepare your questions | Qarrini", lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Prepare your questions | Karrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function Page() {
   return <TeacherQuestions />;

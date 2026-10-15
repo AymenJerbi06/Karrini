@@ -51,10 +51,10 @@ export const home: Record<string, [string, string]> = {
     "درس مباشر، وين ما تكون.",
     "Un vrai cours. Où que vous soyez.",
   ],
-  "See your teacher, follow the board and work through exercises together, all inside Qarrini.":
+  "See your teacher, follow the board and work through exercises together, all inside Karrini.":
     [
       "شوف أستاذك، تابع السبّورة وحلّ التمارين معاه. الكل داخل قرّيني.",
-      "Retrouvez votre professeur, suivez le tableau et faites les exercices ensemble, directement dans Qarrini.",
+      "Retrouvez votre professeur, suivez le tableau et faites les exercices ensemble, directement dans Karrini.",
     ],
   "Clear prices, from the start.": [
     "السعر واضح من البداية.",
@@ -69,10 +69,10 @@ export const home: Record<string, [string, string]> = {
     "معاك باش تلقى اللي يناسبك.",
     "Un coup de main pour bien choisir.",
   ],
-  "Not sure where to start? Tell us what you need, and the Qarrini team can help you find your way.":
+  "Not sure where to start? Tell us what you need, and the Karrini team can help you find your way.":
     [
       "موش عارف منين تبدأ؟ احكيلنا على حاجتك، وفريق قرّيني يعاونك تلقى طريقك.",
-      "Vous ne savez pas par où commencer ? Parlez-nous de vos besoins, l’équipe Qarrini vous accompagne.",
+      "Vous ne savez pas par où commencer ? Parlez-nous de vos besoins, l’équipe Karrini vous accompagne.",
     ],
   "Example profile": ["ملف توضيحي", "Profil d’exemple"],
   "Sfax · Secondary & Bac": ["صفاقس · الثانوي والباك", "Sfax · Lycée et bac"],
@@ -109,9 +109,9 @@ export const home: Record<string, [string, string]> = {
     "3. تعلّم وشارك مباشرة",
     "3. Apprenez ensemble, en direct",
   ],
-  "Join your teacher, practise and ask questions inside Qarrini.": [
+  "Join your teacher, practise and ask questions inside Karrini.": [
     "احضر مع أستاذك، تمرّن واسأل داخل قرّيني.",
-    "Retrouvez votre professeur, exercez-vous et posez vos questions sur Qarrini.",
+    "Retrouvez votre professeur, exercez-vous et posez vos questions sur Karrini.",
   ],
   "4. Keep learning after class": [
     "4. كمّل تعلّم بعد الدرس",
@@ -157,9 +157,9 @@ export const home: Record<string, [string, string]> = {
     "Un accompagnement dans votre matière",
   ],
   FAQs: ["أسئلة تتعاود", "Questions fréquentes"],
-  "A question about Qarrini?": [
+  "A question about Karrini?": [
     "عندك سؤال على قرّيني؟",
-    "Une question sur Qarrini ?",
+    "Une question sur Karrini ?",
   ],
   "Our team is here to help.": [
     "فريقنا موجود باش يعاونك.",

@@ -11,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Find a Teacher | Qarrini" };
+  const base = { title: "Find a Teacher | Karrini" };
   return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
 }
 export default function TeachersPage() {

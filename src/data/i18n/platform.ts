@@ -1,18 +1,18 @@
 // Accounts, teacher workspace, materials, question bank and the live classroom.
 export const platform: Record<string, [string, string]> = {
   /* ---------- Page titles ---------- */
-  "Sign in | Qarrini": ["الدخول | قرّيني", "Connexion | Qarrini"],
-  "Create your account | Qarrini": ["اعمل حسابك | قرّيني", "Créer votre compte | Qarrini"],
-  "Live classroom | Qarrini": ["القسم المباشر | قرّيني", "Classe en direct | Qarrini"],
-  "Teacher workspace | Qarrini": ["فضاء الأستاذ | قرّيني", "Espace professeur | Qarrini"],
-  "Class materials | Qarrini": ["محتوى القسم | قرّيني", "Supports de cours | Qarrini"],
-  "Prepare your questions | Qarrini": ["حضّر أسئلتك | قرّيني", "Préparer vos questions | Qarrini"],
-  "Results | Qarrini": ["النتائج | قرّيني", "Résultats | Qarrini"],
-  "Your Dashboard | Qarrini": ["فضائي | قرّيني", "Votre tableau de bord | Qarrini"],
+  "Sign in | Karrini": ["الدخول | قرّيني", "Connexion | Karrini"],
+  "Create your account | Karrini": ["اعمل حسابك | قرّيني", "Créer votre compte | Karrini"],
+  "Live classroom | Karrini": ["القسم المباشر | قرّيني", "Classe en direct | Karrini"],
+  "Teacher workspace | Karrini": ["فضاء الأستاذ | قرّيني", "Espace professeur | Karrini"],
+  "Class materials | Karrini": ["محتوى القسم | قرّيني", "Supports de cours | Karrini"],
+  "Prepare your questions | Karrini": ["حضّر أسئلتك | قرّيني", "Préparer vos questions | Karrini"],
+  "Results | Karrini": ["النتائج | قرّيني", "Résultats | Karrini"],
+  "Your Dashboard | Karrini": ["فضائي | قرّيني", "Votre tableau de bord | Karrini"],
 
   /* ---------- Sign in ---------- */
   "Welcome back": ["مرحبا بيك من جديد", "Bon retour"],
-  "Sign in to Qarrini": ["ادخل لقرّيني", "Se connecter à Qarrini"],
+  "Sign in to Karrini": ["ادخل لقرّيني", "Se connecter à Karrini"],
   "I am signing in as a": ["ندخل كـ", "Je me connecte en tant que"],
   "Classes, live lessons and corrections": ["الدروس، الحصص المباشرة والإصلاحات", "Cours, séances en direct et corrections"],
   "Schedules, subscriptions and progress": ["المواعيد، الاشتراكات والتقدّم", "Horaires, abonnements et progrès"],
@@ -32,7 +32,7 @@ export const platform: Record<string, [string, string]> = {
     "دخّل رقم تونسي فيه 8 أرقام، مثلاً 20 123 456.",
     "Saisissez un numéro tunisien à 8 chiffres, par exemple 20 123 456.",
   ],
-  "No Qarrini account uses this number yet.": ["حتى حساب في قرّيني ما يستعمل الرقم هذا.", "Aucun compte Qarrini n’utilise encore ce numéro."],
+  "No Karrini account uses this number yet.": ["حتى حساب في قرّيني ما يستعمل الرقم هذا.", "Aucun compte Karrini n’utilise encore ce numéro."],
   "That code is not correct. Check the SMS and try again.": [
     "الكود هذا موش صحيح. ثبّت في الـSMS وعاود.",
     "Ce code n’est pas correct. Vérifiez le SMS et réessayez.",
@@ -49,11 +49,11 @@ export const platform: Record<string, [string, string]> = {
   "Open a ready-made demo account in one click.": ["حلّ حساب تجريبي حاضر بنقرة وحدة.", "Ouvrez un compte de démo prêt en un clic."],
   "Student demo": ["تجربة تلميذ", "Démo élève"],
   "Teacher demo": ["تجربة أستاذ", "Démo professeur"],
-  "Teacher demo: hichem.demo@qarrini.tn · password {password}": [
-    "تجربة الأستاذ: hichem.demo@qarrini.tn · كلمة السر {password}",
-    "Démo professeur : hichem.demo@qarrini.tn · mot de passe {password}",
+  "Teacher demo: hichem.demo@karrini.tn · password {password}": [
+    "تجربة الأستاذ: hichem.demo@karrini.tn · كلمة السر {password}",
+    "Démo professeur : hichem.demo@karrini.tn · mot de passe {password}",
   ],
-  "New to Qarrini?": ["جديد في قرّيني؟", "Nouveau sur Qarrini ?"],
+  "New to Karrini?": ["جديد في قرّيني؟", "Nouveau sur Karrini ?"],
 
   /* ---------- Shared auth fields ---------- */
   "Verification code": ["كود التأكيد", "Code de vérification"],
@@ -64,7 +64,7 @@ export const platform: Record<string, [string, string]> = {
   "Digit 5": ["الرقم 5", "Chiffre 5"],
   "Digit 6": ["الرقم 6", "Chiffre 6"],
   "Demo SMS to": ["SMS تجريبي لـ", "SMS de démo au"],
-  "Your Qarrini code is": ["الكود متاعك في قرّيني هو", "Votre code Qarrini est"],
+  "Your Karrini code is": ["الكود متاعك في قرّيني هو", "Votre code Karrini est"],
   "No real SMS is sent in this prototype.": ["في النموذج هذا ما يتبعث حتى SMS حقيقي.", "Aucun vrai SMS n’est envoyé dans ce prototype."],
 
   /* ---------- Sign up ---------- */
@@ -88,9 +88,9 @@ export const platform: Record<string, [string, string]> = {
   "Sign up with": ["سجّل بـ", "S’inscrire avec"],
   "At least 8 characters.": ["8 حروف على الأقل.", "Au moins 8 caractères."],
   "Phone number (required)": ["رقم الهاتف (إجباري)", "Numéro de téléphone (obligatoire)"],
-  "Every Qarrini account needs a verified phone number for lesson reminders, schedule changes and family contact.": [
+  "Every Karrini account needs a verified phone number for lesson reminders, schedule changes and family contact.": [
     "كل حساب في قرّيني لازمو رقم هاتف مؤكَّد للتذكير بالدروس، تبديل المواعيد والتواصل مع العائلة.",
-    "Chaque compte Qarrini nécessite un numéro vérifié pour les rappels de cours, les changements d’horaire et le contact avec la famille.",
+    "Chaque compte Karrini nécessite un numéro vérifié pour les rappels de cours, les changements d’horaire et le contact avec la famille.",
   ],
   "We'll send a 6-digit code by SMS to verify this number.": [
     "باش نبعثولك كود متاع 6 أرقام بالـSMS باش نتأكدو من الرقم.",
@@ -129,15 +129,15 @@ export const platform: Record<string, [string, string]> = {
   "Main subject": ["المادة الأساسية", "Matière principale"],
   "School years you teach": ["المستويات اللي تقرّيها", "Niveaux enseignés"],
   "Years of teaching experience": ["سنوات الخبرة في التدريس", "Années d’expérience"],
-  "Qarrini reviews every teacher profile before it appears in public search.": [
+  "Karrini reviews every teacher profile before it appears in public search.": [
     "قرّيني تراجع كل ملف أستاذ قبل ما يظهر في البحث.",
-    "Qarrini vérifie chaque profil de professeur avant qu’il apparaisse dans la recherche.",
+    "Karrini vérifie chaque profil de professeur avant qu’il apparaisse dans la recherche.",
   ],
   "I accept the": ["نقبل", "J’accepte les"],
   "and the": ["و", "et la"],
   "Already have an account?": ["عندك حساب ديجا؟", "Vous avez déjà un compte ?"],
   "Sign in instead": ["ادخل بيه", "Connectez-vous plutôt"],
-  "Welcome to Qarrini, {name}.": ["مرحبا بيك في قرّيني، {name}.", "Bienvenue sur Qarrini, {name}."],
+  "Welcome to Karrini, {name}.": ["مرحبا بيك في قرّيني، {name}.", "Bienvenue sur Karrini, {name}."],
   "Your teacher profile is saved and marked as pending verification. You can already prepare materials and questions.": [
     "ملفّك كأستاذ تسجّل وهو في انتظار المراجعة. تنجم من توّا تحضّر المحتوى والأسئلة.",
     "Votre profil de professeur est enregistré et en attente de vérification. Vous pouvez déjà préparer supports et questions.",
@@ -514,7 +514,7 @@ export const platform: Record<string, [string, string]> = {
   ],
 
   /* ---------- Classroom landing ---------- */
-  "The Qarrini classroom": ["قسم قرّيني", "La classe Qarrini"],
+  "The Karrini classroom": ["قسم قرّيني", "La classe Karrini"],
   "Live video, questions prepared before class or written on the spot, and results that show exactly who needs help.": [
     "فيديو مباشر، أسئلة محضّرة قبل الدرس ولا مكتوبة في بلاصتها، ونتائج توريك بالضبط شكون يستحقّ معاونة.",
     "Vidéo en direct, questions préparées ou écrites sur le moment, et des résultats qui montrent qui a besoin d’aide.",
@@ -627,9 +627,9 @@ export const platform: Record<string, [string, string]> = {
   ],
 
   /* ---------- For Teachers & How it works: interactive sections ---------- */
-  "How it Works | Qarrini": ["كيفاش تخدم | قرّيني", "Comment ça marche | Qarrini"],
-  "Teach on Qarrini | Qarrini": ["قرّي على قرّيني | قرّيني", "Enseigner sur Qarrini | Qarrini"],
-  "A lesson with Qarrini, step by step.": ["درس مع قرّيني، خطوة بخطوة.", "Un cours avec Qarrini, étape par étape."],
+  "How it Works | Karrini": ["كيفاش تخدم | قرّيني", "Comment ça marche | Karrini"],
+  "Teach on Karrini | Karrini": ["قرّي على قرّيني | قرّيني", "Enseigner sur Karrini | Karrini"],
+  "A lesson with Karrini, step by step.": ["درس مع قرّيني، خطوة بخطوة.", "Un cours avec Karrini, étape par étape."],
   "Before class": ["قبل الدرس", "Avant le cours"],
   "During class": ["في الدرس", "Pendant le cours"],
   "After class": ["بعد الدرس", "Après le cours"],
@@ -651,9 +651,9 @@ export const platform: Record<string, [string, string]> = {
   ],
   "Teach live and hear from every student.": ["قرّي مباشرة واسمع من كل تلميذ.", "Enseignez en direct et entendez chaque élève."],
   "Video built in": ["الفيديو مدمج", "Vidéo intégrée"],
-  "Camera, microphone and screen sharing, without leaving Qarrini.": [
+  "Camera, microphone and screen sharing, without leaving Karrini.": [
     "كاميرا، مايك ومشاركة شاشة، من غير ما تخرج من قرّيني.",
-    "Caméra, micro et partage d’écran, sans quitter Qarrini.",
+    "Caméra, micro et partage d’écran, sans quitter Karrini.",
   ],
   "Ask at the right moment": ["اسأل في الوقت المناسب", "Questionnez au bon moment"],
   "Send a prepared question in one click, or write a new one on the spot.": [
@@ -717,7 +717,7 @@ export const platform: Record<string, [string, string]> = {
     "لا. إنت برك تشوف الأسماء بحذا الإجابات. وكي تشارك مثال مع القسم، يكون من غير اسم.",
     "Non. Vous seul voyez les noms à côté des réponses. Un exemple partagé avec la classe est anonyme.",
   ],
-  "Your journey on Qarrini": ["رحلتك على قرّيني", "Votre parcours sur Qarrini"],
+  "Your journey on Karrini": ["رحلتك على قرّيني", "Votre parcours sur Karrini"],
   "Choose your side to see each step.": ["اختار جهتك باش تشوف كل مرحلة.", "Choisissez votre profil pour voir chaque étape."],
   "Choose your school year and subject, then compare teachers, timetables and class offers.": [
     "اختار مستواك ومادتك، وبعد قارن بين الأساتذة، المواعيد وعروض الأقسام.",
@@ -748,9 +748,9 @@ export const platform: Record<string, [string, string]> = {
     "Revoyez notes, corrections et réponses après chaque cours.",
   ],
   "Join as a verified teacher": ["انضمّ كأستاذ مؤكَّد", "Rejoindre comme professeur vérifié"],
-  "Share your experience and subjects. Qarrini reviews your profile before promoting it.": [
+  "Share your experience and subjects. Karrini reviews your profile before promoting it.": [
     "شارك خبرتك وموادك. قرّيني تراجع ملفّك قبل ما تعرضو.",
-    "Présentez votre expérience et vos matières. Qarrini vérifie votre profil avant de le mettre en avant.",
+    "Présentez votre expérience et vos matières. Karrini vérifie votre profil avant de le mettre en avant.",
   ],
   "Create your class offer": ["اعمل عرض القسم متاعك", "Créer votre offre de cours"],
   "Set the level, subject, timetable and monthly price, and describe your approach.": [
@@ -762,7 +762,7 @@ export const platform: Record<string, [string, string]> = {
     "حمّل المحتوى واكتب الأسئلة اللي تحب تسألها في الحصّة.",
     "Ajoutez vos supports et écrivez les questions à poser pendant le cours.",
   ],
-  "Teach from inside Qarrini": ["قرّي من داخل قرّيني", "Enseigner depuis Qarrini"],
+  "Teach from inside Karrini": ["قرّي من داخل قرّيني", "Enseigner depuis Karrini"],
   "Start the video lesson, share your screen and publish questions when you need them.": [
     "ابدا الدرس بالفيديو، شارك شاشتك وابعث الأسئلة وقتلي يلزم.",
     "Lancez le cours vidéo, partagez votre écran et publiez vos questions au bon moment.",
@@ -774,13 +774,13 @@ export const platform: Record<string, [string, string]> = {
   "Ask your teacher to send the link again.": ["اطلب من أستاذك يبعثلك الرابط من جديد.", "Demandez à votre professeur de renvoyer le lien."],
   "Check your email": ["ثبّت في بريدك", "Vérifiez votre e-mail"],
   "Choose a new password": ["اختار كلمة سر جديدة", "Choisir un nouveau mot de passe"],
-  "Choose a new password | Qarrini": ["اختار كلمة سر جديدة | قرّيني", "Nouveau mot de passe | Qarrini"],
+  "Choose a new password | Karrini": ["اختار كلمة سر جديدة | قرّيني", "Nouveau mot de passe | Karrini"],
   "Class link": ["رابط القسم", "Lien de la classe"],
   "Class links are for student accounts. Linking parents to their child will come soon.": [
     "روابط الأقسام لحسابات التلامذة. ربط الوليّ بولدو يجي قريب.",
     "Les liens de classe sont pour les comptes élèves. Le lien parent-enfant arrive bientôt.",
   ],
-  "Confirming your account | Qarrini": ["تأكيد حسابك | قرّيني", "Confirmation du compte | Qarrini"],
+  "Confirming your account | Karrini": ["تأكيد حسابك | قرّيني", "Confirmation du compte | Karrini"],
   "Confirming your account…": ["قاعدين نأكّدو حسابك…", "Confirmation de votre compte…"],
   Copied: ["تنسخ", "Copié"],
   "Copy link": ["انسخ الرابط", "Copier le lien"],
@@ -789,9 +789,9 @@ export const platform: Record<string, [string, string]> = {
     "اعمل حساب تلميذ باش تنضمّ. تأكّد بريدك وترجع لهوني وحدك.",
     "Créez votre compte élève pour rejoindre. Vous confirmerez votre e-mail, puis reviendrez ici automatiquement.",
   ],
-  "Every Qarrini account needs a phone number for lesson reminders, schedule changes and family contact.": [
+  "Every Karrini account needs a phone number for lesson reminders, schedule changes and family contact.": [
     "كل حساب في قرّيني لازمو رقم هاتف للتذكير بالدروس، تبديل المواعيد والتواصل مع العائلة.",
-    "Chaque compte Qarrini nécessite un numéro de téléphone pour les rappels, les changements d’horaire et le contact avec la famille.",
+    "Chaque compte Karrini nécessite un numéro de téléphone pour les rappels, les changements d’horaire et le contact avec la famille.",
   ],
   "Files are stored securely and only your enrolled students can open them.": [
     "الملفات متخزّنة بأمان والتلامذة المسجّلين برك ينجمو يحلّوها.",
@@ -808,8 +808,8 @@ export const platform: Record<string, [string, string]> = {
     "ينجم ياخو دقيقة باش يوصل. ثبّت زادة في الـSpam ولا العروض.",
     "Il peut mettre une minute à arriver. Vérifiez aussi les spams ou l’onglet Promotions.",
   ],
-  "Join a class | Qarrini": ["انضمّ لقسم | قرّيني", "Rejoindre une classe | Qarrini"],
-  "Join my class on Qarrini: {link}": ["انضمّ لقسمي على قرّيني: {link}", "Rejoignez ma classe sur Qarrini : {link}"],
+  "Join a class | Karrini": ["انضمّ لقسم | قرّيني", "Rejoindre une classe | Karrini"],
+  "Join my class on Karrini: {link}": ["انضمّ لقسمي على قرّيني: {link}", "Rejoignez ma classe sur Karrini : {link}"],
   "Join this class": ["انضمّ للقسم هذا", "Rejoindre cette classe"],
   "Linking your account to your child's account will be available soon.": [
     "ربط حسابك بحساب ولدك يكون متوفّر قريب.",

@@ -375,10 +375,10 @@ export const catalog: Record<string, [string, string]> = {
     "كان الأقسام اللي فيها بلايص",
     "Uniquement les cours avec des places",
   ],
-  "Example teachers and offers for the Qarrini concept. All times shown are Sfax time (Tunisia).":
+  "Example teachers and offers for the Karrini concept. All times shown are Sfax time (Tunisia).":
     [
       "الأساتذة والعروض أمثلة لفكرة قرّيني. المواقيت الكل بتوقيت صفاقس، تونس.",
-      "Profils et offres fictifs pour le concept Qarrini. Horaires à l’heure de Sfax, Tunisie.",
+      "Profils et offres fictifs pour le concept Karrini. Horaires à l’heure de Sfax, Tunisie.",
     ],
   "Search name or location": [
     "لوّج بالاسم أو بالمنطقة",

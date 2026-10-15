@@ -1,8 +1,8 @@
-# Qarrini / قرّيني
+# Karrini / قرّيني
 
-Qarrini's symbol combines an open book, a speech bubble and a gold spark. The book represents learning, the bubble represents a teacher listening to the student, and the spark represents the moment a concept becomes clear.
+Karrini's symbol combines an open book, a speech bubble and a gold spark. The book represents learning, the bubble represents a teacher listening to the student, and the spark represents the moment a concept becomes clear.
 
-The Arabic wordmark is **قرّيني**, with **Qarrini** as the French/Latin name. The signature is **معاك حتى تفهم** / **Apprendre, ensemble.**
+The Arabic wordmark is **قرّيني**, with **Karrini** as the French/Latin name. The signature is **معاك حتى تفهم** / **Apprendre, ensemble.**
 
 | Role | Colour |
 | --- | --- |

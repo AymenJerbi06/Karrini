@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  return { title: translate("Sign in | Qarrini", lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Sign in | Karrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function LoginPage() {
   return (

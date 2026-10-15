@@ -13,7 +13,7 @@ export async function generateMetadata({
 }) {
   const { lang } = await params;
   return {
-    title: translate("Teach on Qarrini | Qarrini", lang === "fr" ? "fr" : "ar"),
+    title: translate("Teach on Karrini | Karrini", lang === "fr" ? "fr" : "ar"),
   };
 }
 export default function TeachersInfoPage() {
@@ -143,7 +143,7 @@ export default function TeachersInfoPage() {
         </Link>
         <details className="mx-auto mt-7 max-w-lg text-sm text-gray-500">
           <summary className="min-h-11 cursor-pointer py-3">
-            <T>Before teaching on Qarrini</T>
+            <T>Before teaching on Karrini</T>
           </summary>
           <p className="mt-3 leading-7">
             <T>

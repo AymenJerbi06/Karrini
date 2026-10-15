@@ -15,14 +15,14 @@ const groups = [
   {
     h: "Teachers",
     links: [
-      ["Teach on Qarrini", "/for-teachers"],
+      ["Teach on Karrini", "/for-teachers"],
       ["Live Classroom Demo", "/classroom"],
     ],
   },
   {
     h: "Other",
     links: [
-      ["About Qarrini", "/about-us"],
+      ["About Karrini", "/about-us"],
       ["Contact Us", "/contact"],
       ["Privacy Policy", "/privacy-policy"],
       ["Safeguarding & Minors", "/safeguarding-policy"],
@@ -115,7 +115,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-gray-200 pt-8 text-center">
           <p className="text-base text-gray-400">
-            <T>&copy; 2026 Qarrini. All rights reserved.</T>
+            <T>&copy; 2026 Karrini. All rights reserved.</T>
           </p>
           <p className="mt-2 text-xs text-gray-400">
             <T>Prototype · No real bookings or payments.</T>

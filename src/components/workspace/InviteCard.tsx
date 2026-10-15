@@ -17,7 +17,7 @@ export function InviteCard({ classId }: { classId: string }) {
     setOrigin(window.location.origin);
   }, []);
   const link = origin ? `${origin}/${locale}/join?class=${encodeURIComponent(classId)}` : "";
-  const message = t("Join my class on Qarrini: {link}", { link });
+  const message = t("Join my class on Karrini: {link}", { link });
 
   return (
     <Reveal as="section" className="rounded-xl border-2 border-brand/30 bg-white p-6 shadow-sm">

@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  return { title: translate("Create your account | Qarrini", lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Create your account | Karrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function RegisterPage() {
   return (

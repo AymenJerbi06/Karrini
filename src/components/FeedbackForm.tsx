@@ -25,7 +25,7 @@ export function FeedbackForm() {
     }
     setError("");
     setDraft(
-      `${locale === "ar" ? "ملاحظات على فكرة قرّيني" : "Avis sur le concept Qarrini"}\n${locale === "ar" ? "الصفة" : "Profil"} : ${t(role)}\n\n${message.trim()}\n`,
+      `${locale === "ar" ? "ملاحظات على فكرة قرّيني" : "Avis sur le concept Karrini"}\n${locale === "ar" ? "الصفة" : "Profil"} : ${t(role)}\n\n${message.trim()}\n`,
     );
     setCopied(false);
     requestAnimationFrame(() => result.current?.focus());
@@ -36,7 +36,7 @@ export function FeedbackForm() {
     );
     const a = document.createElement("a");
     a.href = url;
-    a.download = "qarrini-feedback.txt";
+    a.download = "karrini-feedback.txt";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -86,7 +86,7 @@ export function FeedbackForm() {
             }}
             aria-invalid={error && !draft ? true : undefined}
             aria-describedby={error && !draft ? "feedback-status" : undefined}
-            placeholder="What would make Qarrini useful to you? Which parts would you change?"
+            placeholder="What would make Karrini useful to you? Which parts would you change?"
           />
         </label>
         <button type="submit" className={`${primaryButton} w-full sm:w-auto`}>

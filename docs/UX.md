@@ -1,4 +1,4 @@
-# Qarrini secondary-page UX
+# Karrini secondary-page UX
 
 The supplied UX reference guides these changes. Principles are applied where they help a real task; they are not a requirement to add more features or more persuasion. The approved homepage keeps its layout and identity.
 

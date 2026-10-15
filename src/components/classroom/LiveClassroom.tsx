@@ -138,7 +138,7 @@ function Landing() {
         <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
           <div>
             <p className="text-sm font-medium text-brand">
-              <T>The Qarrini classroom</T>
+              <T>The Karrini classroom</T>
             </p>
             <h1 className="home-heading font-display mt-4 text-3xl leading-tight font-extrabold tracking-tight text-gray-900 md:text-[44px]">
               <T>One question. Every student heard.</T>

@@ -1,4 +1,4 @@
-# Qarrini technical architecture
+# Karrini technical architecture
 
 This document describes how the live classroom works today (browser prototype) and the production
 architecture for real video lessons with up to ~40 students per class, on Tunisian home and mobile
@@ -32,10 +32,10 @@ A **Selective Forwarding Unit (SFU)** fixes this: the teacher uploads one stream
 layers, "simulcast"), and the SFU forwards to each student the layer their connection can handle.
 
 ```
-                         ┌──────────────────────────── Qarrini cloud (EU region, close to Tunisia) ─┐
+                         ┌──────────────────────────── Karrini cloud (EU region, close to Tunisia) ─┐
  Teacher browser/app     │                                                                         │
  ┌──────────────┐  WSS   │  ┌──────────────┐   ┌────────────┐   ┌──────────────┐                   │
- │ Qarrini UI   │◀──────▶│  │ API (Next.js │──▶│ PostgreSQL │   │ Object store │◀─ signed URLs ─┐  │
+ │ Karrini UI   │◀──────▶│  │ API (Next.js │──▶│ PostgreSQL │   │ Object store │◀─ signed URLs ─┐  │
  │              │        │  │ route        │   │ accounts,  │   │ materials,   │                │  │
  │ camera/mic/  │        │  │ handlers)    │──▶│ classes,   │   │ photos,      │                │  │
  │ screen       │        │  └──────┬───────┘   │ answers    │   │ recordings   │                │  │
@@ -45,7 +45,7 @@ layers, "simulcast"), and the SFU forwards to each student the layer their conne
                          │  │ (questions,  │   │ pub/sub    │   │ SFU          │                │  │
  Student browsers/apps   │  │ answers,     │   └────────────┘   │ (LiveKit)    │                │  │
  ┌──────────────┐  WSS   │  │ hands)       │                    │ simulcast    │                │  │
- │ Qarrini UI   │◀──────▶│  └──────────────┘                    └──────┬───────┘                │  │
+ │ Karrini UI   │◀──────▶│  └──────────────┘                    └──────┬───────┘                │  │
  └──────▲───────┘        │                                            │                        │  │
         │ WebRTC (best layer per student)                              │   ┌────────────┐        │  │
         └──────────────────────────────────────────────────────────────┘   │ TURN       │        │  │

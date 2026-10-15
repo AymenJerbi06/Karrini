@@ -3,7 +3,7 @@ import Link from "@/components/LocalizedLink";
 
 const questions = [
   [
-    "What is Qarrini?",
+    "What is Karrini?",
     "A tutoring platform designed for Sfax, bringing teachers and students together in interactive online classes.",
   ],
   [
@@ -43,7 +43,7 @@ export function Faq() {
         <T>FAQs</T>
       </h2>
       <p className="mt-5 text-center text-base leading-8 text-gray-500 md:text-lg">
-        <T>A question about Qarrini?</T>{" "}
+        <T>A question about Karrini?</T>{" "}
         <Link
           href="/contact"
           className="underline underline-offset-4 hover:text-brand"

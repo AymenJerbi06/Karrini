@@ -12,7 +12,7 @@ export async function generateMetadata({
   const { lang } = await params;
   return {
     title: translate(
-      "Contact & Feedback | Qarrini",
+      "Contact & Feedback | Karrini",
       lang === "fr" ? "fr" : "ar",
     ),
   };
@@ -21,7 +21,7 @@ export default function ContactPage() {
   return (
     <>
       <PageIntro eyebrow="Contact & feedback" title="We are listening.">
-        <T>What would make Qarrini work better for you?</T>
+        <T>What would make Karrini work better for you?</T>
       </PageIntro>
       <section className="mx-auto grid max-w-6xl items-start gap-12 px-6 pb-20 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
         <div className="max-w-md">

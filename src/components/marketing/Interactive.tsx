@@ -36,7 +36,7 @@ const phases: { key: string; label: string; title: string; items: { Icon: Icon; 
     label: "During class",
     title: "Teach live and hear from every student.",
     items: [
-      { Icon: VideoIcon, title: "Video built in", body: "Camera, microphone and screen sharing, without leaving Qarrini." },
+      { Icon: VideoIcon, title: "Video built in", body: "Camera, microphone and screen sharing, without leaving Karrini." },
       { Icon: ChatBubbleIcon, title: "Ask at the right moment", body: "Send a prepared question in one click, or write a new one on the spot." },
       { Icon: TrendIcon, title: "See results instantly", body: "Right, wrong, percentages, and who made which mistake." },
     ],
@@ -67,7 +67,7 @@ export function TeacherJourney() {
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="home-heading font-display text-3xl font-bold text-gray-900">
-            <T>A lesson with Qarrini, step by step.</T>
+            <T>A lesson with Karrini, step by step.</T>
           </h2>
         </Reveal>
         <div className="mt-8 flex flex-wrap gap-2" role="group">
@@ -212,10 +212,10 @@ const journeys = {
     { Icon: TrendIcon, title: "Review and progress", body: "Revisit notes, corrections and your answers after every lesson." },
   ],
   teacher: [
-    { Icon: CheckCircleIcon, title: "Join as a verified teacher", body: "Share your experience and subjects. Qarrini reviews your profile before promoting it." },
+    { Icon: CheckCircleIcon, title: "Join as a verified teacher", body: "Share your experience and subjects. Karrini reviews your profile before promoting it." },
     { Icon: BookIcon, title: "Create your class offer", body: "Set the level, subject, timetable and monthly price, and describe your approach." },
     { Icon: UploadIcon, title: "Prepare your lesson", body: "Upload materials and write the questions you want to ask during class." },
-    { Icon: VideoIcon, title: "Teach from inside Qarrini", body: "Start the video lesson, share your screen and publish questions when you need them." },
+    { Icon: VideoIcon, title: "Teach from inside Karrini", body: "Start the video lesson, share your screen and publish questions when you need them." },
     { Icon: TrendIcon, title: "Review results and follow up", body: "See who answered, who got it wrong and why, then send feedback and homework." },
   ],
 } as const;
@@ -229,7 +229,7 @@ export function JourneyToggle() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <Reveal>
             <h2 className="home-heading font-display text-3xl font-bold text-gray-900">
-              <T>Your journey on Qarrini</T>
+              <T>Your journey on Karrini</T>
             </h2>
             <p className="mt-3 max-w-xl leading-7 text-gray-500">
               <T>Choose your side to see each step.</T>

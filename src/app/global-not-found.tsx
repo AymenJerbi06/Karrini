@@ -5,7 +5,7 @@ export default function GlobalNotFound() {
     <html lang="ar" dir="rtl">
       <body>
         <main className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center gap-6 px-6 text-center">
-          <p className="text-sm font-bold text-brand">QARRINI · قرّيني</p>
+          <p className="text-sm font-bold text-brand">KARRINI · قرّيني</p>
           <h1 className="text-3xl font-bold text-gray-900">
             الصفحة موش موجودة
           </h1>

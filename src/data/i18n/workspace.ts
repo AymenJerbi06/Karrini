@@ -64,7 +64,7 @@ export const workspace: Record<string, [string, string]> = {
       "المتصفّح ما نجّمش يحفظ التجربة. فعّل التخزين المحلّي أو اكتشف الفضاء من غير تسجيل.",
       "Le navigateur n’a pas pu enregistrer la démo. Autorisez le stockage local ou explorez l’espace sans inscription.",
     ],
-  "Welcome to Qarrini": ["مرحبا بيك في قرّيني", "Bienvenue sur Qarrini"],
+  "Welcome to Karrini": ["مرحبا بيك في قرّيني", "Bienvenue sur Karrini"],
   "Step into your workspace": ["ادخل لفضاءك", "Entrez dans votre espace"],
   "Sign-in will be available at launch. For now, choose a demo view to explore the experience.":
     [

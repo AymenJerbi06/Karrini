@@ -7,7 +7,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  return { title: translate("Your Dashboard | Qarrini", lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Your Dashboard | Karrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function DashboardPage() {
   return <StudentDashboard />;

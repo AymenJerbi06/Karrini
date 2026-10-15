@@ -94,7 +94,7 @@ export function SignIn() {
         <T>Welcome back</T>
       </p>
       <h1 className="home-heading font-display mt-4 text-3xl font-extrabold text-gray-900">
-        <T>Sign in to Qarrini</T>
+        <T>Sign in to Karrini</T>
       </h1>
 
       <fieldset className="mt-7">
@@ -187,7 +187,7 @@ export function SignIn() {
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        <T>New to Qarrini?</T>{" "}
+        <T>New to Karrini?</T>{" "}
         <Link
           href={`/register?role=${role}${next ? `&next=${encodeURIComponent(next)}` : ""}`}
           className="font-semibold text-brand underline underline-offset-4"

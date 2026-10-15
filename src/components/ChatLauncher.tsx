@@ -13,12 +13,12 @@ export function ChatLauncher() {
         <Localized
           as="aside"
           id="qarrini-help"
-          aria-label="Qarrini help"
+          aria-label="Karrini help"
           className="fixed right-5 bottom-20 z-50 w-[calc(100vw-40px)] max-w-sm overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
         >
           <div className="flex items-center justify-between bg-chat px-5 py-4 text-white">
             <h2 className="font-semibold">
-              <T>A little help from Qarrini</T>
+              <T>A little help from Karrini</T>
             </h2>
             <Localized
               as="button"
@@ -35,7 +35,7 @@ export function ChatLauncher() {
             </p>
             {[
               ["Find a teacher or class", "/find-a-teacher"],
-              ["Understand how Qarrini works", "/how-it-works"],
+              ["Understand how Karrini works", "/how-it-works"],
               ["Try the interactive classroom", "/classroom"],
               ["Share feedback on the concept", "/contact"],
             ].map(([label, href]) => (

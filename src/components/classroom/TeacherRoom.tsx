@@ -792,7 +792,7 @@ function SessionSummary({ record }: { record: SessionRecord }) {
         </Link>
         <button
           type="button"
-          onClick={() => downloadText(`qarrini-results-${new Date(record.startedAt).toISOString().slice(0, 10)}.csv`, sessionCsv(record.asked, t))}
+          onClick={() => downloadText(`karrini-results-${new Date(record.startedAt).toISOString().slice(0, 10)}.csv`, sessionCsv(record.asked, t))}
           className={secondaryButton}
         >
           <T>Download results (CSV)</T>

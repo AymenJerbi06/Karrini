@@ -1,4 +1,4 @@
-// Illustrative data for the Qarrini concept prototype.
+// Illustrative data for the Karrini concept prototype.
 // Teachers, prices and schedules are fictional until validated with real Sfax teachers.
 
 export const levels = [

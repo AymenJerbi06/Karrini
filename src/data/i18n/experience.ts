@@ -16,7 +16,7 @@ export const experience: Record<string, [string, string]> = {
     "عرض توضيحي · من غير خلاص.",
     "Offre d’exemple · Aucun paiement.",
   ],
-  "Learning with Qarrini": ["التعلّم مع قرّيني", "Apprendre avec Qarrini"],
+  "Learning with Karrini": ["التعلّم مع قرّيني", "Apprendre avec Karrini"],
   "From choosing a teacher to reviewing your lesson, one simple journey.": [
     "من اختيار أستاذك للمراجعة بعد الدرس، رحلة واضحة وسهلة.",
     "Du choix du professeur à la révision du cours, un parcours simple.",
@@ -65,11 +65,11 @@ export const experience: Record<string, [string, string]> = {
   "We are building this with teachers in Sfax. Tell us what would make it useful for your classes.":
     [
       "نبنيوا قرّيني مع أساتذة صفاقس. احكيلنا شنوّة يعاونك في أقسامك.",
-      "Nous construisons Qarrini avec les professeurs de Sfax. Dites-nous ce qui serait utile à vos classes.",
+      "Nous construisons Karrini avec les professeurs de Sfax. Dites-nous ce qui serait utile à vos classes.",
     ],
-  "Before teaching on Qarrini": [
+  "Before teaching on Karrini": [
     "قبل ما تقرّي على قرّيني",
-    "Avant d’enseigner sur Qarrini",
+    "Avant d’enseigner sur Karrini",
   ],
   "Teacher onboarding, verification and fees will be confirmed before launch. This is a concept preview.":
     [
@@ -93,10 +93,10 @@ export const experience: Record<string, [string, string]> = {
       "البداية من صفاقس: تلامذة الثانوي، عايلاتهم والأساتذة اللي يعاونوهم ينجحوا.",
       "Notre première communauté est Sfax : les lycéens, leurs familles et les professeurs qui les accompagnent.",
     ],
-  "Qarrini brings finding a class, taking part and practising afterwards into one place. There is room to ask, try and learn from mistakes.":
+  "Karrini brings finding a class, taking part and practising afterwards into one place. There is room to ask, try and learn from mistakes.":
     [
       "قرّيني تجمع اختيار القسم، المشاركة والمراجعة في بلاصة وحدة. فيها مساحة تسأل، تجرّب وتتعلّم من الغلط.",
-      "Qarrini réunit le choix d’un cours, la participation et la pratique après la séance. Chacun peut poser des questions, essayer et apprendre de ses erreurs.",
+      "Karrini réunit le choix d’un cours, la participation et la pratique après la séance. Chacun peut poser des questions, essayer et apprendre de ses erreurs.",
     ],
   "Your teacher's methods and relationship with students come first.": [
     "طريقة الأستاذ وعلاقته بتلامذته في قلب التجربة.",
@@ -122,9 +122,9 @@ export const experience: Record<string, [string, string]> = {
     ],
   "Contact & feedback": ["تواصل وملاحظات", "Contact et avis"],
   "We are listening.": ["نسمعولك.", "Nous vous écoutons."],
-  "What would make Qarrini work better for you?": [
+  "What would make Karrini work better for you?": [
     "شنوّة ينجم يخلّي قرّيني أنفع ليك؟",
-    "Comment rendre Qarrini plus utile pour vous ?",
+    "Comment rendre Karrini plus utile pour vous ?",
   ],
   "Your experience matters.": ["تجربتك تهمّنا.", "Votre expérience compte."],
   "Tell us what helps you teach or learn. A few words are enough.": [
@@ -158,7 +158,7 @@ export const experience: Record<string, [string, string]> = {
     "تجربة فقط · المعطيات تبقى في المتصفّح هذا.",
     "Démo uniquement · Les données restent dans ce navigateur.",
   ],
-  "Back to Qarrini": ["ارجع لقرّيني", "Retour à Qarrini"],
+  "Back to Karrini": ["ارجع لقرّيني", "Retour à Karrini"],
   "Learning, together.": ["نتعلّموا مع بعضنا.", "Apprendre, ensemble."],
   "Your teacher, your lessons and your next step forward.": [
     "أستاذك، دروسك وخطوتك الجاية.",

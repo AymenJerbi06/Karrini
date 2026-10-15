@@ -4,7 +4,7 @@ import { JoinClass } from "@/components/workspace/JoinClass";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  return { title: translate("Join a class | Qarrini", lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Join a class | Karrini", lang === "fr" ? "fr" : "ar") };
 }
 
 // The class id comes from ?class=…, read inside the Suspense boundary.

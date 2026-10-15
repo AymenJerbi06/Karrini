@@ -2,7 +2,7 @@ import { T } from "@/components/I18n";
 
 import Link from "@/components/LocalizedLink";
 
-// Thin notice reminding visitors this is a concept prototype (per the Qarrini guide).
+// Thin notice reminding visitors this is a concept prototype (per the Karrini guide).
 export function ConceptBar() {
   return (
     <div className="bg-gray-800 px-4 py-1.5 text-center text-xs text-gray-300">

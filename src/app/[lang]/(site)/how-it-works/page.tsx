@@ -12,13 +12,13 @@ export async function generateMetadata({
 }) {
   const { lang } = await params;
   return {
-    title: translate("How it Works | Qarrini", lang === "fr" ? "fr" : "ar"),
+    title: translate("How it Works | Karrini", lang === "fr" ? "fr" : "ar"),
   };
 }
 export default function HowPage() {
   return (
     <>
-      <PageIntro eyebrow="Learning with Qarrini" title="How does it work?">
+      <PageIntro eyebrow="Learning with Karrini" title="How does it work?">
         <T>
           From choosing a teacher to reviewing your lesson, one simple journey.
         </T>

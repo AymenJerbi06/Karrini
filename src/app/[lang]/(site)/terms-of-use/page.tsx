@@ -7,15 +7,15 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Prototype Use | Qarrini" };
+  const base = { title: "Prototype Use | Karrini" };
   return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
 }
 export default function TermsPage() {
   return (
     <LegalPage
-      title="Using the Qarrini prototype"
+      title="Using the Karrini prototype"
       updated="14 October 2026"
-      intro="Qarrini is a product concept for discussion with Sfax teachers and families. This site demonstrates the proposed experience and does not offer real tutoring bookings or paid subscriptions."
+      intro="Karrini is a product concept for discussion with Sfax teachers and families. This site demonstrates the proposed experience and does not offer real tutoring bookings or paid subscriptions."
       sections={[
         {
           id: "examples",

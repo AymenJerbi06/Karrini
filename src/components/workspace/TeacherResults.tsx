@@ -145,7 +145,7 @@ function Results({ classId }: { classId: string }) {
                       )}
                       <button
                         type="button"
-                        onClick={() => downloadText(`qarrini-results-${new Date(s.startedAt).toISOString().slice(0, 10)}.csv`, sessionCsv(s.asked, t))}
+                        onClick={() => downloadText(`karrini-results-${new Date(s.startedAt).toISOString().slice(0, 10)}.csv`, sessionCsv(s.asked, t))}
                         className={`${secondaryButton} mt-6`}
                       >
                         <DownloadIcon className="h-5 w-5" />

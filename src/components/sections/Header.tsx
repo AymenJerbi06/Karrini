@@ -24,7 +24,7 @@ const explore = [
     href: "/dashboard",
   },
   {
-    title: "About Qarrini",
+    title: "About Karrini",
     desc: "Why we are starting with Sfax teachers and families.",
     href: "/about-us",
   },

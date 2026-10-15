@@ -1,6 +1,6 @@
-# Qarrini
+# Karrini
 
-A concept website for interactive, teacher-led private tutoring in Sfax, based on `Qarrini_Guide_Download/Qarrini_Guide.pdf`. The homepage follows Sherpa's spacious section structure with concise copy, alternating feature rows, simple illustrations and a dark four-step journey, while retaining Qarrini's teal, cream and gold identity and Arabic/French typography.
+A concept website for interactive, teacher-led private tutoring in Sfax, based on `Karrini_Guide_Download/Karrini_Guide.pdf`. The homepage follows Sherpa's spacious section structure with concise copy, alternating feature rows, simple illustrations and a dark four-step journey, while retaining Karrini's teal, cream and gold identity and Arabic/French typography.
 
 ## Run locally
 
@@ -40,12 +40,12 @@ Directory teachers, prices and timetables are illustrative examples. Video is pe
 
 The guide is used as product context, not as instructions to onboard users, charge money or publish a live service. Teacher verification, final pricing, subscription rules and safeguards require decisions before launch.
 
-`src/data/catalog.ts` holds the example teacher data. Old Sherpa-specific routes redirect to the corresponding Qarrini experience. No new application dependencies are required.
+`src/data/catalog.ts` holds the example teacher data. Old Sherpa-specific routes redirect to the corresponding Karrini experience. No new application dependencies are required.
 
-## Arabic, French and Qarrini branding
+## Arabic, French and Karrini branding
 
 Arabic (`/ar`, RTL) and French (`/fr`, LTR) are the two main languages. Unprefixed URLs redirect to Arabic or the visitor's saved language preference. The language switcher preserves the current page and query parameters. All public pages, teacher information, demo workspaces, forms and accessibility labels are translated.
 
-The custom Qarrini identity uses an open-book speech-bubble symbol, a bilingual wordmark, and teal, warm cream and gold. See `docs/BRAND.md` for colours, typography and asset locations.
+The custom Karrini identity uses an open-book speech-bubble symbol, a bilingual wordmark, and teal, warm cream and gold. See `docs/BRAND.md` for colours, typography and asset locations.
 
 Translations live in `src/data/i18n/`; the concise homepage copy is in `home.ts`. Run `node scripts/check-translations.cjs` to validate translation pairs, number/currency phrases and locale-aware links. Pages now live under `src/app/[lang]/`.

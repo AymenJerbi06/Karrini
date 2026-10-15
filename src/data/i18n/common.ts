@@ -66,7 +66,7 @@ export const common: Record<string, [string, string]> = {
     "الدروس والتمارين والإصلاحات والتقدّم في بلاصة واحدة.",
     "Cours, devoirs, corrections et progression au même endroit.",
   ],
-  "About Qarrini": ["على قرّيني", "À propos de Qarrini"],
+  "About Karrini": ["على قرّيني", "À propos de Karrini"],
   "Why we are starting with Sfax teachers and families.": [
     "علاش بدينا مع أساتذة صفاقس وعائلاتها.",
     "Pourquoi commencer avec les professeurs et les familles de Sfax.",
@@ -87,7 +87,7 @@ export const common: Record<string, [string, string]> = {
   teacher: ["أستاذ", "professeur"],
   Other: ["معلومات أخرى", "Autres"],
   "Student Dashboard": ["فضاء التلميذ", "Tableau de bord élève"],
-  "Teach on Qarrini": ["درّس على قرّيني", "Enseigner sur Qarrini"],
+  "Teach on Karrini": ["درّس على قرّيني", "Enseigner sur Karrini"],
   "Privacy Policy": ["الخصوصية", "Confidentialité"],
   "Safeguarding & Minors": [
     "حماية التلامذة والقُصّر",
@@ -102,9 +102,9 @@ export const common: Record<string, [string, string]> = {
   ],
   "Starting with Sfax": ["البداية من صفاقس", "D’abord à Sfax"],
   Footer: ["أسفل الصفحة", "Pied de page"],
-  "© 2026 Qarrini. All rights reserved.": [
+  "© 2026 Karrini. All rights reserved.": [
     "© 2026 قرّيني. جميع الحقوق محفوظة.",
-    "© 2026 Qarrini. Tous droits réservés.",
+    "© 2026 Karrini. Tous droits réservés.",
   ],
   "Concept prototype. No real teachers, students, payments or results are represented.":
     [
@@ -134,11 +134,11 @@ export const common: Record<string, [string, string]> = {
       "اكتشف الأساتذة، قارن عروضهم واختار التوقيت اللي يناسب عايلتك.",
       "Découvrez les professeurs, comparez leurs offres et trouvez un horaire adapté à votre famille.",
     ],
-  "A little help from Qarrini": [
+  "A little help from Karrini": [
     "قرّيني تعاونك",
-    "Un coup de pouce de Qarrini",
+    "Un coup de pouce de Karrini",
   ],
-  "Qarrini help": ["المساعدة من قرّيني", "Aide Qarrini"],
+  "Karrini help": ["المساعدة من قرّيني", "Aide Karrini"],
   "Open help menu": ["افتح المساعدة", "Ouvrir l’aide"],
   "Close help menu": ["أغلق المساعدة", "Fermer l’aide"],
   "Close help": ["أغلق المساعدة", "Fermer l’aide"],
@@ -150,7 +150,7 @@ export const common: Record<string, [string, string]> = {
     "لوّج على أستاذ أو درس",
     "Trouver un professeur ou un cours",
   ],
-  "Understand how Qarrini works": [
+  "Understand how Karrini works": [
     "افهم كيفاش تخدم قرّيني",
     "Comprendre le fonctionnement",
   ],
@@ -166,8 +166,8 @@ export const common: Record<string, [string, string]> = {
     "قائمة مساعدة تجريبية. الدعم المباشر موش متوفّر توّا.",
     "Menu d’aide de démonstration. Le chat en direct n’est pas connecté.",
   ],
-  "Qarrini home": ["الصفحة الرئيسية لقرّيني", "Accueil Qarrini"],
-  "← Back to Qarrini": ["ارجع لقرّيني ←", "← Retour à Qarrini"],
+  "Karrini home": ["الصفحة الرئيسية لقرّيني", "Accueil Karrini"],
+  "← Back to Karrini": ["ارجع لقرّيني ←", "← Retour à Karrini"],
   "← All teachers": ["الأساتذة الكل ←", "← Tous les professeurs"],
   Back: ["ارجع", "Retour"],
   Continue: ["واصل", "Continuer"],

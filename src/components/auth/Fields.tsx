@@ -127,7 +127,7 @@ export function SmsPreview({ phone, code }: { phone: string; code: string }) {
           <T>Demo SMS to</T> <bdi dir="ltr">{phone}</bdi>
         </p>
         <p className="mt-1 text-gray-600">
-          <T>Your Qarrini code is</T>{" "}
+          <T>Your Karrini code is</T>{" "}
           <bdi dir="ltr" className="font-mono text-base font-bold tracking-[0.2em] text-gray-900">
             {code}
           </bdi>

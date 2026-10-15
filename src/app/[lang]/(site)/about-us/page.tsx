@@ -11,14 +11,14 @@ export async function generateMetadata({
 }) {
   const { lang } = await params;
   return {
-    title: translate("About Qarrini | Qarrini", lang === "fr" ? "fr" : "ar"),
+    title: translate("About Karrini | Karrini", lang === "fr" ? "fr" : "ar"),
   };
 }
 export default function AboutPage() {
   return (
     <>
       <PageIntro
-        eyebrow="About Qarrini"
+        eyebrow="About Karrini"
         title="Closer to your teacher. Closer to understanding."
       >
         <T>Online tutoring built around the people who make learning happen.</T>
@@ -36,7 +36,7 @@ export default function AboutPage() {
           </p>
           <p className="mt-5 text-lg leading-8 text-gray-500">
             <T>
-              Qarrini brings finding a class, taking part and practising
+              Karrini brings finding a class, taking part and practising
               afterwards into one place. There is room to ask, try and learn
               from mistakes.
             </T>

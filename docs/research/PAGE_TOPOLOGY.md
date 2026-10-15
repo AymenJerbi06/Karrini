@@ -51,14 +51,14 @@ was rebuilt from the page's heading structure using the same visual system.
 Route groups: `(site)` has header/footer/chat; `(auth)` (login, register) is chrome-free.
 Mock data lives in `src/data/catalog.ts`.
 
-## Qarrini content adaptation (14 October 2026)
+## Karrini content adaptation (14 October 2026)
 
-The tables above record the original Sherpa-inspired concept. The current implementation follows the Qarrini guide while retaining those visual tokens and section treatments.
+The tables above record the original Sherpa-inspired concept. The current implementation follows the Karrini guide while retaining those visual tokens and section treatments.
 
 Current public routes: `/`, `/find-a-teacher`, `/find-a-teacher/[level]/[subject]`, `/teachers/[id]`, `/how-it-works`, `/for-teachers`, `/about-us`, `/contact`, `/privacy-policy`, `/safeguarding-policy`, `/terms-of-use`.
 
 Demo routes: `/register` (three-step local enrollment), `/login` (role chooser), `/dashboard` (student, parent and teacher views), `/classroom` (same-page question, answer, review and feedback cycle).
 
-UK curricula, GBP rates, fabricated review claims, schools partnerships and PTA fundraising are not part of the Qarrini concept. Legacy template URLs redirect to relevant Qarrini pages. Home reviews are replaced by factual product information and subject links.
+UK curricula, GBP rates, fabricated review claims, schools partnerships and PTA fundraising are not part of the Karrini concept. Legacy template URLs redirect to relevant Karrini pages. Home reviews are replaced by factual product information and subject links.
 
 Demo state is browser-local; there is no production authentication, payment, messaging, video or multi-device classroom backend. Every teacher identity, class price, timetable and progress figure is illustrative.

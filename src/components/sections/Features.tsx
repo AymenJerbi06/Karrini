@@ -127,7 +127,7 @@ export function Features() {
       />
       <Row
         title="A real lesson. Wherever you are."
-        body="See your teacher, follow the board and work through exercises together, all inside Qarrini."
+        body="See your teacher, follow the board and work through exercises together, all inside Karrini."
         visual={<VideoVisual />}
       />
       <Row
@@ -138,7 +138,7 @@ export function Features() {
       />
       <Row
         title="A little help finding the right fit."
-        body="Not sure where to start? Tell us what you need, and the Qarrini team can help you find your way."
+        body="Not sure where to start? Tell us what you need, and the Karrini team can help you find your way."
         visual={<PeopleVisual />}
       />
     </section>

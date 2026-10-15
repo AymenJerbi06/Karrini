@@ -1,7 +1,7 @@
 export const notices: Record<string, [string, string]> = {
-  "Help shape Qarrini": [
+  "Help shape Karrini": [
     "ساهم في تطوير قرّيني",
-    "Construisons Qarrini ensemble",
+    "Construisons Karrini ensemble",
   ],
   "A better classroom starts": [
     "قسم أحسن يبدأ",
@@ -43,14 +43,14 @@ export const notices: Record<string, [string, string]> = {
     "Je donne mon avis en tant que",
   ],
   "Your feedback": ["رأيك وملاحظاتك", "Votre avis"],
-  "What would make Qarrini useful to you? Which parts would you change?": [
+  "What would make Karrini useful to you? Which parts would you change?": [
     "شنوّة يخلي قرّيني تنفعك؟ وشنوّة تحب تبدّل فيها؟",
-    "Qu’est-ce qui rendrait Qarrini utile pour vous ? Que changeriez-vous ?",
+    "Qu’est-ce qui rendrait Karrini utile pour vous ? Que changeriez-vous ?",
   ],
-  "This preview has no connected contact inbox. Prepare a note to share with the person demonstrating Qarrini. Nothing is sent or uploaded.":
+  "This preview has no connected contact inbox. Prepare a note to share with the person demonstrating Karrini. Nothing is sent or uploaded.":
     [
       "النسخة هاذي ما فيهاش بريد متّصل. حضّر ملاحظة وشاركها مع اللي يقدّملك قرّيني. ما يتبعث وما يترفّع شيء.",
-      "Ce prototype n’a pas de messagerie connectée. Préparez une note à partager avec la personne qui présente Qarrini. Rien n’est envoyé.",
+      "Ce prototype n’a pas de messagerie connectée. Préparez une note à partager avec la personne qui présente Karrini. Rien n’est envoyé.",
     ],
   "Prepare feedback note": ["حضّر ملاحظاتي", "Préparer ma note"],
   "Your note is ready to share": [
@@ -64,7 +64,7 @@ export const notices: Record<string, [string, string]> = {
     "خصوصية النسخة التجريبية",
     "Confidentialité du prototype",
   ],
-  "This notice explains how the Qarrini demonstration handles the information you enter. The prototype has no real student accounts, payment processing or connected classroom service.":
+  "This notice explains how the Karrini demonstration handles the information you enter. The prototype has no real student accounts, payment processing or connected classroom service.":
     [
       "الإشعار هذا يوضّح كيفاش النسخة التجريبية تتعامل مع المعلومات اللي تدخلها. ما فماش حسابات تلامذة حقيقية ولا دفع ولا قسم مباشر متّصل.",
       "Cette notice explique le traitement des informations dans la démo. Elle n’utilise ni comptes élèves réels, ni paiements, ni classe connectée.",
@@ -98,10 +98,10 @@ export const notices: Record<string, [string, string]> = {
       "Utilisez des exemples et évitez les photos avec noms, visages ou informations personnelles.",
     ],
   "Feedback notes": ["ملاحظاتكم", "Notes de retour"],
-  "The feedback form prepares a note that you can copy or download. It has no connected inbox and does not send the note to Qarrini. You decide whether and how to share the prepared note.":
+  "The feedback form prepares a note that you can copy or download. It has no connected inbox and does not send the note to Karrini. You decide whether and how to share the prepared note.":
     [
       "الاستمارة تحضّر ملاحظة تنجم تنسخها أو تحمّلها. ما تتبعثش لقرّيني. إنت تختار إذا وكيفاش تشاركها.",
-      "Le formulaire prépare une note à copier ou télécharger. Il ne l’envoie pas à Qarrini. Vous choisissez si et comment la partager.",
+      "Le formulaire prépare une note à copier ou télécharger. Il ne l’envoie pas à Karrini. Vous choisissez si et comment la partager.",
     ],
   "Before a real launch": ["قبل الإطلاق الحقيقي", "Avant le lancement réel"],
   "Real accounts, parental access, recordings, payments and student data handling require their own published policies and appropriate safeguards before launch. Those services are not offered by this demonstration.":
@@ -113,10 +113,10 @@ export const notices: Record<string, [string, string]> = {
     "حماية التلامذة والقُصّر",
     "Protection des élèves et mineurs",
   ],
-  "A safe place to make mistakes is central to the Qarrini concept. The principles below describe the proposed learning experience; this demonstration does not host real lessons or connect minors with teachers.":
+  "A safe place to make mistakes is central to the Karrini concept. The principles below describe the proposed learning experience; this demonstration does not host real lessons or connect minors with teachers.":
     [
       "مساحة آمنة للغلط والتعلّم أساسية في قرّيني. المبادئ هاذي تصف التجربة المقترحة. النسخة التجريبية ما تقدّمش دروس حقيقية وما تربطش قُصّر بأساتذة.",
-      "Un cadre sûr pour apprendre de ses erreurs est essentiel à Qarrini. Ces principes décrivent le projet ; la démo n’organise pas de vrais cours et ne met pas de mineurs en relation avec des professeurs.",
+      "Un cadre sûr pour apprendre de ses erreurs est essentiel à Karrini. Ces principes décrivent le projet ; la démo n’organise pas de vrais cours et ne met pas de mineurs en relation avec des professeurs.",
     ],
   "Private student work": ["خصوصية خدمة التلميذ", "Travail privé de l’élève"],
   "Student answers should be private from classmates by default. Teachers can use anonymous examples to explain a misconception. A public scoreboard of mistakes is not part of the concept.":
@@ -157,14 +157,14 @@ export const notices: Record<string, [string, string]> = {
       "الخدمة الحقيقية تستحق مسارات للإبلاغ ومسؤوليات واضحة وصلاحيات حسابات وقواعد للدروس والتواصل والتسجيلات. الإجراءات هاذي تتحدّد قبل التدريس الحقيقي.",
       "Le service réel devra définir signalement, responsabilités, droits d’accès et règles des cours, communications et enregistrements avant toute activité réelle.",
     ],
-  "Using the Qarrini prototype": [
+  "Using the Karrini prototype": [
     "استعمال النسخة التجريبية لقرّيني",
-    "Utiliser le prototype Qarrini",
+    "Utiliser le prototype Karrini",
   ],
-  "Qarrini is a product concept for discussion with Sfax teachers and families. This site demonstrates the proposed experience and does not offer real tutoring bookings or paid subscriptions.":
+  "Karrini is a product concept for discussion with Sfax teachers and families. This site demonstrates the proposed experience and does not offer real tutoring bookings or paid subscriptions.":
     [
       "قرّيني فكرة للنقاش مع أساتذة صفاقس وعائلاتها. الموقع يوضّح التجربة المقترحة من غير حجوزات أو اشتراكات مدفوعة حقيقية.",
-      "Qarrini est un concept à discuter avec les professeurs et familles de Sfax. Le site présente l’expérience envisagée sans réservation ni abonnement payant réel.",
+      "Karrini est un concept à discuter avec les professeurs et familles de Sfax. Le site présente l’expérience envisagée sans réservation ni abonnement payant réel.",
     ],
   "Illustrative content": ["محتوى توضيحي", "Contenu illustratif"],
   "Teacher identities, biographies, experience, schedules, availability, prices and learning results are fictional examples. They do not represent actual teachers, endorsements, students or pilot outcomes.":

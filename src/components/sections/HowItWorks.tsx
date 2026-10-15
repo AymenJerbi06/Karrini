@@ -25,7 +25,7 @@ const steps = [
   },
   {
     title: "3. Learn together, live",
-    body: "Join your teacher, practise and ask questions inside Qarrini.",
+    body: "Join your teacher, practise and ask questions inside Karrini.",
     Icon: VideoIcon,
   },
   {

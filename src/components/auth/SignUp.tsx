@@ -338,7 +338,7 @@ export function SignUp() {
             <div>
               <PhoneField value={phone} onChange={setPhone} label="Phone number (required)" />
               <p className="mt-2 text-xs leading-5 text-gray-500">
-                <T>Every Qarrini account needs a phone number for lesson reminders, schedule changes and family contact.</T>
+                <T>Every Karrini account needs a phone number for lesson reminders, schedule changes and family contact.</T>
               </p>
             </div>
           </div>
@@ -404,7 +404,7 @@ export function SignUp() {
                   <input type="number" min={0} max={50} value={years} onChange={(e) => setYears(e.target.value)} className={fieldClass} />
                 </label>
                 <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-                  <T>Qarrini reviews every teacher profile before it appears in public search.</T>
+                  <T>Karrini reviews every teacher profile before it appears in public search.</T>
                 </p>
               </>
             )}

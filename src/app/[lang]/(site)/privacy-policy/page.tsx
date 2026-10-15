@@ -7,7 +7,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Prototype Privacy Notice | Qarrini" };
+  const base = { title: "Prototype Privacy Notice | Karrini" };
   return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
 }
 export default function PrivacyPage() {
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Prototype privacy notice"
       updated="14 October 2026"
-      intro="This notice explains how the Qarrini demonstration handles the information you enter. The prototype has no real student accounts, payment processing or connected classroom service."
+      intro="This notice explains how the Karrini demonstration handles the information you enter. The prototype has no real student accounts, payment processing or connected classroom service."
       sections={[
         {
           id: "demo-account",
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           id: "feedback",
           title: "Feedback notes",
           body: [
-            "The feedback form prepares a note that you can copy or download. It has no connected inbox and does not send the note to Qarrini. You decide whether and how to share the prepared note.",
+            "The feedback form prepares a note that you can copy or download. It has no connected inbox and does not send the note to Karrini. You decide whether and how to share the prepared note.",
           ],
         },
         {

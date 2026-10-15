@@ -1,4 +1,4 @@
-// Messages exchanged in a live Qarrini classroom (on top of the RealtimeTransport).
+// Messages exchanged in a live Karrini classroom (on top of the RealtimeTransport).
 
 import type { AnswerStatus, Question, QuestionType } from "@/lib/questions";
 

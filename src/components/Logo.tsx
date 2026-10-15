@@ -46,14 +46,14 @@ export function Logo({ className }: { className?: string }) {
             locale === "ar" ? "tracking-normal" : "tracking-[-0.055em]"
           }
         >
-          {locale === "ar" ? "قرّيني" : "Qarrini"}
+          {locale === "ar" ? "قرّيني" : "Karrini"}
           <span className="text-[#d9a34f]">.</span>
         </span>
         <span
           lang={locale === "ar" ? "fr" : "ar"}
           className="text-[0.28em] font-semibold tracking-[0.16em] opacity-70"
         >
-          {locale === "ar" ? "QARRINI" : "قرّيني · معاك حتى تفهم"}
+          {locale === "ar" ? "KARRINI" : "قرّيني · معاك حتى تفهم"}
         </span>
       </span>
     </span>

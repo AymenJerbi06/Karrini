@@ -1,9 +1,9 @@
 export const classroom: Record<string, [string, string]> = {
   "Reviewed · Correct": ["تصلّحت · صحيحة", "Corrigée · Correcte"],
   "Reviewed · Incorrect": ["تصلّحت · غالطة", "Corrigée · Incorrecte"],
-  "The Qarrini classroom · Interactive demo": [
+  "The Karrini classroom · Interactive demo": [
     "قسم قرّيني · تجربة تفاعلية",
-    "La classe Qarrini · Démo interactive",
+    "La classe Karrini · Démo interactive",
   ],
   "One question. Every student heard.": [
     "سؤال واحد. وكل تلميذ عنده صوت.",

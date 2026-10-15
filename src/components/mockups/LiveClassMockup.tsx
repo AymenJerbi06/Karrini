@@ -2,7 +2,7 @@ import { T } from "@/components/I18n";
 
 import { Logo } from "@/components/Logo";
 
-// Original illustration of a live Qarrini lesson: teacher video, broadcast question, live progress.
+// Original illustration of a live Karrini lesson: teacher video, broadcast question, live progress.
 export function TeacherAvatar({
   skin = "#c98e66",
   hair = "#111827",

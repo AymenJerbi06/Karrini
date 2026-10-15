@@ -7,7 +7,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const base = { title: "Safeguarding & Minors | Qarrini" };
+  const base = { title: "Safeguarding & Minors | Karrini" };
   return { ...base, title: translate(base.title, lang === "fr" ? "fr" : "ar") };
 }
 export default function SafeguardingPage() {
@@ -15,7 +15,7 @@ export default function SafeguardingPage() {
     <LegalPage
       title="Safeguarding & minors"
       updated="14 October 2026"
-      intro="A safe place to make mistakes is central to the Qarrini concept. The principles below describe the proposed learning experience; this demonstration does not host real lessons or connect minors with teachers."
+      intro="A safe place to make mistakes is central to the Karrini concept. The principles below describe the proposed learning experience; this demonstration does not host real lessons or connect minors with teachers."
       sections={[
         {
           id: "private",

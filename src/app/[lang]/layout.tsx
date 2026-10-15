@@ -40,11 +40,11 @@ export async function generateMetadata({
   return {
     title:
       lang === "fr"
-        ? "Qarrini | Apprendre, ensemble."
+        ? "Karrini | Apprendre, ensemble."
         : "قرّيني | معاك حتى تفهم",
     description:
       lang === "fr"
-        ? "Les professeurs de Sfax, des cours interactifs et un accompagnement qui fait la différence. Découvrez Qarrini."
+        ? "Les professeurs de Sfax, des cours interactifs et un accompagnement qui fait la différence. Découvrez Karrini."
         : "أساتذة صفاقس، دروس تفاعلية ومرافقة تقرّبك للفهم. اختار أستاذك وشارك في كل درس مع قرّيني.",
   };
 }

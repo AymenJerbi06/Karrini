@@ -5,9 +5,9 @@ export const marketing: Record<string, [string, string]> = {
     "Collège, lycée et baccalauréat",
   ],
   "Are you a teacher?": ["إنت أستاذ؟", "Vous êtes professeur ?"],
-  "Talk to the Qarrini team": [
+  "Talk to the Karrini team": [
     "احكي مع فريق قرّيني",
-    "Parler à l’équipe Qarrini",
+    "Parler à l’équipe Karrini",
   ],
   "The classroom": ["تعلّم على راحتك،", "Apprendre à votre rythme,"],
   "that listens back.": ["ومعاك حتى تفهم.", "comprendre ensemble."],
@@ -83,10 +83,10 @@ export const marketing: Record<string, [string, string]> = {
     "موش كان تتفرّج على الحلّ. جرّب بيدك.",
     "Ne regardez pas seulement la solution. Essayez.",
   ],
-  "Lessons happen inside Qarrini. The teacher explains on video, sends a question to the whole class, and every student answers privately, with an answer box, a drawing pad or a photo of their working.":
+  "Lessons happen inside Karrini. The teacher explains on video, sends a question to the whole class, and every student answers privately, with an answer box, a drawing pad or a photo of their working.":
     [
       "الدرس يصير داخل قرّيني. الأستاذ يفسّر بالفيديو، يبعث سؤال للقسم وكل تلميذ يجاوب وحده: بالكتابة، بالرسم أو بصورة من خدمته.",
-      "Le cours se déroule dans Qarrini. Le professeur explique en vidéo, pose une question à la classe et chaque élève répond en privé, par écrit, avec un dessin ou une photo de son travail.",
+      "Le cours se déroule dans Karrini. Le professeur explique en vidéo, pose une question à la classe et chaque élève répond en privé, par écrit, avec un dessin ou une photo de son travail.",
     ],
   "04 · Continue after class": [
     "04 · واصل بعد الدرس",
@@ -114,14 +114,14 @@ export const marketing: Record<string, [string, string]> = {
       "إجاباتك موش ظاهرة لزملائك. الأستاذ ينجم يعرض حلّ من غير اسم، يفسّر الغلطة ويخلّيك تعاود تجرّب. والإجابة المكتوبة اللي تستنّى الإصلاح ما تتحسبش غالطة.",
       "Les réponses restent privées. Le professeur peut partager un exemple anonyme, expliquer une erreur et permettre de réessayer. Un travail manuscrit en attente de correction n’est jamais compté comme faux.",
     ],
-  "Inside a live Qarrini lesson": [
+  "Inside a live Karrini lesson": [
     "داخل القسم التفاعلي متاع قرّيني",
-    "Au cœur d’un cours Qarrini",
+    "Au cœur d’un cours Karrini",
   ],
-  "The teacher teaches through video inside Qarrini. Students never leave the platform to receive a question, answer it, or see the teacher's explanation.":
+  "The teacher teaches through video inside Karrini. Students never leave the platform to receive a question, answer it, or see the teacher's explanation.":
     [
       "الأستاذ يدرّس بالفيديو داخل قرّيني. التلميذ يستقبل السؤال ويجاوب ويشوف التفسير من غير ما يخرج من المنصّة.",
-      "Le professeur enseigne en vidéo dans Qarrini. L’élève reçoit les questions, répond et consulte les explications sans quitter la plateforme.",
+      "Le professeur enseigne en vidéo dans Karrini. L’élève reçoit les questions, répond et consulte les explications sans quitter la plateforme.",
     ],
   "1. Explain": ["1. فسّر", "1. Expliquer"],
   "2. Ask": ["2. اسأل", "2. Questionner"],
@@ -169,24 +169,24 @@ export const marketing: Record<string, [string, string]> = {
     "أسئلتك، وإجاباتنا",
     "Les réponses à vos questions",
   ],
-  "Getting to know Qarrini? Here's a little more about the idea.": [
+  "Getting to know Karrini? Here's a little more about the idea.": [
     "تحب تعرف أكثر على قرّيني؟ هاني نفسّرولك الفكرة.",
-    "Envie d’en savoir plus ? Découvrez le concept Qarrini.",
+    "Envie d’en savoir plus ? Découvrez le concept Karrini.",
   ],
-  "Getting to know Qarrini? Here’s a little more about the idea.": [
+  "Getting to know Karrini? Here’s a little more about the idea.": [
     "تحب تعرف أكثر على قرّيني؟ هاني نفسّرولك الفكرة.",
-    "Envie d’en savoir plus ? Découvrez le concept Qarrini.",
+    "Envie d’en savoir plus ? Découvrez le concept Karrini.",
   ],
   "Have feedback?": ["عندك ملاحظة؟", "Une suggestion ?"],
-  "Help shape Qarrini": [
+  "Help shape Karrini": [
     "ساهم في تطوير قرّيني",
-    "Construisons Qarrini ensemble",
+    "Construisons Karrini ensemble",
   ],
-  "What is Qarrini?": ["شنوّة هي قرّيني؟", "Qu’est-ce que Qarrini ?"],
-  "Qarrini is a proposed home for teacher-led private tutoring in Sfax. Families discover teachers, compare monthly classes and join lessons where every student can answer questions and receive feedback.":
+  "What is Karrini?": ["شنوّة هي قرّيني؟", "Qu’est-ce que Karrini ?"],
+  "Karrini is a proposed home for teacher-led private tutoring in Sfax. Families discover teachers, compare monthly classes and join lessons where every student can answer questions and receive feedback.":
     [
       "قرّيني فكرة منصّة للدروس الخصوصية مع أساتذة من صفاقس. العائلات تكتشف الأساتذة وتقارن الدروس الشهرية وتلتحق بأقسام يشارك فيها كل تلميذ ويتلقّى إصلاح.",
-      "Qarrini est un projet de plateforme de cours particuliers à Sfax. Les familles découvrent les professeurs, comparent les cours mensuels et rejoignent des classes où chaque élève participe et reçoit des retours.",
+      "Karrini est un projet de plateforme de cours particuliers à Sfax. Les familles découvrent les professeurs, comparent les cours mensuels et rejoignent des classes où chaque élève participe et reçoit des retours.",
     ],
   "Who are the classes for?": [
     "الدروس هاذي لشكون؟",
@@ -457,10 +457,10 @@ export const marketing: Record<string, [string, string]> = {
     "وفرص أكثر باش تفهم.",
     "Plus de chances de comprendre.",
   ],
-  "Qarrini is an idea for a better home for private tutoring, designed first for the teachers, students and families of Sfax.":
+  "Karrini is an idea for a better home for private tutoring, designed first for the teachers, students and families of Sfax.":
     [
       "قرّيني فكرة لفضاء أحسن للدروس الخصوصية، بدايته مع أساتذة صفاقس وتلامذتها وعائلاتها.",
-      "Qarrini imagine un meilleur cadre pour les cours particuliers, d’abord pour les professeurs, élèves et familles de Sfax.",
+      "Karrini imagine un meilleur cadre pour les cours particuliers, d’abord pour les professeurs, élèves et familles de Sfax.",
     ],
   "The classroom that listens back": ["معاك حتى تفهم", "Apprendre, ensemble"],
   "Watching a teacher solve a problem is only part of learning. Students also need time to try it themselves, make a mistake safely and receive an explanation that meets their difficulty.":
@@ -468,10 +468,10 @@ export const marketing: Record<string, [string, string]> = {
       "التفرّج على الأستاذ وهو يحلّ موش كل التعلّم. التلميذ يستحق وقت يجرّب وحده ويغلط من غير إحراج ويلقى تفسير يجاوب على صعوبته.",
       "Regarder une solution n’est qu’une partie de l’apprentissage. L’élève doit pouvoir essayer, se tromper sereinement et recevoir une explication adaptée.",
     ],
-  "Qarrini brings teacher discovery, class subscriptions, live lessons and after-class practice into one experience. The teacher keeps their own teaching identity. Students get a private way to participate, and parents get a clearer view of the learning journey.":
+  "Karrini brings teacher discovery, class subscriptions, live lessons and after-class practice into one experience. The teacher keeps their own teaching identity. Students get a private way to participate, and parents get a clearer view of the learning journey.":
     [
       "قرّيني تجمع اكتشاف الأساتذة والاشتراكات والدروس المباشرة والتمارين في تجربة واحدة. الأستاذ يحافظ على هويّته، والتلميذ يشارك في مساحة خاصة، والولي يتابع القراية بوضوح.",
-      "Qarrini réunit découverte des professeurs, abonnements, cours en direct et pratique. Le professeur garde son identité, l’élève participe en privé et les parents suivent plus clairement le parcours.",
+      "Karrini réunit découverte des professeurs, abonnements, cours en direct et pratique. Le professeur garde son identité, l’élève participe en privé et les parents suivent plus clairement le parcours.",
     ],
   "Why Sfax first?": ["علاش صفاقس في البداية؟", "Pourquoi commencer à Sfax ?"],
   "We want to begin with a focused local community and the teachers families already know. Secondary school and Bac classes offer a practical starting point. Listening to experienced teachers comes before expanding to more places or age groups.":
@@ -513,7 +513,7 @@ export const marketing: Record<string, [string, string]> = {
   "The classroom that listens back. Interactive private tutoring for students and teachers, designed first for Sfax.":
     [
       "قرّيني، معاك حتى تفهم. دروس خصوصية تفاعلية للتلامذة والأساتذة، البداية من صفاقس.",
-      "Qarrini : apprendre, ensemble. Des cours particuliers interactifs, pensés d’abord pour Sfax.",
+      "Karrini : apprendre, ensemble. Des cours particuliers interactifs, pensés d’abord pour Sfax.",
     ],
   "Local teachers. Private answers. More moments of understanding.": [
     "أساتذة من عندنا. إجابات خاصة. وفهم يقربلك أكثر.",
