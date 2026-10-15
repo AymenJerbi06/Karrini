@@ -44,3 +44,5 @@ next-env.d.ts
 /docs/design-references/
 /Qarrini_Guide_Download/
 /Qarrini_Guide_Download.zip
+
+.vercel
