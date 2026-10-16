@@ -53,7 +53,7 @@ export function AdminReview() {
           <T>Teacher applications</T>
         </h1>
         <p className="mt-3 leading-7 text-gray-500">
-          <T>Approved teachers can open the teacher portal and their class becomes visible to students.</T>
+          <T>Every teacher is listed for students. Approved teachers can also open the teacher portal and teach; rejected teachers are hidden.</T>
         </p>
 
         <div className="mt-8 flex flex-wrap gap-2" role="group">
@@ -118,7 +118,7 @@ function ApplicationCard({ a, onDone }: { a: AdminApplication; onDone: (message:
     setError("");
     try {
       await reviewApplication(a.id, decision, note);
-      onDone(t(decision === "approved" ? "{name} is approved and now visible to students." : "{name} was not approved. They can see your note.", { name: `${a.firstName} ${a.lastName}` }));
+      onDone(t(decision === "approved" ? "{name} is approved and can now open the teacher portal." : "{name} was not approved and is hidden from students. They can see your note.", { name: `${a.firstName} ${a.lastName}` }));
     } catch {
       setError(t("The decision could not be saved. Try again."));
     } finally {

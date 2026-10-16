@@ -70,7 +70,7 @@ function TeacherStack() {
           {teacher ? <bdi dir="auto">{teacher.teacherName}</bdi> : <T>Our first teachers are joining soon</T>}
         </p>
         <p className="mt-3 text-base text-gray-500">
-          <T>{teacher ? labelFor(subjects, teacher.subject) : "Every teacher is reviewed before appearing here."}</T>
+          <T>{teacher ? labelFor(subjects, teacher.subject) : "Teachers appear here as soon as they join Karrini."}</T>
         </p>
         <span className="mt-5 inline-block rounded border border-blue-200 bg-blue-50 px-3 py-1 text-sm text-brand">
           <T>Sfax · Secondary & Bac</T>

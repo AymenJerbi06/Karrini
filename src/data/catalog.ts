@@ -1,5 +1,5 @@
 // Reference lists for Karrini: school years, subjects and class formats.
-// Teachers and classes come from the database (only admin-approved teachers are published).
+// Teachers and classes come from the database (every teacher is listed unless an admin rejects them).
 
 export const levels = [
   { slug: "all", label: "All school years" },

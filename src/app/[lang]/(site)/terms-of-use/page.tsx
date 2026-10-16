@@ -21,7 +21,7 @@ export default function TermsPage() {
           id: "teachers",
           title: "Teaching on Karrini",
           body: [
-            "Only teachers with a Karrini account who have been approved by the Karrini team can open the teacher portal and appear to students. To be considered, a teacher submits an application describing their subject, school years, how many sessions they give each week, their teaching methods and their price.",
+            "Every teacher with a Karrini account is listed for students and visitors. Only teachers approved by the Karrini team can open the teacher portal and teach. To be approved, a teacher submits an application describing their subject, school years, how many sessions they give each week, their teaching methods and their price.",
             "Karrini keeps a 15% commission on every payment a student makes for a teacher's classes. The teacher receives the remaining 85%. By submitting an application, the teacher accepts these Terms and this commission.",
             "The Karrini team may approve, decline or withdraw an approval, for example if the information provided is inaccurate or a class does not respect these Terms. Information on teacher pages is provided by the teachers themselves.",
           ],

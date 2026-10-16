@@ -8,7 +8,7 @@ import { SearchIcon } from "@/components/icons";
 import { Portrait } from "@/components/mockups/HomeVisuals";
 import { useDirectory } from "@/lib/classes";
 
-/** Directory of approved teachers' classes (only published classes are readable from the database). */
+/** Directory of every teacher's class (rejected teachers' classes are unpublished and unreadable). */
 export function TeacherDirectory({
   initialLevel = "all",
   initialSubject = "all",
@@ -213,7 +213,7 @@ export function TeacherDirectory({
               <T>
                 {classes.length
                   ? "Try a different school year, subject or schedule."
-                  : "Every teacher is reviewed before appearing here. Check back soon, or ask your teacher for their class link."}
+                  : "Teachers appear here as soon as they join Karrini. Check back soon, or ask your teacher for their class link."}
               </T>
             </p>
             {classes.length > 0 && (

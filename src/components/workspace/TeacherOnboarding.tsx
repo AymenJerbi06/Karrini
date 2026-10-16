@@ -35,7 +35,7 @@ export function TeacherOnboarding({ account }: { account: Account }) {
         </h1>
         <p className="mt-3 leading-7 text-gray-500">
           <T>
-            Every teacher on Karrini is reviewed before they can open the teacher portal and appear to students.
+            Your class is already listed for students. The Karrini team reviews every teacher before they can open the teacher portal and teach.
           </T>
         </p>
 

@@ -90,7 +90,7 @@ export async function fetchClass(id: string): Promise<ClassInfo | null> {
   return (await fetchClasses([id]))[0] ?? null;
 }
 
-/** Published classes of approved teachers, for the directory and the home page. */
+/** Published classes of all teachers (not rejected), for the directory and the home page. */
 export function useDirectory(limit?: number) {
   return useRemote(
     `directory:${limit ?? "all"}`,
