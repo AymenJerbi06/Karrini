@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "@/components/LocalizedLink";
 import { Localized, T, useI18n } from "@/components/I18n";
-import { TeacherShell } from "@/components/workspace/TeacherShell";
 import { QuestionEditor, QuestionSummary } from "@/components/classroom/QuestionEditor";
 import { primaryButton } from "@/components/SiteUi";
 import { ChevronDownIcon, PlusIcon, TrashIcon } from "@/components/icons";
@@ -11,18 +10,7 @@ import { Toast } from "@/components/ui/Motion";
 import { saveBank, useQuestionBank, type Question } from "@/lib/questions";
 import { localizeQuestion } from "@/components/classroom/localize";
 
-export function TeacherQuestions() {
-  return (
-    <TeacherShell
-      title="Prepare your questions"
-      intro="Write questions before the lesson and send them with one click during class. You can also add new questions live."
-    >
-      {({ cls }) => <Bank classId={cls.id} />}
-    </TeacherShell>
-  );
-}
-
-function Bank({ classId }: { classId: string }) {
+export function QuestionBank({ classId }: { classId: string }) {
   const { t } = useI18n();
   const raw = useQuestionBank(classId);
   const bank = raw.map((q) => localizeQuestion(q, t));
@@ -36,7 +24,7 @@ function Bank({ classId }: { classId: string }) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-gray-500">{t("{n} questions ready for your next lesson", { n: bank.length })}</p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/classroom" className="inline-flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-brand hover:bg-emerald-50">
+          <Link href={`/classroom?class=${encodeURIComponent(classId)}`} className="inline-flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-brand hover:bg-emerald-50">
             <T>Use them in a live class</T> →
           </Link>
           {editing !== "new" && (

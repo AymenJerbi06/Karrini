@@ -20,9 +20,12 @@ export type Account = {
   phoneVerified: boolean;
   email?: string;
   createdAt: number;
-  student?: { level: string; enrollments: string[] };
+  student?: { level: string; enrollments: string[]; /** Group chosen in each class (null = whole class). */ groups: Record<string, string | null> };
   teacher?: {
+    /** First class (created with the account). */
     classId: string;
+    /** Every class the teacher teaches, oldest first. */
+    classIds: string[];
     subject: string;
     levels: string[];
     years: number;
@@ -88,8 +91,8 @@ async function loadAccount(userId: string | undefined, email: string | undefined
   const [profile, teacher, enrollments, cls, application, admin] = await Promise.all([
     sb.from("profiles").select("*").eq("id", userId).maybeSingle(),
     sb.from("teacher_profiles").select("*").eq("id", userId).maybeSingle(),
-    sb.from("enrollments").select("class_id").eq("student_id", userId),
-    sb.from("classes").select("id").eq("teacher_id", userId).order("created_at").limit(1).maybeSingle(),
+    sb.from("enrollments").select("class_id, group_id").eq("student_id", userId),
+    sb.from("classes").select("id").eq("teacher_id", userId).order("created_at"),
     sb.from("teacher_applications").select("status, admin_note").eq("teacher_id", userId).maybeSingle(),
     sb.rpc("is_admin"),
   ]);
@@ -114,12 +117,17 @@ async function loadAccount(userId: string | undefined, email: string | undefined
       createdAt: new Date(p.created_at).getTime(),
       student:
         p.role === "student"
-          ? { level: p.school_level ?? "", enrollments: (enrollments.data ?? []).map((e) => e.class_id) }
+          ? {
+              level: p.school_level ?? "",
+              enrollments: (enrollments.data ?? []).map((e) => e.class_id),
+              groups: Object.fromEntries((enrollments.data ?? []).map((e) => [e.class_id, e.group_id ?? null])),
+            }
           : undefined,
       teacher:
         p.role === "teacher"
           ? {
-              classId: cls.data?.id ?? "",
+              classId: cls.data?.[0]?.id ?? "",
+              classIds: (cls.data ?? []).map((c) => c.id),
               subject: t?.subject ?? "math",
               levels: t?.levels ?? [],
               years: t?.years ?? 0,
@@ -273,11 +281,48 @@ export async function signOut() {
 /** Current account snapshot outside React (e.g. inside event handlers). */
 export const currentAccount = () => state.account ?? null;
 
-export async function enroll(classId: string): Promise<boolean> {
+export async function enroll(classId: string, groupId: string | null = null): Promise<boolean> {
   const account = currentAccount();
   if (!account) return false;
-  const { error } = await supabase().from("enrollments").insert({ student_id: account.id, class_id: classId });
+  const { error } = await supabase().from("enrollments").insert({ student_id: account.id, class_id: classId, group_id: groupId });
   if (error && error.code !== "23505") return false; // 23505 = already enrolled
   await refreshAuth();
   return true;
+}
+
+/* ---------------- Account settings ---------------- */
+
+export async function updateProfile(input: { firstName: string; lastName: string; phone: string; schoolLevel?: string }) {
+  const account = currentAccount();
+  if (!account) throw new Error("signed-out");
+  const row: Record<string, string | null> = {
+    first_name: input.firstName.trim(),
+    last_name: input.lastName.trim(),
+    phone: input.phone || null,
+  };
+  if (input.schoolLevel !== undefined) row.school_level = input.schoolLevel;
+  const { error } = await supabase().from("profiles").update(row).eq("id", account.id);
+  if (error) throw error;
+  await refreshAuth();
+}
+
+/** Changes the password after checking the current one. */
+export async function changePassword(current: string, next: string): Promise<AuthError | "wrong-password" | null> {
+  const account = currentAccount();
+  if (!account?.email) return "unknown";
+  const check = await supabase().auth.signInWithPassword({ email: account.email, password: current });
+  if (check.error) return "wrong-password";
+  const { error } = await supabase().auth.updateUser({ password: next });
+  return error ? mapError(error) : null;
+}
+
+/** Sends a confirmation link to the new address; the email changes once it is confirmed. */
+export async function changeEmail(email: string, redirectTo: string): Promise<AuthError | null> {
+  const { error } = await supabase().auth.updateUser({ email: email.trim().toLowerCase() }, { emailRedirectTo: redirectTo });
+  return error ? mapError(error) : null;
+}
+
+/** Signs out on every device (revokes all sessions). */
+export async function signOutEverywhere() {
+  await supabase().auth.signOut({ scope: "global" });
 }

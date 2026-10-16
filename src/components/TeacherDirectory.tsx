@@ -36,7 +36,7 @@ export function TeacherDirectory({
         (subject === "all" || c.subject === subject) &&
         (format === "any" || c.methods.includes(format)) &&
         normalize(
-          [c.teacherName, c.location, c.headline, labelFor(subjects, c.subject)].flatMap((value) => [value, tr(value)]).join(" "),
+          [c.teacherName, c.name, c.location, c.headline, labelFor(subjects, c.subject)].flatMap((value) => [value, tr(value)]).join(" "),
         ).includes(normalize(search)),
     )
     .sort((a, b) => (sort === "price" ? (a.price ?? 1e9) - (b.price ?? 1e9) : sort === "experience" ? b.years - a.years : 0));
@@ -158,7 +158,7 @@ export function TeacherDirectory({
               </div>
               <div className="min-w-0">
                 <p className="text-sm text-brand">
-                  <T>{labelFor(subjects, c.subject)}</T>
+                  {c.name ? <bdi dir="auto">{c.name}</bdi> : <T>{labelFor(subjects, c.subject)}</T>}
                   {c.location && (
                     <>
                       <span className="mx-2 text-gray-300">·</span>

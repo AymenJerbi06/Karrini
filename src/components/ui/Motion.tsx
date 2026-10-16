@@ -77,7 +77,7 @@ export function CountUp({ value, suffix = "", className }: { value: number; suff
 }
 
 /** Small transient confirmation shown at the bottom of the screen. */
-export function Toast({ message, onDone }: { message: string; onDone: () => void }) {
+export function Toast({ message, onDone, className }: { message: string; onDone: () => void; className?: string }) {
   useEffect(() => {
     if (!message) return;
     const t = window.setTimeout(onDone, 3800);
@@ -88,7 +88,7 @@ export function Toast({ message, onDone }: { message: string; onDone: () => void
     <div
       role="status"
       aria-live="polite"
-      className="animate-toast-in fixed bottom-6 left-1/2 z-[60] w-[calc(100vw-32px)] max-w-md -translate-x-1/2 rounded-lg bg-gray-900 px-5 py-4 text-sm font-medium text-white shadow-xl"
+      className={`animate-toast-in fixed left-1/2 w-[calc(100vw-32px)] max-w-md -translate-x-1/2 rounded-lg bg-gray-900 px-5 py-4 text-sm font-medium text-white shadow-xl ${className ?? "bottom-6 z-[60]"}`}
     >
       {message}
     </div>

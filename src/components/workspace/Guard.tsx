@@ -6,7 +6,6 @@ import Link from "@/components/LocalizedLink";
 import { T } from "@/components/I18n";
 import { primaryButton, secondaryButton } from "@/components/SiteUi";
 import { homeFor, useAuth, type Account, type Role } from "@/lib/auth";
-import { labelFor, subjects } from "@/data/catalog";
 
 /** Renders children only for the allowed roles; otherwise explains how to get in. */
 export function RequireRole({
@@ -79,15 +78,3 @@ function Panel({ title, body, children }: { title: string; body: string; childre
   );
 }
 
-/** The class a teacher account teaches (created with the account, published on approval). */
-export function teacherClass(account: Account) {
-  const subject = account.teacher?.subject ?? "economics";
-  return {
-    id: account.teacher?.classId ?? "",
-    subject,
-    subjectLabel: labelFor(subjects, subject),
-    capacity: 30,
-    timetable: [] as { day: string; time: string }[],
-    verified: account.teacher?.status === "verified",
-  };
-}

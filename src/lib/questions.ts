@@ -54,6 +54,7 @@ export type AskedQuestion = {
 export type SessionRecord = {
   id: string;
   classId: string;
+  groupId?: string | null;
   teacherId: string;
   startedAt: number;
   endedAt?: number;
@@ -277,13 +278,17 @@ export async function saveBank(classId: string, list: Question[]) {
 /* ---------------- Live session records ---------------- */
 
 /** Starts (or resumes) the running session for a class. */
-export async function openSession(classId: string, teacherId: string): Promise<{ id: string; startedAt: number }> {
+export async function openSession(classId: string, teacherId: string, groupId: string | null = null): Promise<{ id: string; startedAt: number }> {
   const sb = supabase();
-  const existing = await sb.from("sessions").select("id, started_at").eq("class_id", classId).is("ended_at", null).maybeSingle();
-  if (existing.data) return { id: existing.data.id, startedAt: new Date(existing.data.started_at).getTime() };
+  const existing = await sb.from("sessions").select("id, started_at, group_id").eq("class_id", classId).is("ended_at", null).maybeSingle();
+  if (existing.data) {
+    if ((existing.data.group_id ?? null) === groupId) return { id: existing.data.id, startedAt: new Date(existing.data.started_at).getTime() };
+    // A session left open for another group: close it before starting this one.
+    await sb.from("sessions").update({ ended_at: new Date().toISOString() }).eq("id", existing.data.id);
+  }
   const { data, error } = await sb
     .from("sessions")
-    .insert({ class_id: classId, teacher_id: teacherId })
+    .insert({ class_id: classId, teacher_id: teacherId, group_id: groupId })
     .select("id, started_at")
     .single();
   if (error) throw error;

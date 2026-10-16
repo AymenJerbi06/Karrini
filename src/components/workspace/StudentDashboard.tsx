@@ -1,20 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
-import { panelClass, primaryButton, secondaryButton } from "@/components/SiteUi";
-import { BookIcon, DownloadIcon, TrendIcon, VideoIcon } from "@/components/icons";
-import { CountUp, Reveal } from "@/components/ui/Motion";
+import { panelClass, primaryButton } from "@/components/SiteUi";
+import { ChevronRightIcon, UsersIcon, VideoIcon } from "@/components/icons";
+import { Reveal } from "@/components/ui/Motion";
 import { RequireRole } from "@/components/workspace/Guard";
-import { statusLabel, statusTone } from "@/components/classroom/ResultsPanel";
-import { kindLabels } from "@/components/workspace/TeacherMaterials";
-import { displayName, formatPhone, signOut, type Account } from "@/lib/auth";
-import { useClasses, useLiveSessions, type ClassInfo } from "@/lib/classes";
-import { fileBadge, formatSize, openMaterial, useMaterials, type Material } from "@/lib/materials";
-import { useMyAnswers } from "@/lib/questions";
-import { labelFor, subjects } from "@/data/catalog";
-import { cn } from "@/lib/cn";
+import { displayName, type Account } from "@/lib/auth";
+import { classTitle, useClasses, useLiveSessions, type ClassInfo, type LiveSession } from "@/lib/classes";
+import { formatSlots, groupLabel, useGroups, type Group } from "@/lib/groups";
+import { useClassProgress } from "@/lib/progress";
 
 export function StudentDashboard() {
   return (
@@ -37,50 +32,44 @@ function Header({ account, title, intro }: { account: Account; title: string; in
           <T>{intro}</T>
         </p>
       </div>
-      <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm">
-        <p className="font-semibold text-gray-800">
-          <bdi dir="auto">{displayName(account)}</bdi>
-        </p>
-        {account.email && (
-          <p className="mt-0.5 text-gray-500">
-            <bdi dir="ltr">{account.email}</bdi>
-          </p>
-        )}
-        {account.phone && (
-          <p className="mt-0.5 text-gray-500">
-            <bdi dir="ltr">{formatPhone(account.phone)}</bdi>
-          </p>
-        )}
-        <button type="button" onClick={() => void signOut()} className="mt-1 min-h-9 text-xs text-gray-500 underline">
-          <T>Sign out</T>
-        </button>
-      </div>
+      <Link href="/account" className="flex min-h-12 items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm hover:border-gray-300">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-800 text-xs font-bold text-white">
+          {(account.firstName[0] ?? "") + (account.lastName[0] ?? "")}
+        </span>
+        <span>
+          <bdi dir="auto" className="block font-semibold text-gray-800">
+            {displayName(account)}
+          </bdi>
+          <span className="text-xs text-gray-500">
+            <T>Account settings</T>
+          </span>
+        </span>
+      </Link>
     </div>
   );
 }
 
-const teacherLabel = (c: ClassInfo) => c.teacherName;
+/** The session running for this student's group, if any. */
+export function liveForStudent(account: Account, live: Record<string, LiveSession>, classId: string) {
+  const s = live[classId];
+  const mine = account.student?.groups[classId] ?? null;
+  return s && (s.groupId === null || s.groupId === mine) ? s : undefined;
+}
 
 function StudentView({ account }: { account: Account }) {
-  const { t, locale } = useI18n();
   const ids = account.student?.enrollments ?? [];
-  const { data: classes, loading: classesLoading } = useClasses(ids);
+  const { data: classes, loading } = useClasses(ids);
+  const { data: groups } = useGroups(ids);
   const live = useLiveSessions(ids);
-  const liveClass = classes.find((c) => live[c.id]);
-  const materials = useMaterials(ids);
-  const { answers: myAnswers } = useMyAnswers(account.id);
-  const released = myAnswers.filter((a) => a.released);
-  const right = released.filter((a) => a.status === "correct").length;
-  const wrong = released.filter((a) => a.status === "incorrect").length;
-  const [tab, setTab] = useState<"materials" | "results">("materials");
-  const next = classes.find((c) => c.schedule) ?? classes[0];
+  const liveClass = classes.find((c) => liveForStudent(account, live, c.id));
+  const { t } = useI18n();
 
   return (
     <div className="bg-gray-50">
       <div className="mx-auto max-w-6xl px-6 py-10 md:py-14">
-        <Header account={account} title="Welcome, {name}." intro="Your live lessons, your teachers' materials and your progress." />
+        <Header account={account} title="Welcome, {name}." intro="Your classes, your attendance and your progress in each one." />
 
-        {liveClass ? (
+        {liveClass && (
           <Reveal className="mt-8">
             <section className="flex flex-col justify-between gap-6 rounded-2xl bg-gray-800 p-6 text-white md:flex-row md:items-center md:p-8">
               <div className="flex items-center gap-4">
@@ -92,10 +81,10 @@ function StudentView({ account }: { account: Account }) {
                     <T>Live now</T>
                   </p>
                   <h2 className="font-display mt-1 text-2xl font-bold">
-                    <T>{labelFor(subjects, liveClass.subject)}</T>
+                    <bdi dir="auto">{classTitle(liveClass, t)}</bdi>
                   </h2>
                   <p className="mt-1 text-sm text-gray-300">
-                    <bdi dir="auto">{teacherLabel(liveClass)}</bdi> <T>has started the lesson.</T>
+                    <bdi dir="auto">{liveClass.teacherName}</bdi> <T>has started the lesson.</T>
                   </p>
                 </div>
               </div>
@@ -103,37 +92,33 @@ function StudentView({ account }: { account: Account }) {
                 href={`/classroom?class=${liveClass.id}`}
                 className="inline-flex min-h-12 items-center justify-center rounded-md bg-white px-6 font-semibold text-gray-900 transition-transform hover:scale-[1.03]"
               >
-                <T>Join the live class</T>
+                <T>Join the class</T>
               </Link>
             </section>
           </Reveal>
-        ) : next ? (
-          <section className="mt-8 flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white p-6 md:flex-row md:items-center md:p-8">
-            <div>
-              <p className="text-sm font-medium text-brand">
-                <T>{next.schedule ? "Next scheduled lesson" : "Your class"}</T>
-              </p>
-              <h2 className="font-display mt-2 text-2xl font-bold text-gray-900">
-                <T>{labelFor(subjects, next.subject)}</T>
-              </h2>
-              {next.schedule ? (
-                <p className="mt-2 text-sm text-gray-500">
-                  <bdi dir="auto">{next.schedule}</bdi> · <T>Sfax time</T>
-                </p>
-              ) : (
-                <p className="mt-2 text-sm text-gray-500">
-                  <T>The classroom opens here as soon as your teacher goes live.</T>
-                </p>
-              )}
-            </div>
-            <Link href={`/classroom?class=${next.id}`} className={primaryButton}>
-              <T>Open the classroom</T>
-            </Link>
-          </section>
-        ) : classesLoading && ids.length ? (
-          <div className="mt-8 h-32 animate-pulse rounded-2xl bg-gray-100" aria-busy="true" />
+        )}
+
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+          <h2 className="font-display text-xl font-bold text-gray-800">
+            <T>My classes</T>
+          </h2>
+          <Link href="/find-a-teacher" className="text-sm font-semibold text-blue-600 hover:underline">
+            <T>Explore teachers →</T>
+          </Link>
+        </div>
+
+        {loading && ids.length ? (
+          <div className="mt-5 h-40 animate-pulse rounded-2xl bg-gray-100" aria-busy="true" />
+        ) : classes.length ? (
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            {classes.map((c, i) => (
+              <Reveal key={c.id} delay={i * 60}>
+                <ClassCard account={account} c={c} group={groups.find((g) => g.id === account.student?.groups[c.id])} live={!!liveForStudent(account, live, c.id)} />
+              </Reveal>
+            ))}
+          </div>
         ) : (
-          <section className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center">
+          <section className="mt-5 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center">
             <h2 className="font-display text-xl font-bold text-gray-800">
               <T>You haven&apos;t joined a class yet.</T>
             </h2>
@@ -145,249 +130,70 @@ function StudentView({ account }: { account: Account }) {
             </Link>
           </section>
         )}
-
-        <div className="mt-8 grid items-start gap-7 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-7">
-            <section className={panelClass}>
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <h2 className="font-display text-xl font-bold text-gray-800">
-                  <T>My classes</T>
-                </h2>
-                <Link href="/find-a-teacher" className="text-sm font-semibold text-blue-600 hover:underline">
-                  <T>Explore teachers →</T>
-                </Link>
-              </div>
-              <ul className="mt-5 space-y-3">
-                {classes.map((c) => (
-                  <ClassRow key={c.id} c={c} live={!!live[c.id]} />
-                ))}
-              </ul>
-            </section>
-
-            <section className={panelClass}>
-              <div className="flex gap-2 border-b border-gray-200" role="group" aria-label={t("Class resources")}>
-                {(
-                  [
-                    ["materials", "Materials from my teachers"],
-                    ["results", "My answers & feedback"],
-                  ] as const
-                ).map(([k, label]) => (
-                  <button
-                    key={k}
-                    type="button"
-                    aria-pressed={tab === k}
-                    onClick={() => setTab(k)}
-                    className={cn(
-                      "min-h-12 border-b-2 px-3 text-sm font-semibold transition-colors",
-                      tab === k ? "border-brand text-brand" : "border-transparent text-gray-500 hover:text-gray-800",
-                    )}
-                  >
-                    <T>{label}</T>
-                  </button>
-                ))}
-              </div>
-              <div key={tab} className="animate-rise pt-5">
-                {tab === "materials" ? (
-                  <MaterialList items={materials.items} loading={materials.loading} classes={classes} locale={locale} />
-                ) : myAnswers.length ? (
-                  <ul className="divide-y divide-gray-100">
-                    {myAnswers.slice(0, 15).map((a, i) => (
-                      <li key={i} className="py-4">
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                          <p dir="auto" className="min-w-0 font-semibold break-words text-gray-800">
-                            {a.prompt}
-                          </p>
-                          <span
-                            className={cn(
-                              "shrink-0 rounded px-2 py-1 text-xs font-semibold",
-                              a.released ? statusTone[a.status] : "bg-gray-100 text-gray-600",
-                            )}
-                          >
-                            <T>{a.released ? statusLabel[a.status] : "Waiting for your teacher"}</T>
-                          </span>
-                        </div>
-                        <p dir="auto" className="mt-1 text-sm text-gray-600">
-                          <T>My answer:</T> <span className="font-mono">{a.text}</span>
-                        </p>
-                        {a.feedback && (
-                          <p dir="auto" className="mt-2 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-900">
-                            <span className="font-semibold">
-                              <T>Your teacher:</T>
-                            </span>{" "}
-                            {a.feedback}
-                          </p>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="rounded-lg bg-gray-50 p-5 text-sm leading-6 text-gray-500">
-                    <T>Your answers from live lessons appear here after each session, with your teacher&apos;s feedback.</T>
-                  </p>
-                )}
-              </div>
-            </section>
-          </div>
-
-          <aside className="space-y-6">
-            <section className={panelClass}>
-              <h2 className="flex items-center gap-2 font-display text-lg font-bold text-gray-900">
-                <TrendIcon className="h-5 w-5 text-brand" />
-                <T>My progress</T>
-              </h2>
-              <dl className="mt-5 grid grid-cols-2 gap-3 text-center">
-                <div className="rounded-lg bg-emerald-50 p-3">
-                  <dd className="font-display text-2xl font-extrabold text-emerald-700">
-                    <CountUp value={right} />
-                  </dd>
-                  <dt className="text-xs text-emerald-800">
-                    <T>Right</T>
-                  </dt>
-                </div>
-                <div className="rounded-lg bg-red-50 p-3">
-                  <dd className="font-display text-2xl font-extrabold text-red-700">
-                    <CountUp value={wrong} />
-                  </dd>
-                  <dt className="text-xs text-red-800">
-                    <T>To review</T>
-                  </dt>
-                </div>
-              </dl>
-              <p className="mt-4 text-xs leading-5 text-gray-500">
-                {right + wrong
-                  ? t("{pct}% correct across {n} graded answers.", { pct: Math.round((right / (right + wrong)) * 100), n: right + wrong })
-                  : t("Answer questions in a live lesson to see your progress.")}
-              </p>
-            </section>
-            <section className={panelClass}>
-              <h2 className="flex items-center gap-2 font-display text-lg font-bold text-gray-900">
-                <BookIcon className="h-5 w-5 text-brand" />
-                <T>Good to know</T>
-              </h2>
-              <ul className="mt-4 space-y-3 text-sm leading-6 text-gray-500">
-                <li>
-                  <T>Your answers are private. Classmates never see your name next to a mistake.</T>
-                </li>
-                <li>
-                  <T>Written answers wait for your teacher. They are not counted as wrong.</T>
-                </li>
-              </ul>
-            </section>
-          </aside>
-        </div>
       </div>
     </div>
   );
 }
 
-function ClassRow({ c, live }: { c: ClassInfo; live: boolean }) {
-  return (
-    <li className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 p-4">
-      <span className={`${c.color} flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white`}>
-        {c.teacherName.replace(/^(Mr\.|Ms\.)\s*/, "").split(" ").map((w) => w[0]).join("").slice(0, 2)}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block font-semibold text-gray-800">
-          <T>{labelFor(subjects, c.subject)}</T>
-        </span>
-        <span className="mt-1 block text-sm text-gray-500">
-          <bdi dir="auto">{teacherLabel(c)}</bdi>
-          {c.schedule && (
-            <>
-              {" · "}
-              <bdi dir="auto">{c.schedule}</bdi>
-            </>
-          )}
-        </span>
-      </span>
-      {live ? (
-        <Link href={`/classroom?class=${c.id}`} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-red-600 px-4 text-sm font-semibold text-white">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
-          <T>Join live</T>
-        </Link>
-      ) : (
-        <Link href={`/classroom?class=${c.id}`} className="text-sm font-semibold text-brand hover:underline">
-          <T>Open the classroom</T>
-        </Link>
-      )}
-    </li>
-  );
-}
-
-function MaterialList({
-  items,
-  loading,
-  classes,
-  locale,
-}: {
-  items: Material[];
-  loading: boolean;
-  classes: ClassInfo[];
-  locale: string;
-}) {
+function ClassCard({ account, c, group, live }: { account: Account; c: ClassInfo; group: Group | undefined; live: boolean }) {
   const { t } = useI18n();
-  const [error, setError] = useState("");
-  if (loading) return <div className="h-20 animate-pulse rounded-xl bg-gray-100" />;
-  if (!items.length)
-    return (
-      <p className="rounded-lg bg-gray-50 p-5 text-sm leading-6 text-gray-500">
-        <T>When your teachers upload notes, exercises or corrections, they appear here.</T>
-      </p>
-    );
-  const open = async (m: Material, download: boolean) => {
-    setError("");
-    try {
-      await openMaterial(m, download);
-    } catch {
-      setError(t("This file could not be opened. Try again in a moment."));
-    }
-  };
+  const { data: p } = useClassProgress(account.id, c.id, group?.id ?? null);
+  const graded = p.correct + p.incorrect;
+  const href = `/dashboard/class?id=${encodeURIComponent(c.id)}`;
   return (
-    <>
-      {error && (
-        <p role="alert" className="mb-3 text-sm text-red-700">
-          {error}
-        </p>
-      )}
-      <ul className="space-y-3">
-        {items.map((m) => {
-          const cls = classes.find((c) => c.id === m.classId);
-          return (
-            <li key={m.id} className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 p-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-800 text-xs font-bold text-white">
-                {fileBadge(m.mime, m.fileName)}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p dir="auto" className="font-semibold break-words text-gray-800">
-                  {m.title}
-                </p>
-                <p className="mt-0.5 text-xs text-gray-500">
-                  {cls && (
-                    <>
-                      <T>{labelFor(subjects, cls.subject)}</T> ·{" "}
-                    </>
-                  )}
-                  <T>{kindLabels[m.kind]}</T> · <span dir="ltr">{formatSize(m.size)}</span> ·{" "}
-                  {new Date(m.uploadedAt).toLocaleDateString(locale === "ar" ? "ar-TN" : "fr-TN", { day: "numeric", month: "short" })}
-                </p>
-                {m.note && (
-                  <p dir="auto" className="mt-1 text-sm text-gray-600">
-                    {m.note}
-                  </p>
-                )}
-              </div>
-              <button type="button" onClick={() => void open(m, false)} className="min-h-11 rounded-md px-3 text-sm font-semibold text-brand hover:bg-emerald-50">
-                <T>Open</T>
-              </button>
-              <button type="button" onClick={() => void open(m, true)} className={`${secondaryButton} min-h-11 px-3 py-0 text-sm`}>
-                <DownloadIcon className="h-4 w-4" />
-                <T>Download</T>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </>
+    <article className={`${panelClass} flex h-full flex-col`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="font-display text-xl font-bold text-gray-900">
+            <Link href={href} className="hover:text-brand">
+              <bdi dir="auto">{classTitle(c, t)}</bdi>
+            </Link>
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            <bdi dir="auto">{c.teacherName}</bdi>
+          </p>
+          <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
+            <UsersIcon className="h-3.5 w-3.5" />
+            <bdi dir="auto">{group ? `${groupLabel(group, t)}${group.name ? ` · ${formatSlots(group.slots, t)}` : ""}` : c.schedule || t("Whole class")}</bdi>
+          </p>
+        </div>
+        {live && (
+          <span className="animate-live shrink-0 rounded-md bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+            <T>LIVE</T>
+          </span>
+        )}
+      </div>
+      <dl className="mt-5 grid flex-1 grid-cols-2 gap-3">
+        <div className="rounded-lg bg-gray-50 p-3">
+          <dt className="text-xs text-gray-500">
+            <T>Attended this month</T>
+          </dt>
+          <dd className="font-display mt-1 text-2xl font-extrabold text-gray-900">
+            <span dir="ltr">
+              {p.monthAttended}/{p.monthTotal}
+            </span>
+          </dd>
+        </div>
+        <div className="rounded-lg bg-gray-50 p-3">
+          <dt className="text-xs text-gray-500">
+            <T>Correct answers</T>
+          </dt>
+          <dd className="font-display mt-1 text-2xl font-extrabold text-gray-900">{graded ? `${Math.round((p.correct / graded) * 100)}%` : "—"}</dd>
+        </div>
+      </dl>
+      <div className="mt-5 flex flex-wrap gap-2">
+        <Link href={href} className={`${primaryButton} min-h-11 flex-1 py-2 text-sm`}>
+          <T>Open the class page</T>
+          <ChevronRightIcon className="h-4 w-4 rtl:rotate-180" />
+        </Link>
+        {live && (
+          <Link href={`/classroom?class=${c.id}`} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-red-600 px-4 text-sm font-semibold text-white">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+            <T>Join live</T>
+          </Link>
+        )}
+      </div>
+    </article>
   );
 }
 

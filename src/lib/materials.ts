@@ -13,11 +13,21 @@ export type Material = {
   title: string;
   note: string;
   kind: "notes" | "exercises" | "homework" | "correction" | "other";
+  /** Course module (chapter) it belongs to; null = "Other documents". */
+  moduleId: string | null;
   fileName: string;
   filePath: string;
   mime: string;
   size: number;
   uploadedAt: number;
+};
+
+export const kindLabels: Record<Material["kind"], string> = {
+  notes: "Lesson notes",
+  exercises: "Exercise sheet",
+  homework: "Homework",
+  correction: "Correction",
+  other: "Other",
 };
 
 export const MAX_FILE_MB = 20;
@@ -30,6 +40,7 @@ type Row = {
   title: string;
   note: string;
   kind: Material["kind"];
+  module_id: string | null;
   file_name: string;
   file_path: string;
   mime: string;
@@ -43,6 +54,7 @@ const toMaterial = (r: Row): Material => ({
   title: r.title,
   note: r.note,
   kind: r.kind,
+  moduleId: r.module_id ?? null,
   fileName: r.file_name,
   filePath: r.file_path,
   mime: r.mime,
@@ -83,6 +95,7 @@ export async function addMaterial(input: {
   kind: Material["kind"];
   file: File;
   uploadedBy: string;
+  moduleId?: string | null;
 }) {
   const sb = supabase();
   const path = `${input.classId}/${crypto.randomUUID()}-${safeName(input.file.name)}`;
@@ -96,6 +109,7 @@ export async function addMaterial(input: {
     title: input.title,
     note: input.note,
     kind: input.kind,
+    module_id: input.moduleId ?? null,
     file_path: path,
     file_name: input.file.name,
     mime: input.file.type || "application/octet-stream",

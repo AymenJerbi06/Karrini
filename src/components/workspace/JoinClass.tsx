@@ -6,9 +6,10 @@ import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
 import { primaryButton, secondaryButton } from "@/components/SiteUi";
 import { enroll, homeFor, useAuth } from "@/lib/auth";
-import { fetchClass } from "@/lib/classes";
+import { classTitle, fetchClass } from "@/lib/classes";
+import { formatSlots, groupLabel, useGroups } from "@/lib/groups";
+import { cn } from "@/lib/cn";
 import { useRemote } from "@/lib/remote";
-import { labelFor, subjects } from "@/data/catalog";
 
 /** Landing page of a teacher's invitation link: shows the class and lets a student join it. */
 export function JoinClass() {
@@ -17,6 +18,8 @@ export function JoinClass() {
   const router = useRouter();
   const { ready, account } = useAuth();
   const { data: cls, loading } = useRemote(classId ? `class:${classId}` : null, () => fetchClass(classId), null);
+  const { data: groups } = useGroups(classId ? [classId] : []);
+  const [groupId, setGroupId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const here = `/join?class=${encodeURIComponent(classId)}`;
@@ -60,7 +63,7 @@ export function JoinClass() {
       <div className="mt-5 flex items-center gap-4">
         <span className={`${cls.color} h-14 w-14 shrink-0 rounded-full`} aria-hidden />
         <div>
-          <h1 className="home-heading font-display text-2xl font-extrabold text-gray-900">{t(labelFor(subjects, cls.subject))}</h1>
+          <h1 className="home-heading font-display text-2xl font-extrabold text-gray-900"><bdi dir="auto">{classTitle(cls, t)}</bdi></h1>
           <p className="mt-1 text-gray-500">
             <bdi dir="auto">{cls.teacherName}</bdi>
           </p>
@@ -102,16 +105,42 @@ export function JoinClass() {
       ) : (
         <>
           <p className="mt-6 leading-7 text-gray-500">{t("Signed in as {name}", { name: account.firstName })}</p>
+          {groups.length > 0 && (
+            <fieldset className="mt-5">
+              <legend className="text-sm font-semibold text-gray-700">
+                <T>Choose your group</T>
+              </legend>
+              <div className="mt-2 space-y-2">
+                {groups.map((g) => (
+                  <label
+                    key={g.id}
+                    className={cn(
+                      "flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border px-4 py-2 text-sm",
+                      groupId === g.id ? "border-brand bg-emerald-50 text-gray-900" : "border-gray-200 text-gray-600",
+                    )}
+                  >
+                    <input type="radio" name="group" checked={groupId === g.id} onChange={() => setGroupId(g.id)} className="h-4 w-4" />
+                    <span>
+                      <bdi dir="auto" className="block font-semibold">
+                        {groupLabel(g, t)}
+                      </bdi>
+                      {g.name && g.slots.length > 0 && <span className="block text-xs text-gray-500">{formatSlots(g.slots, t)}</span>}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || (groups.length > 0 && !groupId)}
             onClick={async () => {
               setBusy(true);
               setError("");
-              const ok = await enroll(cls.id);
+              const ok = await enroll(cls.id, groupId);
               setBusy(false);
               if (!ok) return setError(t("We could not add the class. Please try again."));
-              router.push(`/${locale}/dashboard`);
+              router.push(`/${locale}/dashboard/class?id=${encodeURIComponent(cls.id)}`);
             }}
             className={`${primaryButton} mt-6 w-full`}
           >

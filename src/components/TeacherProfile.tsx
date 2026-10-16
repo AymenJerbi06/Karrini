@@ -7,7 +7,8 @@ import { CheckIcon, ChevronRightIcon } from "@/components/icons";
 import { Portrait } from "@/components/mockups/HomeVisuals";
 import { primaryButton } from "@/components/SiteUi";
 import { formatLabel, labelFor, levels, subjects } from "@/data/catalog";
-import { fetchClass } from "@/lib/classes";
+import { classTitle, fetchClass } from "@/lib/classes";
+import { formatSlots, groupLabel, useGroups } from "@/lib/groups";
 import { useRemote } from "@/lib/remote";
 
 /** Public page of an approved teacher's class (id from ?id=…). */
@@ -15,6 +16,7 @@ export function TeacherProfile() {
   const id = useSearchParams().get("id") ?? "";
   const { t } = useI18n();
   const { data: c, loading } = useRemote(id ? `class:${id}` : null, () => fetchClass(id), null);
+  const { data: groups } = useGroups(id ? [id] : []);
 
   const back = (
     <Link href="/find-a-teacher" className="inline-flex min-h-11 items-center gap-2 text-sm text-gray-500 hover:text-brand">
@@ -52,7 +54,7 @@ export function TeacherProfile() {
         </div>
         <div>
           <p className="text-sm font-medium text-brand">
-            <T>{labelFor(subjects, c.subject)}</T>
+            {c.name ? <bdi dir="auto">{classTitle(c, t)}</bdi> : <T>{labelFor(subjects, c.subject)}</T>}
             {c.location && (
               <>
                 {" · "}
@@ -88,7 +90,26 @@ export function TeacherProfile() {
               ))}
             </dl>
           </section>
-          {(c.schedule || c.sessionsPerWeek) && (
+          {groups.length > 0 ? (
+            <section className="border-t border-gray-200 pt-9">
+              <h2 className="font-display text-xl font-bold text-gray-900">
+                <T>Groups and timetable</T>
+              </h2>
+              <p className="mt-2 text-sm text-gray-500">
+                <T>All times are local to Sfax, Tunisia.</T>
+              </p>
+              <ul className="mt-5 space-y-2">
+                {groups.map((g) => (
+                  <li key={g.id} className="rounded-lg bg-gray-50 p-4 text-gray-700">
+                    <bdi dir="auto" className="font-semibold">
+                      {groupLabel(g, t)}
+                    </bdi>
+                    {g.name && g.slots.length > 0 && <span className="mt-1 block text-sm">{formatSlots(g.slots, t)}</span>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : (c.schedule || c.sessionsPerWeek) && (
             <section className="border-t border-gray-200 pt-9">
               <h2 className="font-display text-xl font-bold text-gray-900">
                 <T>Weekly timetable</T>

@@ -1,5 +1,5 @@
 import { translate } from "@/lib/translations";
-import { TeacherQuestions } from "@/components/workspace/TeacherQuestions";
+import { AccountSettings } from "@/components/workspace/AccountSettings";
 
 export async function generateMetadata({
   params,
@@ -7,8 +7,8 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  return { title: translate("Prepare your questions | Karrini", lang === "fr" ? "fr" : "ar") };
+  return { title: translate("Account settings | Karrini", lang === "fr" ? "fr" : "ar") };
 }
 export default function Page() {
-  return <TeacherQuestions />;
+  return <AccountSettings />;
 }

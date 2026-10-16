@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { useRemote } from "@/lib/remote";
+import { announceChange, useRemote } from "@/lib/remote";
+import { COMMISSION_PCT, labelFor, subjects } from "@/data/catalog";
 
 /** A class as the screens need it. Public details come from the teacher's approved application. */
 export type ClassInfo = {
@@ -11,6 +12,9 @@ export type ClassInfo = {
   levels: string[];
   /** Teacher's display name. */
   teacherName: string;
+  /** Name given by the teacher, e.g. "1st Secondary Economics" (may be empty). */
+  name: string;
+  teacherId: string;
   headline: string;
   bio: string;
   location: string;
@@ -31,12 +35,14 @@ const palette = ["bg-emerald-600", "bg-blue-600", "bg-violet-700", "bg-amber-500
 const hash = (id: string) => [...id].reduce((s, c) => s + c.charCodeAt(0), 0);
 
 const COLUMNS =
-  "id, subject, title, levels, capacity, price_dt, headline, bio, location, methods, sessions_per_week, session_minutes, schedule, years, published";
+  "id, teacher_id, subject, title, name, levels, capacity, price_dt, headline, bio, location, methods, sessions_per_week, session_minutes, schedule, years, published";
 
 type ClassRow = {
   id: string;
+  teacher_id: string | null;
   subject: string;
   title: string;
+  name: string;
   levels: string[] | null;
   capacity: number;
   price_dt: number | null;
@@ -51,12 +57,17 @@ type ClassRow = {
   published: boolean;
 };
 
+/** The class's own name, or its subject. */
+export const classTitle = (c: Pick<ClassInfo, "name" | "subject">, t: (s: string) => string) => c.name || t(labelFor(subjects, c.subject));
+
 export function toClassInfo(row: ClassRow): ClassInfo {
   return {
     id: row.id,
     subject: row.subject,
     levels: row.levels ?? [],
     teacherName: row.title,
+    name: row.name ?? "",
+    teacherId: row.teacher_id ?? "",
     headline: row.headline ?? "",
     bio: row.bio ?? "",
     location: row.location ?? "",
@@ -108,7 +119,7 @@ export function useDirectory(limit?: number) {
 
 /* ---------------- Teacher: class roster ---------------- */
 
-export type RosterStudent = { id: string; firstName: string; lastName: string; phone: string; joinedAt: number };
+export type RosterStudent = { id: string; firstName: string; lastName: string; phone: string; joinedAt: number; groupId: string | null };
 
 export function useRoster(classId: string | undefined) {
   return useRemote(
@@ -116,17 +127,18 @@ export function useRoster(classId: string | undefined) {
     async () => {
       const { data, error } = await supabase()
         .from("enrollments")
-        .select("student_id, created_at, profiles(first_name, last_name, phone)")
+        .select("student_id, group_id, created_at, profiles(first_name, last_name, phone)")
         .eq("class_id", classId!)
         .order("created_at");
       if (error) throw error;
-      type Row = { student_id: string; created_at: string; profiles: { first_name: string; last_name: string; phone: string | null } | null };
+      type Row = { student_id: string; group_id: string | null; created_at: string; profiles: { first_name: string; last_name: string; phone: string | null } | null };
       return (data as unknown as Row[]).map((r) => ({
         id: r.student_id,
         firstName: r.profiles?.first_name ?? "",
         lastName: r.profiles?.last_name ?? "",
         phone: r.profiles?.phone ?? "",
         joinedAt: new Date(r.created_at).getTime(),
+        groupId: r.group_id,
       }));
     },
     [] as RosterStudent[],
@@ -134,9 +146,73 @@ export function useRoster(classId: string | undefined) {
   );
 }
 
+/** Moves a student to another group of the class (teacher only). */
+export async function moveStudent(classId: string, studentId: string, groupId: string | null) {
+  const { error } = await supabase().from("enrollments").update({ group_id: groupId }).eq("class_id", classId).eq("student_id", studentId);
+  if (error) throw error;
+  announceChange("roster");
+}
+
+/** Student counts per class, for the teacher's classes. */
+export function useEnrollmentCounts(classIds: string[]) {
+  const key = classIds.join(",");
+  return useRemote(
+    key ? `counts:${key}` : null,
+    async () => {
+      const { data, error } = await supabase().from("enrollments").select("class_id, group_id").in("class_id", classIds);
+      if (error) throw error;
+      const byClass: Record<string, number> = {};
+      const byGroup: Record<string, number> = {};
+      for (const r of data as { class_id: string; group_id: string | null }[]) {
+        byClass[r.class_id] = (byClass[r.class_id] ?? 0) + 1;
+        if (r.group_id) byGroup[r.group_id] = (byGroup[r.group_id] ?? 0) + 1;
+      }
+      return { byClass, byGroup };
+    },
+    { byClass: {} as Record<string, number>, byGroup: {} as Record<string, number> },
+    "roster",
+  );
+}
+
+/* ---------------- Teacher: creating and editing classes ---------------- */
+
+export async function createClass(input: { subject: string; levels: string[]; name: string; price: number | null }) {
+  const { data, error } = await supabase().rpc("create_class", {
+    p_subject: input.subject,
+    p_levels: input.levels,
+    p_name: input.name,
+    p_price: input.price,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
+export async function updateClass(id: string, input: { name: string; levels: string[]; price: number | null }) {
+  const { error } = await supabase().rpc("update_class", { p_id: id, p_name: input.name, p_levels: input.levels, p_price: input.price });
+  if (error) throw error;
+  announceChange("enrollments"); // useClasses reloads on this topic
+}
+
+/* ---------------- Earnings ---------------- */
+
+/** Monthly amounts for one class: what students pay, Karrini's commission and the teacher's share. */
+export function classEarnings(price: number | undefined, students: number) {
+  const gross = (price ?? 0) * students;
+  const fee = Math.round(gross * COMMISSION_PCT) / 100;
+  return { gross, fee, net: gross - fee };
+}
+
+/** Payouts: on the 5th of each month, for the previous month's lessons. */
+export const PAYOUT_DAY = 5;
+export function nextPayoutDate(from = new Date()) {
+  const d = new Date(from.getFullYear(), from.getMonth(), PAYOUT_DAY);
+  if (from.getDate() >= PAYOUT_DAY) d.setMonth(d.getMonth() + 1);
+  return d;
+}
+
 /* ---------------- Live sessions ("live now" badges) ---------------- */
 
-export type LiveSession = { id: string; classId: string; startedAt: number };
+export type LiveSession = { id: string; classId: string; groupId: string | null; startedAt: number };
 
 /** Running sessions for the given classes, updated in real time when a teacher starts or ends one. */
 export function useLiveSessions(classIds: string[]) {
@@ -149,12 +225,12 @@ export function useLiveSessions(classIds: string[]) {
     const sb = supabase();
     let alive = true;
     const load = async () => {
-      const { data } = await sb.from("sessions").select("id, class_id, started_at").in("class_id", ids).is("ended_at", null);
+      const { data } = await sb.from("sessions").select("id, class_id, group_id, started_at").in("class_id", ids).is("ended_at", null);
       if (!alive) return;
       setLive({
         key,
         sessions: Object.fromEntries(
-          (data ?? []).map((s) => [s.class_id, { id: s.id, classId: s.class_id, startedAt: new Date(s.started_at).getTime() }]),
+          (data ?? []).map((s) => [s.class_id, { id: s.id, classId: s.class_id, groupId: s.group_id ?? null, startedAt: new Date(s.started_at).getTime() }]),
         ),
       });
     };

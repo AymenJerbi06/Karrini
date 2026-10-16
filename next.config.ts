@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       { source: "/tutors/:id", destination: "/find-a-teacher", permanent: false },
+      // Materials, questions and results now live on each class page.
+      { source: "/:lang(ar|fr)/teach/:section(materials|questions|results)", destination: "/:lang/teach", permanent: false },
       { source: "/:lang(ar|fr)/teachers/:id", destination: "/:lang/teachers?id=:id", permanent: false },
       { source: "/schools", destination: "/about-us", permanent: false },
       {

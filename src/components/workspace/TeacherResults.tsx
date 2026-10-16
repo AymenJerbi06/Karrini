@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
-import { TeacherShell } from "@/components/workspace/TeacherShell";
 import { ResultsPanel, downloadText, sessionCsv } from "@/components/classroom/ResultsPanel";
 import { QuestionSummary } from "@/components/classroom/QuestionEditor";
 import { primaryButton, secondaryButton } from "@/components/SiteUi";
@@ -12,18 +11,7 @@ import { Reveal } from "@/components/ui/Motion";
 import { summarize, useClassHistory, type SessionRecord } from "@/lib/questions";
 import { cn } from "@/lib/cn";
 
-export function TeacherResults() {
-  return (
-    <TeacherShell
-      title="Results"
-      intro="Every live session is saved here: how many students got each question right or wrong, and exactly who needs help."
-    >
-      {({ cls }) => <Results classId={cls.id} />}
-    </TeacherShell>
-  );
-}
-
-function Results({ classId }: { classId: string }) {
+export function ClassResults({ classId }: { classId: string }) {
   const { t, locale } = useI18n();
   const { sessions, loading } = useClassHistory(classId);
   // undefined = nothing chosen yet (show the latest session); null = all collapsed.
@@ -48,7 +36,7 @@ function Results({ classId }: { classId: string }) {
         <p className="mt-2 text-sm text-gray-500">
           <T>Start a live class and publish a question. The results appear here when you end the session.</T>
         </p>
-        <Link href="/classroom" className={`${primaryButton} mt-6`}>
+        <Link href={`/classroom?class=${encodeURIComponent(classId)}`} className={`${primaryButton} mt-6`}>
           <T>Start live class</T>
         </Link>
       </div>

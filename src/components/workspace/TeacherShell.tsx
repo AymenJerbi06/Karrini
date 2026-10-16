@@ -4,28 +4,29 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
-import { BookIcon, ChatBubbleIcon, TrendIcon, UploadIcon, VideoIcon } from "@/components/icons";
-import { RequireRole, teacherClass } from "@/components/workspace/Guard";
+import { BookIcon, UsersIcon } from "@/components/icons";
+import { RequireRole } from "@/components/workspace/Guard";
 import { TeacherOnboarding } from "@/components/workspace/TeacherOnboarding";
 import { displayName, type Account } from "@/lib/auth";
 import { cn } from "@/lib/cn";
 
 const tabs = [
-  { href: "/teach", label: "Overview", Icon: BookIcon },
-  { href: "/teach/materials", label: "Materials", Icon: UploadIcon },
-  { href: "/teach/questions", label: "Questions", Icon: ChatBubbleIcon },
-  { href: "/teach/results", label: "Results", Icon: TrendIcon },
-  { href: "/classroom", label: "Live class", Icon: VideoIcon },
+  { href: "/teach", label: "My classes", Icon: BookIcon },
+  { href: "/account", label: "Account", Icon: UsersIcon },
 ];
 
+/** Teacher pages: two tabs and one obvious "go live" button. */
 export function TeacherShell({
   title,
   intro,
+  back,
   children,
 }: {
-  title: string;
-  intro: string;
-  children: (ctx: { account: Account; cls: ReturnType<typeof teacherClass> }) => ReactNode;
+  title: ReactNode;
+  intro?: string;
+  /** Link shown above the title, e.g. back to "My classes". */
+  back?: ReactNode;
+  children: (account: Account) => ReactNode;
 }) {
   const pathname = usePathname().replace(/^\/(ar|fr)/, "");
   const { t } = useI18n();
@@ -34,7 +35,6 @@ export function TeacherShell({
       {(account) => {
         // Teachers use the portal only after an admin has approved their application.
         if (account.teacher?.status !== "verified") return <TeacherOnboarding account={account} />;
-        const cls = teacherClass(account);
         return (
           <div className="min-h-[70vh] bg-gray-50">
             <div className="bg-gray-800 text-white">
@@ -42,15 +42,10 @@ export function TeacherShell({
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-medium text-brand">
-                      <T>Teacher workspace</T> · {t(cls.subjectLabel)}
+                      <T>Teacher workspace</T>
                     </p>
                     <p className="mt-1 text-sm text-gray-300">
                       <bdi dir="auto">{displayName(account)}</bdi>
-                      {!cls.verified && (
-                        <span className="ms-2 rounded bg-amber-400/20 px-2 py-0.5 text-xs font-semibold text-amber-200">
-                          <T>Verification pending</T>
-                        </span>
-                      )}
                     </p>
                   </div>
                   <Link
@@ -63,7 +58,7 @@ export function TeacherShell({
                 </div>
                 <nav aria-label={t("Teacher workspace")} className="mt-6 flex gap-1 overflow-x-auto [scrollbar-width:none]">
                   {tabs.map(({ href, label, Icon }) => {
-                    const active = href === "/teach" ? pathname === "/teach" : pathname.startsWith(href);
+                    const active = pathname.startsWith(href);
                     return (
                       <Link
                         key={href}
@@ -83,13 +78,16 @@ export function TeacherShell({
               </div>
             </div>
             <div className="mx-auto max-w-6xl px-6 py-10">
+              {back}
               <h1 className="home-heading font-display text-3xl font-extrabold text-gray-900 md:text-4xl">
-                <T>{title}</T>
+                {typeof title === "string" ? <T>{title}</T> : title}
               </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-gray-500">
-                <T>{intro}</T>
-              </p>
-              <div className="mt-8">{children({ account, cls })}</div>
+              {intro && (
+                <p className="mt-3 max-w-2xl leading-7 text-gray-500">
+                  <T>{intro}</T>
+                </p>
+              )}
+              <div className="mt-8">{children(account)}</div>
             </div>
           </div>
         );
