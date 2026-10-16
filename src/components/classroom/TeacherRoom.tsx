@@ -481,7 +481,7 @@ export function TeacherRoom({
             <VideoTile
               stream={call.sharing ? call.screenStream : call.localStream}
               muted
-              mirror={!call.sharing}
+              mirror={!call.sharing && !call.usingDemoCamera}
               className="min-h-0 flex-1 rounded-2xl"
               label={call.sharing ? t("You are sharing your screen") : teacherName}
               placeholder={<T>Starting your camera…</T>}

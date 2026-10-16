@@ -89,7 +89,7 @@ function ClassPage({ account, id }: { account: Account; id: string }) {
                 <T>Next lesson</T>
               </p>
               <p className="mt-1 font-semibold text-gray-900">
-                {next ? date(next.getTime(), { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : c.schedule || t("Your teacher will announce it.")}
+                {next ? date(next.getTime(), { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }) : c.schedule || t("Your teacher will announce it.")}
               </p>
             </div>
           )}
