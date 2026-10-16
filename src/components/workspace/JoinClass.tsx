@@ -62,7 +62,7 @@ export function JoinClass() {
         <div>
           <h1 className="home-heading font-display text-2xl font-extrabold text-gray-900">{t(labelFor(subjects, cls.subject))}</h1>
           <p className="mt-1 text-gray-500">
-            <bdi dir="auto">{cls.profile ? t(cls.teacherName) : cls.teacherName}</bdi>
+            <bdi dir="auto">{cls.teacherName}</bdi>
           </p>
         </div>
       </div>

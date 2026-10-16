@@ -132,6 +132,11 @@ export function Header() {
               >
                 <T>My workspace</T>
               </Link>
+              {account.isAdmin && (
+                <Link href="/admin" className="ms-4 whitespace-nowrap text-sm font-semibold text-brand hover:underline">
+                  <T>Admin</T>
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={signOut}
@@ -223,6 +228,11 @@ export function Header() {
                 >
                   <T>My workspace</T>
                 </Link>
+                {account.isAdmin && (
+                  <Link href="/admin" onClick={() => setOpen(false)} className="text-center text-base font-semibold text-brand">
+                    <T>Admin</T>
+                  </Link>
+                )}
                 <button
                   type="button"
                   onClick={() => {

@@ -14,14 +14,16 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Using the Karrini prototype"
-      updated="14 October 2026"
+      updated="15 October 2026"
       intro="Karrini is a product concept for discussion with Sfax teachers and families. This site demonstrates the proposed experience and does not offer real tutoring bookings or paid subscriptions."
       sections={[
         {
-          id: "examples",
-          title: "Illustrative content",
+          id: "teachers",
+          title: "Teaching on Karrini",
           body: [
-            "Teacher identities, biographies, experience, schedules, availability, prices and learning results are fictional examples. They do not represent actual teachers, endorsements, students or pilot outcomes.",
+            "Only teachers with a Karrini account who have been approved by the Karrini team can open the teacher portal and appear to students. To be considered, a teacher submits an application describing their subject, school years, how many sessions they give each week, their teaching methods and their price.",
+            "Karrini keeps a 15% commission on every payment a student makes for a teacher's classes. The teacher receives the remaining 85%. By submitting an application, the teacher accepts these Terms and this commission.",
+            "The Karrini team may approve, decline or withdraw an approval, for example if the information provided is inaccurate or a class does not respect these Terms. Information on teacher pages is provided by the teachers themselves.",
           ],
         },
         {

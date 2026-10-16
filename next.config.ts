@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
         destination: "/for-teachers",
         permanent: false,
       },
-      { source: "/tutors/:id", destination: "/teachers/:id", permanent: false },
+      { source: "/tutors/:id", destination: "/find-a-teacher", permanent: false },
+      { source: "/:lang(ar|fr)/teachers/:id", destination: "/:lang/teachers?id=:id", permanent: false },
       { source: "/schools", destination: "/about-us", permanent: false },
       {
         source: "/parent-councils",

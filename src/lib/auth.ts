@@ -26,9 +26,13 @@ export type Account = {
     subject: string;
     levels: string[];
     years: number;
-    status: "pending" | "verified";
+    status: "pending" | "verified" | "rejected";
+    /** The teacher's application to join Karrini (null = not submitted yet). */
+    application: { status: "pending" | "approved" | "rejected"; adminNote?: string } | null;
   };
   parent?: { childPhone?: string };
+  /** Signed in with an admin email (reviews teacher applications). */
+  isAdmin: boolean;
 };
 
 /* ---------------- Phone & email helpers ---------------- */
@@ -81,11 +85,13 @@ async function loadAccount(userId: string | undefined, email: string | undefined
     return;
   }
   const sb = supabase();
-  const [profile, teacher, enrollments, cls] = await Promise.all([
+  const [profile, teacher, enrollments, cls, application, admin] = await Promise.all([
     sb.from("profiles").select("*").eq("id", userId).maybeSingle(),
     sb.from("teacher_profiles").select("*").eq("id", userId).maybeSingle(),
     sb.from("enrollments").select("class_id").eq("student_id", userId),
     sb.from("classes").select("id").eq("teacher_id", userId).order("created_at").limit(1).maybeSingle(),
+    sb.from("teacher_applications").select("status, admin_note").eq("teacher_id", userId).maybeSingle(),
+    sb.rpc("is_admin"),
   ]);
   if (token !== loadToken) return; // a newer auth event superseded this load
   const p = profile.data;
@@ -118,8 +124,12 @@ async function loadAccount(userId: string | undefined, email: string | undefined
               levels: t?.levels ?? [],
               years: t?.years ?? 0,
               status: t?.status ?? "pending",
+              application: application.data
+                ? { status: application.data.status, adminNote: application.data.admin_note ?? undefined }
+                : null,
             }
           : undefined,
+      isAdmin: admin.data === true,
     },
   });
 }

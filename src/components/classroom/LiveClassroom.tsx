@@ -7,6 +7,7 @@ import { primaryButton, secondaryButton } from "@/components/SiteUi";
 import { ChatBubbleIcon, HandIcon, TrendIcon, VideoIcon } from "@/components/icons";
 import { Reveal } from "@/components/ui/Motion";
 import { teacherClass } from "@/components/workspace/Guard";
+import { TeacherOnboarding } from "@/components/workspace/TeacherOnboarding";
 import { TeacherRoom, TwoWindowTip } from "@/components/classroom/TeacherRoom";
 import { StudentRoom } from "@/components/classroom/StudentRoom";
 import { LiveClassMockup } from "@/components/mockups/LiveClassMockup";
@@ -29,6 +30,7 @@ export function LiveClassroom() {
   if (!account) return <Landing />;
 
   if (account.role === "teacher") {
+    if (account.teacher?.status !== "verified") return <TeacherOnboarding account={account} />;
     const cls = teacherClass(account);
     if (!cls.id)
       return (
@@ -107,7 +109,7 @@ function StudentEntry({ account, classParam }: { account: Account; classParam: s
         account={account}
         classId={chosen.id}
         classTitle={t(labelFor(subjects, chosen.subject))}
-        teacherLabel={chosen.profile ? t(chosen.teacherName) : chosen.teacherName}
+        teacherLabel={chosen.teacherName}
       />
     </div>
   );

@@ -59,7 +59,7 @@ function Header({ account, title, intro }: { account: Account; title: string; in
   );
 }
 
-const teacherLabel = (c: ClassInfo, t: (s: string) => string) => (c.profile ? t(c.teacherName) : c.teacherName);
+const teacherLabel = (c: ClassInfo) => c.teacherName;
 
 function StudentView({ account }: { account: Account }) {
   const { t, locale } = useI18n();
@@ -73,7 +73,7 @@ function StudentView({ account }: { account: Account }) {
   const right = released.filter((a) => a.status === "correct").length;
   const wrong = released.filter((a) => a.status === "incorrect").length;
   const [tab, setTab] = useState<"materials" | "results">("materials");
-  const next = classes.find((c) => c.timetable.length) ?? classes[0];
+  const next = classes.find((c) => c.schedule) ?? classes[0];
 
   return (
     <div className="bg-gray-50">
@@ -95,7 +95,7 @@ function StudentView({ account }: { account: Account }) {
                     <T>{labelFor(subjects, liveClass.subject)}</T>
                   </h2>
                   <p className="mt-1 text-sm text-gray-300">
-                    <bdi dir="auto">{teacherLabel(liveClass, t)}</bdi> <T>has started the lesson.</T>
+                    <bdi dir="auto">{teacherLabel(liveClass)}</bdi> <T>has started the lesson.</T>
                   </p>
                 </div>
               </div>
@@ -111,14 +111,14 @@ function StudentView({ account }: { account: Account }) {
           <section className="mt-8 flex flex-col justify-between gap-6 rounded-2xl border border-gray-200 bg-white p-6 md:flex-row md:items-center md:p-8">
             <div>
               <p className="text-sm font-medium text-brand">
-                <T>{next.timetable.length ? "Next scheduled lesson" : "Your class"}</T>
+                <T>{next.schedule ? "Next scheduled lesson" : "Your class"}</T>
               </p>
               <h2 className="font-display mt-2 text-2xl font-bold text-gray-900">
                 <T>{labelFor(subjects, next.subject)}</T>
               </h2>
-              {next.timetable[0] ? (
+              {next.schedule ? (
                 <p className="mt-2 text-sm text-gray-500">
-                  <T>{next.timetable[0].day}</T> · <bdi dir="ltr">{next.timetable[0].time}</bdi> · <T>Sfax time</T>
+                  <bdi dir="auto">{next.schedule}</bdi> · <T>Sfax time</T>
                 </p>
               ) : (
                 <p className="mt-2 text-sm text-gray-500">
@@ -281,7 +281,6 @@ function StudentView({ account }: { account: Account }) {
 }
 
 function ClassRow({ c, live }: { c: ClassInfo; live: boolean }) {
-  const { t } = useI18n();
   return (
     <li className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 p-4">
       <span className={`${c.color} flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white`}>
@@ -292,11 +291,11 @@ function ClassRow({ c, live }: { c: ClassInfo; live: boolean }) {
           <T>{labelFor(subjects, c.subject)}</T>
         </span>
         <span className="mt-1 block text-sm text-gray-500">
-          <bdi dir="auto">{teacherLabel(c, t)}</bdi>
-          {c.timetable.length > 0 && (
+          <bdi dir="auto">{teacherLabel(c)}</bdi>
+          {c.schedule && (
             <>
               {" · "}
-              <T>{c.timetable.map((s) => s.day).join(" · ")}</T>
+              <bdi dir="auto">{c.schedule}</bdi>
             </>
           )}
         </span>
@@ -305,10 +304,6 @@ function ClassRow({ c, live }: { c: ClassInfo; live: boolean }) {
         <Link href={`/classroom?class=${c.id}`} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-red-600 px-4 text-sm font-semibold text-white">
           <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
           <T>Join live</T>
-        </Link>
-      ) : c.profile ? (
-        <Link href={`/teachers/${c.id}`} className="text-sm font-semibold text-brand hover:underline">
-          <T>View class offer</T>
         </Link>
       ) : (
         <Link href={`/classroom?class=${c.id}`} className="text-sm font-semibold text-brand hover:underline">

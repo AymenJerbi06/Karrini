@@ -6,6 +6,7 @@ import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
 import { BookIcon, ChatBubbleIcon, TrendIcon, UploadIcon, VideoIcon } from "@/components/icons";
 import { RequireRole, teacherClass } from "@/components/workspace/Guard";
+import { TeacherOnboarding } from "@/components/workspace/TeacherOnboarding";
 import { displayName, type Account } from "@/lib/auth";
 import { cn } from "@/lib/cn";
 
@@ -31,6 +32,8 @@ export function TeacherShell({
   return (
     <RequireRole roles={["teacher"]}>
       {(account) => {
+        // Teachers use the portal only after an admin has approved their application.
+        if (account.teacher?.status !== "verified") return <TeacherOnboarding account={account} />;
         const cls = teacherClass(account);
         return (
           <div className="min-h-[70vh] bg-gray-50">

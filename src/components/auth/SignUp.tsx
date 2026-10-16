@@ -7,16 +7,14 @@ import { Localized, T, useI18n } from "@/components/I18n";
 import { PhoneField } from "@/components/auth/Fields";
 import { fieldClass, primaryButton, secondaryButton } from "@/components/SiteUi";
 import { BookIcon, MailIcon, PhoneIcon, UsersIcon } from "@/components/icons";
-import { labelFor, levels, placesLeft, subjects, teachers } from "@/data/catalog";
+import { levels, subjects } from "@/data/catalog";
 import {
-  enroll,
   homeFor,
   isEmail,
   isPhoneTaken,
   normalizeTunisianPhone,
   resendConfirmation,
   signUp,
-  useAuth,
   type AuthError,
   type Role,
 } from "@/lib/auth";
@@ -41,13 +39,11 @@ export function SignUp() {
   const { locale, t } = useI18n();
   const router = useRouter();
   const params = useSearchParams();
-  const auth = useAuth();
-  const classOffer = teachers.find((x) => x.id === params.get("teacher"));
   const presetRole = (["student", "parent", "teacher"] as const).find((r) => r === params.get("role"));
-  const next = safeNext(params.get("next")) ?? (classOffer ? `/join?class=${classOffer.id}` : null);
+  const next = safeNext(params.get("next"));
 
-  const [step, setStep] = useState(classOffer || presetRole ? 1 : 0);
-  const [role, setRole] = useState<Role>(classOffer ? "student" : (presetRole ?? "student"));
+  const [step, setStep] = useState(presetRole ? 1 : 0);
+  const [role, setRole] = useState<Role>(presetRole ?? "student");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -118,61 +114,6 @@ export function SignUp() {
       return;
     }
     setSentTo(email.trim().toLowerCase());
-  }
-
-  /* ---------- Already signed in as a student and arriving from a class offer ---------- */
-  if (classOffer && auth.account?.role === "student") {
-    const already = auth.account.student?.enrollments.includes(classOffer.id);
-    return (
-      <div className="animate-rise">
-        <p className="text-sm font-medium text-brand">{t("Signed in as {name}", { name: auth.account.firstName })}</p>
-        <h1 className="home-heading font-display mt-4 text-3xl font-extrabold text-gray-900">
-          <T>{already ? "You're already in this class." : "Add this class to your account"}</T>
-        </h1>
-        <div className="mt-6 rounded-xl border border-gray-200 p-5">
-          <p className="font-semibold text-gray-800">
-            <T>{labelFor(subjects, classOffer.subject)}</T> · <T>{classOffer.name}</T>
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            <T>{classOffer.timetable.map((s) => `${s.day} ${s.time}`).join(" · ")}</T>
-          </p>
-          <ul className="mt-4 space-y-1.5 text-sm text-gray-500">
-            {classOffer.includes.map((i) => (
-              <li key={i}>
-                ✓ <T>{i}</T>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 border-t border-gray-100 pt-4 font-semibold text-gray-800">
-            <T>{classOffer.price}</T> <T>DT / month</T>
-          </p>
-          <p className="mt-2 rounded bg-emerald-50 p-3 text-sm text-emerald-800">
-            <T>Due today: 0 DT. This is a demo enrollment.</T>
-          </p>
-        </div>
-        <button
-          type="button"
-          disabled={busy || (!already && !placesLeft(classOffer))}
-          onClick={async () => {
-            if (!already) {
-              setBusy(true);
-              const ok = await enroll(classOffer.id);
-              setBusy(false);
-              if (!ok) return setError(t("We could not add the class. Please try again."));
-            }
-            router.push(`/${locale}/dashboard`);
-          }}
-          className={`${primaryButton} mt-6 w-full`}
-        >
-          <T>{already ? "Open my dashboard" : placesLeft(classOffer) ? "Add to my classes" : "Class full"}</T>
-        </button>
-        {error && (
-          <p role="alert" className="mt-4 text-sm text-red-700">
-            {error}
-          </p>
-        )}
-      </div>
-    );
   }
 
   /* ---------- Check your email ---------- */
@@ -254,18 +195,6 @@ export function SignUp() {
       <h1 ref={heading} tabIndex={-1} className="home-heading font-display text-3xl font-extrabold text-gray-900 focus:outline-none">
         <T>{steps[step]}</T>
       </h1>
-
-      {classOffer && step > 0 && (
-        <div className="mt-5 flex items-center gap-3 rounded-lg bg-gray-50 p-4 text-sm">
-          <span className={`${classOffer.color} h-10 w-10 shrink-0 rounded-full`} aria-hidden />
-          <p className="text-gray-600">
-            <T>Joining</T> <T>{labelFor(subjects, classOffer.subject)}</T> <T>with </T>
-            <span className="font-semibold text-gray-800">
-              <T>{classOffer.name}</T>
-            </span>
-          </p>
-        </div>
-      )}
 
       <div key={step} className="animate-rise">
         {step === 0 && (
@@ -438,7 +367,7 @@ export function SignUp() {
       )}
 
       <div className="mt-7 flex gap-3">
-        {step > (classOffer || presetRole ? 1 : 0) && (
+        {step > (presetRole ? 1 : 0) && (
           <button
             type="button"
             className={secondaryButton}

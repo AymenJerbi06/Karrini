@@ -18,7 +18,7 @@ export function TeacherOverview() {
       title="Your teaching, all together."
       intro="Prepare before class, teach live, then follow up with the students who need it."
     >
-      {({ cls }) => <Overview classId={cls.id} timetable={cls.timetable} capacity={cls.capacity} baseline={cls.profile?.enrolled ?? 0} />}
+      {({ cls }) => <Overview classId={cls.id} timetable={cls.timetable} capacity={cls.capacity} baseline={0} />}
     </TeacherShell>
   );
 }
