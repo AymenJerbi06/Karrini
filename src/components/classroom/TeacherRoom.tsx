@@ -34,6 +34,8 @@ import {
 } from "@/lib/questions";
 import { displayName, type Account } from "@/lib/auth";
 import { cn } from "@/lib/cn";
+import { LessonBoard, type LessonBoardHandle } from "./board/LessonBoard";
+import { BoardIcon } from "./board/BoardIcon";
 
 type Peer = { id: string; name: string; lastSeen: number; hand: boolean };
 type Panel = "ask" | "write" | "question" | "students" | null;
@@ -102,6 +104,9 @@ export function TeacherRoom({
   const peak = useRef(0);
   const started = useRef(false);
   const now = useNow();
+  const [boardOpen, setBoardOpen] = useState(false);
+  const [ending, setEnding] = useState(false);
+  const boardApi = useRef<LessonBoardHandle>(null);
 
   useEffect(() => {
     sessionRef.current = session;
@@ -265,10 +270,13 @@ export function TeacherRoom({
     if (q.released) transport?.send("result", { questionId: q.question.id, status } satisfies ResultMsg, a.studentId);
   }
 
-  function endClass() {
-    if (!session) return;
+  async function endClass() {
+    if (!session || ending) return;
+    setEnding(true);
     timers.current.forEach(clearTimeout);
-    const record = { ...session, connected: Math.max(peak.current, connected), endedAt: Date.now() };
+    try { await boardApi.current?.finish(); } catch { /* A local draft remains available in the board review. */ }
+    const latest = sessionRef.current ?? session;
+    const record = { ...latest, connected: Math.max(peak.current, connected), endedAt: Date.now() };
     void endSessionRecord(session.id, record.connected).catch(() => undefined);
     transport?.send("session-state", { live: false, teacherName } satisfies SessionState);
     window.localStorage.removeItem(LIVE_KEY(classId));
@@ -478,21 +486,27 @@ export function TeacherRoom({
         }
         stage={
           <div className="flex h-full flex-col gap-3">
+            {session && (
+              <div className={boardOpen ? "min-h-0 flex-1" : "hidden"}>
+                <LessonBoard key={session.id} apiRef={boardApi} context={{ sessionId: session.id, classId, groupId: session.groupId ?? groupId, userId: account.id }} title={title} presenting={boardOpen && !ending} />
+              </div>
+            )}
+            <div className={boardOpen ? "flex h-24 shrink-0 gap-2 overflow-x-auto" : "contents"}>
             <VideoTile
               stream={call.sharing ? call.screenStream : call.localStream}
               muted
               mirror={!call.sharing && !call.usingDemoCamera}
-              className="min-h-0 flex-1 rounded-2xl"
+              className={boardOpen ? "aspect-video h-full w-40 shrink-0 rounded-xl" : "min-h-0 flex-1 rounded-2xl"}
               label={call.sharing ? t("You are sharing your screen") : teacherName}
               placeholder={<T>Starting your camera…</T>}
             />
             {call.remotes.length > 0 && (
-              <div className="flex shrink-0 gap-2 overflow-x-auto">
+              <div className={boardOpen ? "contents" : "flex shrink-0 gap-2 overflow-x-auto"}>
                 {call.remotes.map((r) => (
                   <VideoTile
                     key={r.id}
                     stream={r.stream}
-                    className="aspect-video w-32 shrink-0 sm:w-40"
+                    className={boardOpen ? "aspect-video h-full w-40 shrink-0" : "aspect-video w-32 shrink-0 sm:w-40"}
                     label={
                       <>
                         {peers[r.id]?.hand && "✋ "}
@@ -503,6 +517,7 @@ export function TeacherRoom({
                 ))}
               </div>
             )}
+            </div>
             {call.error && (
               <p role="alert" className="text-center text-sm text-red-300">
                 <T>{call.error}</T>
@@ -536,7 +551,8 @@ export function TeacherRoom({
           <>
             <CallControl label={call.micOn ? "Mute" : "Unmute"} danger={!call.micOn} onClick={call.toggleMic} icon={call.micOn ? <MicIcon className="h-6 w-6" /> : <MicOffIcon className="h-6 w-6" />} />
             <CallControl label={call.camOn ? "Camera" : "Camera off"} danger={!call.camOn} onClick={call.toggleCam} icon={call.camOn ? <CameraIcon className="h-6 w-6" /> : <CameraOffIcon className="h-6 w-6" />} />
-            <CallControl label={call.sharing ? "Stop sharing" : "Share screen"} active={call.sharing} onClick={call.toggleScreen} icon={<ScreenIcon className="h-6 w-6" />} />
+            <CallControl label={call.sharing ? "Stop sharing" : "Share screen"} active={call.sharing} onClick={() => { if (!call.sharing) { setBoardOpen(false); boardApi.current?.present(false); } call.toggleScreen(); }} icon={<ScreenIcon className="h-6 w-6" />} />
+            <CallControl label="Board" active={boardOpen} onClick={() => { const next = !boardOpen; if (next && call.sharing) call.toggleScreen(); setBoardOpen(next); boardApi.current?.present(next); }} icon={<BoardIcon name="board" className="h-6 w-6" />} />
             <CallControl
               label={current && !current.released ? "Answers" : "Ask a question"}
               active={panel === "ask" || panel === "write" || panel === "question"}
@@ -546,7 +562,7 @@ export function TeacherRoom({
               icon={<ChatBubbleIcon className="h-6 w-6" />}
             />
             <CallControl label="Students" active={panel === "students"} badge={hands.length} onClick={() => setPanel(panel === "students" ? null : "students")} icon={<UsersIcon className="h-6 w-6" />} />
-            <CallControl label="End class" danger onClick={endClass} icon={<PhoneIcon className="h-6 w-6 rotate-[135deg]" />} />
+            <CallControl label={ending ? "Saving…" : "End class"} danger onClick={() => void endClass()} icon={<PhoneIcon className="h-6 w-6 rotate-[135deg]" />} />
           </>
         }
       />

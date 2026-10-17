@@ -1,4 +1,6 @@
 import "./globals.css";
+// The global 404 bypasses the locale layout; this link deliberately loads that root document.
+/* eslint-disable @next/next/no-html-link-for-pages */
 
 export default function GlobalNotFound() {
   return (

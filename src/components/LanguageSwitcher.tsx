@@ -10,6 +10,8 @@ export function LanguageSwitcher() {
   const router = useRouter();
   function switchTo(next: Locale) {
     if (next === locale) return;
+    // This browser cookie is written from a click handler, outside React rendering.
+    // eslint-disable-next-line react-hooks/immutability
     document.cookie = `qarrini-locale=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
     const path = pathname.replace(/^\/(ar|fr)(?=\/|$)/, "");
     router.push(

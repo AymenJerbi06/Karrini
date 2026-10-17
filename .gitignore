@@ -16,6 +16,8 @@
 # next.js
 /.next/
 /out/
+/public/board/pdfjs/
+/.board-qa/
 
 # production
 /build

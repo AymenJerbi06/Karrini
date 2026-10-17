@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "@/components/LocalizedLink";
 import { T, useI18n } from "@/components/I18n";
+import { BoardReview } from "./board/BoardReview";
 import { fieldClass, primaryButton, secondaryButton } from "@/components/SiteUi";
 import { ChatBubbleIcon, HandIcon, TrendIcon, VideoIcon } from "@/components/icons";
 import { Reveal } from "@/components/ui/Motion";
@@ -202,6 +203,7 @@ function SessionSummary({ record }: { record: SessionRecord }) {
       <Link href={`/teach/class?id=${encodeURIComponent(record.classId)}&tab=results`} className={`${secondaryButton} mt-4`}>
         <T>See full results</T>
       </Link>
+      <div><BoardReview session={record} /></div>
     </section>
   );
 }
