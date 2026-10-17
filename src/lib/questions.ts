@@ -354,7 +354,7 @@ export function useClassHistory(classId: string | undefined) {
       const { data: sessions, error } = await sb
         .from("sessions")
         .select(
-          "id, class_id, teacher_id, started_at, ended_at, peak_connected, session_questions(id, published_at, closed_at, released_at, questions(*, question_keys(correct, accepted, explanation)), answers(student_id, answer_text, choice, status, feedback, created_at, profiles(first_name, last_name)))",
+          "id, class_id, group_id, teacher_id, started_at, ended_at, peak_connected, session_questions(id, published_at, closed_at, released_at, questions(*, question_keys(correct, accepted, explanation)), answers(student_id, answer_text, choice, status, feedback, created_at, profiles(first_name, last_name)))",
         )
         .eq("class_id", classId!)
         .not("ended_at", "is", null)
@@ -363,7 +363,7 @@ export function useClassHistory(classId: string | undefined) {
       if (error) throw error;
       type A = { student_id: string; answer_text: string; choice: number[] | null; status: AnswerStatus; feedback: string | null; created_at: string; profiles: { first_name: string; last_name: string } | null };
       type SQ = { id: string; published_at: string; closed_at: string | null; released_at: string | null; questions: QuestionRow | null; answers: A[] };
-      type S = { id: string; class_id: string; teacher_id: string; started_at: string; ended_at: string | null; peak_connected: number; session_questions: SQ[] };
+      type S = { id: string; class_id: string; group_id: string | null; teacher_id: string; started_at: string; ended_at: string | null; peak_connected: number; session_questions: SQ[] };
       return (sessions as unknown as S[]).map((s) => {
         const asked = [...s.session_questions]
           .sort((a, b) => a.published_at.localeCompare(b.published_at))
@@ -388,6 +388,7 @@ export function useClassHistory(classId: string | undefined) {
         return {
           id: s.id,
           classId: s.class_id,
+          groupId: s.group_id,
           teacherId: s.teacher_id,
           startedAt: new Date(s.started_at).getTime(),
           endedAt: s.ended_at ? new Date(s.ended_at).getTime() : undefined,

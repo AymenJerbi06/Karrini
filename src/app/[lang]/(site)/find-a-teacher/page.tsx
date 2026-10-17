@@ -1,7 +1,6 @@
 import { translate } from "@/lib/translations";
 
 import { T } from "@/components/I18n";
-import type { Metadata } from "next";
 import { PageIntro } from "@/components/SiteUi";
 import { TeacherDirectory } from "@/components/TeacherDirectory";
 

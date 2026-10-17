@@ -73,7 +73,7 @@ export function CallFrame({
         )}
         {overlay}
       </div>
-      <div className="flex shrink-0 items-center justify-center gap-2 px-3 py-4 sm:gap-4">{controls}</div>
+      <div className="flex shrink-0 items-center justify-start gap-2 overflow-x-auto px-3 py-3 sm:justify-center sm:gap-4">{controls}</div>
     </div>
   );
 }
@@ -99,7 +99,7 @@ export function CallControl({
   pulse?: boolean;
 }) {
   return (
-    <button type="button" onClick={onClick} className="group flex w-16 flex-col items-center gap-1.5 sm:w-20">
+    <button type="button" onClick={onClick} className="group flex w-16 shrink-0 flex-col items-center gap-1.5 sm:w-20">
       <span
         className={cn(
           "relative flex h-12 w-12 items-center justify-center rounded-full transition-colors sm:h-14 sm:w-14",

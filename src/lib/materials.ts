@@ -15,6 +15,7 @@ export type Material = {
   kind: "notes" | "exercises" | "homework" | "correction" | "other";
   /** Course module (chapter) it belongs to; null = "Other documents". */
   moduleId: string | null;
+  groupId: string | null;
   fileName: string;
   filePath: string;
   mime: string;
@@ -41,6 +42,7 @@ type Row = {
   note: string;
   kind: Material["kind"];
   module_id: string | null;
+  group_id: string | null;
   file_name: string;
   file_path: string;
   mime: string;
@@ -55,6 +57,7 @@ const toMaterial = (r: Row): Material => ({
   note: r.note,
   kind: r.kind,
   moduleId: r.module_id ?? null,
+  groupId: r.group_id ?? null,
   fileName: r.file_name,
   filePath: r.file_path,
   mime: r.mime,
@@ -96,6 +99,7 @@ export async function addMaterial(input: {
   file: File;
   uploadedBy: string;
   moduleId?: string | null;
+  groupId?: string | null;
 }) {
   const sb = supabase();
   const path = `${input.classId}/${crypto.randomUUID()}-${safeName(input.file.name)}`;
@@ -110,6 +114,7 @@ export async function addMaterial(input: {
     note: input.note,
     kind: input.kind,
     module_id: input.moduleId ?? null,
+    ...(input.groupId ? { group_id: input.groupId } : {}),
     file_path: path,
     file_name: input.file.name,
     mime: input.file.type || "application/octet-stream",

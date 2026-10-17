@@ -10,6 +10,7 @@ import { DownloadIcon } from "@/components/icons";
 import { Reveal } from "@/components/ui/Motion";
 import { summarize, useClassHistory, type SessionRecord } from "@/lib/questions";
 import { cn } from "@/lib/cn";
+import { BoardReview } from "@/components/classroom/board/BoardReview";
 
 export function ClassResults({ classId }: { classId: string }) {
   const { t, locale } = useI18n();
@@ -98,6 +99,7 @@ export function ClassResults({ classId }: { classId: string }) {
               </button>
               {isOpen && (
                 <div className="animate-rise border-t border-gray-100 p-5">
+                  <BoardReview session={s} />
                   {s.asked.length === 0 ? (
                     <p className="text-sm text-gray-500">
                       <T>No question was published in this session.</T>

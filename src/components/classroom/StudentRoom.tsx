@@ -16,6 +16,7 @@ import { recordAttendance } from "@/lib/progress";
 import type { LiveSession } from "@/lib/classes";
 import { displayName, type Account } from "@/lib/auth";
 import { cn } from "@/lib/cn";
+import { StudentBoard } from "./board/LessonBoard";
 
 /** Shrinks a photo so it can travel through the realtime channel. */
 async function resizePhoto(file: File): Promise<string> {
@@ -148,6 +149,7 @@ function StudentCall({
   const { t } = useI18n();
   const name = displayName(account);
   const hostId = hostPeer(classId);
+  const [boardPresenting, setBoardPresenting] = useState(false);
   const [transport, setTransport] = useState<RealtimeTransport | null>(null);
   const [state, setState] = useState<SessionState | null>(null);
   const [hand, setHand] = useState(false);
@@ -429,10 +431,14 @@ function StudentCall({
         </>
       }
       stage={
-        <div className="relative h-full">
+        <div className="relative flex h-full flex-col gap-2">
+          <div className={boardPresenting ? "min-h-0 flex-1" : "hidden"}>
+            <StudentBoard context={{ sessionId, classId, groupId: null, userId: account.id }} title={classTitle} onPresenting={setBoardPresenting} />
+          </div>
+          <div className={boardPresenting ? "flex h-24 shrink-0 gap-2 overflow-x-auto" : "contents"}>
           <VideoTile
             stream={teacherStream}
-            className="h-full rounded-2xl"
+            className={boardPresenting ? "aspect-video h-full w-40 shrink-0" : "h-full rounded-2xl"}
             placeholder={
               <span className="flex flex-col items-center gap-3">
                 <span className="h-8 w-8 animate-spin rounded-full border-2 border-gray-500 border-t-white" />
@@ -441,8 +447,9 @@ function StudentCall({
             }
           />
           {call.localStream && (
-            <VideoTile stream={call.localStream} muted mirror className="absolute end-3 top-3 aspect-video w-28 shadow-lg sm:w-40" label={t("You")} />
+            <VideoTile stream={call.localStream} muted mirror className={boardPresenting ? "aspect-video h-full w-40 shrink-0" : "absolute end-3 top-3 aspect-video w-28 shadow-lg sm:w-40"} label={t("You")} />
           )}
+          </div>
           {hand && (
             <span className="animate-rise absolute start-3 top-3 rounded-full bg-amber-400 px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-lg">
               ✋ <T>Your hand is raised</T>
