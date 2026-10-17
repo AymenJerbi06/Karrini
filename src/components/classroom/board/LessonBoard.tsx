@@ -87,7 +87,10 @@ export function LessonBoard({
     at: Point;
     value: string;
     id?: string;
+    size: number;
   } | null>(null);
+  // Remembered between texts. Large enough to stay readable when a phone shrinks the page.
+  const [textSize, setTextSize] = useState(44);
   const [importing, setImporting] = useState<[number, number] | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const svg = useRef<SVGSVGElement>(null);
@@ -173,7 +176,7 @@ export function LessonBoard({
     const at = location(e);
     e.currentTarget.closest("section")?.focus({ preventScroll: true });
     if (tool === "text") {
-      setText({ at, value: "" });
+      setText({ at, value: "", size: textSize });
       return;
     }
     e.preventDefault();
@@ -546,6 +549,7 @@ export function LessonBoard({
               at: select.points[0],
               value: select.text ?? "",
               id: select.id,
+              size: select.fontSize ?? 28,
             });
         }}
       >
@@ -668,8 +672,9 @@ export function LessonBoard({
                   width,
                   points: [text.at],
                   text: text.value.trim(),
-                  fontSize: 28,
+                  fontSize: text.size,
                 };
+                setTextSize(text.size);
                 changePage((p) => ({
                   ...p,
                   elements: text.id
@@ -693,6 +698,30 @@ export function LessonBoard({
                 className={`${fieldClass} mt-3 w-full`}
               />
             </label>
+            <fieldset>
+              <legend className="text-sm font-semibold text-gray-700">
+                <T>Text size</T>
+              </legend>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {(
+                  [
+                    [32, "Small"],
+                    [44, "Medium"],
+                    [64, "Large"],
+                  ] as const
+                ).map(([size, label]) => (
+                  <button
+                    key={size}
+                    type="button"
+                    aria-pressed={text.size === size}
+                    onClick={() => setText({ ...text, size })}
+                    className={`min-h-11 rounded-lg border px-2 text-sm font-semibold ${text.size === size ? "border-emerald-500 bg-emerald-50 text-emerald-800" : "border-gray-200 text-gray-600"}`}
+                  >
+                    <T>{label}</T>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
             <div className="flex justify-end gap-3">
               <button
                 type="button"
@@ -794,6 +823,8 @@ export function StudentBoard({
   const { t } = useI18n();
   const board = useLessonBoard(context, title, false, localOnly);
   const presenting = !!board.frame?.presenting;
+  // Students can enlarge the page on small screens; it scrolls inside the board.
+  const [zoom, setZoom] = useState(1);
   useEffect(() => {
     onPresenting(presenting);
   }, [presenting, onPresenting]);
@@ -819,9 +850,31 @@ export function StudentBoard({
             {board.connected ? "Following your teacher" : "Board reconnecting…"}
           </T>
         </span>
+        {board.frame && (
+          <span className="flex shrink-0 items-center gap-1" dir="ltr">
+            <button
+              type="button"
+              aria-label={t("Zoom out")}
+              disabled={zoom <= 1}
+              onClick={() => setZoom((z) => Math.max(1, z / 1.5))}
+              className="h-9 w-9 rounded-lg text-lg font-bold text-gray-600 hover:bg-gray-100 disabled:opacity-30"
+            >
+              −
+            </button>
+            <button
+              type="button"
+              aria-label={t("Zoom in")}
+              disabled={zoom >= 4}
+              onClick={() => setZoom((z) => Math.min(4, z * 1.5))}
+              className="h-9 w-9 rounded-lg text-lg font-bold text-gray-600 hover:bg-gray-100 disabled:opacity-30"
+            >
+              +
+            </button>
+          </span>
+        )}
       </header>
       {board.frame ? (
-        <BoardSurface page={board.frame.page} assets={board.assets} />
+        <BoardSurface page={board.frame.page} assets={board.assets} zoom={zoom} />
       ) : (
         <div
           role="status"

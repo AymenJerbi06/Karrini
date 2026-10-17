@@ -443,6 +443,11 @@ function StudentCall({
               <span className="flex flex-col items-center gap-3">
                 <span className="h-8 w-8 animate-spin rounded-full border-2 border-gray-500 border-t-white" />
                 <T>Connecting to your teacher&apos;s video…</T>
+                {call.struggling && (
+                  <span className="max-w-xs text-xs leading-5 text-gray-400">
+                    <T>Still trying. If it does not connect, switch to another Wi-Fi or to mobile data, then leave and rejoin.</T>
+                  </span>
+                )}
               </span>
             }
           />

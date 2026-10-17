@@ -66,12 +66,18 @@ export function boardChannel(
   };
   let send: (p: Packet) => Promise<unknown>;
   let close: () => void;
+  // Frames are only sent on a joined channel. Sending earlier makes the client fall back to
+  // one HTTP request per chunk; the "connected" callback republishes the newest page instead.
+  let joined = false;
   if (localOnly) {
     const channel = new BroadcastChannel(`karrini-board-test:${sessionId}`);
     channel.onmessage = (e) => accept(e.data);
     send = async (p) => channel.postMessage(p);
     close = () => channel.close();
-    queueMicrotask(() => status(true));
+    queueMicrotask(() => {
+      joined = true;
+      status(true);
+    });
   } else if (supabaseConfigured) {
     const sb = supabase();
     const channel = sb.channel(`board:${sessionId}`, {
@@ -80,7 +86,10 @@ export function boardChannel(
     channel.on("broadcast", { event: "frame" }, ({ payload }) =>
       accept(payload as Packet),
     );
-    channel.subscribe((s) => status(s === "SUBSCRIBED"));
+    channel.subscribe((s) => {
+      joined = s === "SUBSCRIBED";
+      status(joined);
+    });
     send = async (p) => {
       const result = await channel.send({
         type: "broadcast",
@@ -105,10 +114,10 @@ export function boardChannel(
   const publish = async (frame: BoardFrame) => {
     if (!teacher || closed) return;
     latest = frame;
-    if (sending) return;
+    if (sending || !joined) return;
     sending = true;
     try {
-      while (latest && !closed) {
+      while (latest && !closed && joined) {
         const f = latest;
         latest = undefined;
         const data = JSON.stringify(f);

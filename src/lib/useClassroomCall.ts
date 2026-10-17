@@ -22,6 +22,9 @@ type Peer = {
 
 export type RemoteStream = { id: string; stream: MediaStream };
 
+// STUN finds a direct route; TURN relays the video when networks block direct routes
+// (mobile data, school or office Wi-Fi). Configure TURN with NEXT_PUBLIC_TURN_URL /
+// NEXT_PUBLIC_TURN_USERNAME / NEXT_PUBLIC_TURN_CREDENTIAL, or a full NEXT_PUBLIC_ICE_SERVERS JSON list.
 function iceServers(): RTCIceServer[] {
   try {
     const custom = process.env.NEXT_PUBLIC_ICE_SERVERS;
@@ -29,8 +32,22 @@ function iceServers(): RTCIceServer[] {
   } catch {
     /* fall through */
   }
-  return [{ urls: "stun:stun.l.google.com:19302" }];
+  const servers: RTCIceServer[] = [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+    { urls: "stun:stun.cloudflare.com:3478" },
+  ];
+  const turn = process.env.NEXT_PUBLIC_TURN_URL;
+  if (turn)
+    servers.push({
+      urls: turn.split(",").map((u) => u.trim()),
+      username: process.env.NEXT_PUBLIC_TURN_USERNAME,
+      credential: process.env.NEXT_PUBLIC_TURN_CREDENTIAL,
+    });
+  return servers;
 }
+
+/** A student asks the teacher for a fresh video connection this often until one works. */
+const RETRY_MS = 8000;
 
 /** Animated canvas used when no camera is available, so the call can still be demonstrated. */
 function demoCameraStream(label: string): MediaStream {
@@ -103,6 +120,8 @@ export function useClassroomCall({
   const [connectedPeers, setConnectedPeers] = useState<string[]>([]);
   const [usingDemoCamera, setUsingDemoCamera] = useState(false);
   const [error, setError] = useState("");
+  /** Student: consecutive join attempts that did not produce a working video connection. */
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const isHost = role === "teacher";
 
   const send = useCallback(
@@ -144,8 +163,14 @@ export function useClassroomCall({
         setRemotes((r) => [...r.filter((x) => x.id !== remoteId), { id: remoteId, stream }]);
       };
       pc.onconnectionstatechange = () => {
-        if (pc.connectionState === "connected")
+        if (peers.current.get(remoteId)?.pc !== pc) return; // replaced by a newer connection
+        if (pc.connectionState === "connected") {
           setConnectedPeers((c) => (c.includes(remoteId) ? c : [...c, remoteId]));
+          setFailedAttempts(0);
+          setError("");
+        }
+        if (pc.connectionState === "disconnected")
+          setConnectedPeers((c) => c.filter((x) => x !== remoteId));
         if (["failed", "closed"].includes(pc.connectionState)) dropPeer(remoteId);
       };
       return peer;
@@ -209,14 +234,31 @@ export function useClassroomCall({
       if (m.type.startsWith("rtc-")) void handle(m);
     });
     // Students announce themselves; if the teacher is already live they get an offer back.
-    if (!isHost) transport.send("rtc-join", {}, hostId);
+    // Until the video actually connects, they ask again with a fresh connection, so a lost
+    // message, a teacher refresh or a failed network route does not leave a black screen.
+    let lastJoin = Date.now();
+    let retry: ReturnType<typeof setInterval> | undefined;
+    if (!isHost) {
+      transport.send("rtc-join", {}, hostId);
+      retry = setInterval(() => {
+        const state = peers.current.get(hostId)?.pc.connectionState;
+        if (state === "connected" || Date.now() - lastJoin < RETRY_MS) return;
+        lastJoin = Date.now();
+        if (peers.current.has(hostId)) {
+          dropPeer(hostId);
+          setFailedAttempts((n) => n + 1);
+        }
+        transport.send("rtc-join", {}, hostId);
+      }, 2000);
+    }
     const leave = () => transport.send(isHost ? "rtc-host-ended" : "rtc-leave", {});
     window.addEventListener("pagehide", leave);
     return () => {
       off();
+      if (retry) clearInterval(retry);
       window.removeEventListener("pagehide", leave);
     };
-  }, [transport, handle, hostId, isHost]);
+  }, [transport, handle, hostId, isHost, dropPeer]);
 
   const getCamera = useCallback(
     async (video: boolean, audio: boolean) => {
@@ -258,7 +300,10 @@ export function useClassroomCall({
         send("rtc-host-ready", {});
       } else {
         const peer = peers.current.get(hostId) ?? createPeer(hostId);
-        stream.getTracks().forEach((t) => peer.pc.addTrack(t, stream));
+        const sent = new Set(peer.pc.getSenders().map((s) => s.track));
+        stream.getTracks().forEach((t) => {
+          if (!sent.has(t)) peer.pc.addTrack(t, stream);
+        });
       }
     } catch {
       setError("Camera and microphone are blocked. Allow them in your browser settings.");
@@ -359,6 +404,8 @@ export function useClassroomCall({
     error,
     /** Number of live video connections (students watching, for the teacher). */
     viewers: connectedPeers.length,
+    /** Student: the video has failed to connect several times in a row (likely a blocked network). */
+    struggling: failedAttempts >= 2,
     start,
     stop,
     toggleMic,

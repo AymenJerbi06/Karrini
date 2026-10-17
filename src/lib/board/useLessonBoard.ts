@@ -55,9 +55,11 @@ export function useLessonBoard(
     titleRef.current = title;
   }, [title]);
   const shareTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const savedRevision = useRef(-1);
   const persist = useCallback(async () => {
     const d = current.current;
     if (!d || !teacher) return;
+    if (savedRevision.current === d.revision) return; // nothing new to save
     setSaveState("saving");
     let localSaved = false;
     try {
@@ -82,6 +84,7 @@ export function useLessonBoard(
         await cloudJob.current;
       } else if (!localSaved)
         throw new Error("Local board storage unavailable.");
+      if (!localOnly || localSaved) savedRevision.current = Math.max(savedRevision.current, d.revision);
       if (current.current?.revision === d.revision)
         setSaveState(localOnly ? "local" : "saved");
       setError((e) =>
@@ -175,11 +178,14 @@ export function useLessonBoard(
       localOnly,
     );
     channel.current = ch;
+    // Safety net for lost frames while presenting, and for saves that failed earlier.
+    // An unchanged, hidden board sends nothing.
     const beat = setInterval(() => {
       if (teacher && current.current) {
-        void ch
-          .publish(frameOf(current.current))
-          .catch(() => setConnected(false));
+        if (current.current.presenting)
+          void ch
+            .publish(frameOf(current.current))
+            .catch(() => setConnected(false));
         void persist().catch(() => undefined);
       }
     }, 5000);

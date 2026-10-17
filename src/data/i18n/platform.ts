@@ -1198,4 +1198,12 @@ export const platform: Record<string, [string, string]> = {
   "Choose your group": ["اختار فوجك", "Choisissez votre groupe"],
   "My group": ["فوجي", "Mon groupe"],
   "My class | Karrini": ["قسمي | قرّيني", "Ma classe | Karrini"],
+  "Tap to hear the sound": ["انقر باش تسمع الصوت", "Touchez pour activer le son"],
+  "Still trying. If it does not connect, switch to another Wi-Fi or to mobile data, then leave and rejoin.": ["مازلنا نحاولو. كان ما تربطش، بدّل الويفي ولا استعمل الإنترنت متاع التليفون، ومبعد اخرج وارجع ادخل.", "Nouvelle tentative en cours. Si la connexion échoue, changez de Wi-Fi ou passez aux données mobiles, puis quittez et rejoignez le cours."],
+  "Text size": ["حجم الكتيبة", "Taille du texte"],
+  "Small": ["صغير", "Petit"],
+  "Medium": ["متوسط", "Moyen"],
+  "Large": ["كبير", "Grand"],
+  "Zoom out": ["صغّر", "Dézoomer"],
+  "Zoom in": ["كبّر", "Zoomer"],
 };

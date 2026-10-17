@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { T } from "@/components/I18n";
 import { cn } from "@/lib/cn";
 
 /** Plays a MediaStream; shows `placeholder` when there is no stream. */
@@ -22,12 +23,27 @@ export function VideoTile({
   badge?: ReactNode;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
+  // Phones may refuse to start a video with sound on their own; it then plays muted and
+  // the viewer taps once to hear it.
+  const [blockedSound, setBlockedSound] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (el.srcObject !== stream) el.srcObject = stream ?? null;
-    if (stream) void el.play().catch(() => undefined);
-  }, [stream]);
+    if (!stream) return;
+    el.muted = !!muted;
+    el.play().catch(() => {
+      if (muted) return;
+      el.muted = true;
+      void el.play().then(() => setBlockedSound(true)).catch(() => undefined);
+    });
+  }, [stream, muted]);
+  function unmute() {
+    const el = ref.current;
+    if (!el) return;
+    el.muted = false;
+    void el.play().then(() => setBlockedSound(false)).catch(() => undefined);
+  }
   return (
     <div className={cn("relative overflow-hidden rounded-xl bg-gray-900", className)}>
       {stream ? (
@@ -49,6 +65,11 @@ export function VideoTile({
         </span>
       )}
       {badge && <span className="absolute end-3 top-3">{badge}</span>}
+      {blockedSound && stream && !muted && (
+        <button type="button" onClick={unmute} className="absolute inset-x-0 bottom-0 m-2 rounded-lg bg-white/90 px-3 py-2 text-xs font-semibold text-gray-900 shadow">
+          🔊 <T>Tap to hear the sound</T>
+        </button>
+      )}
     </div>
   );
 }
